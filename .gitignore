@@ -1,5 +1,62 @@
+# Environment files with secrets
+.env
+.env.local
+.env.production
+
+# API Keys and secrets
+*.key
+*.pem
+secrets.json
+config/secrets.yml
+
+# Python
 venv
 venv_linux
 __pycache__
 .ruff_cache
 .pytest_cache
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Node modules
+node_modules/
+
+# Temporary files
+tmp/
+temp/
