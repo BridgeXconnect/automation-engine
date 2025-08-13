@@ -1,0 +1,80 @@
+{
+  "name": "customer_onboarding_workflow",
+  "id": "onboarding_001",
+  "active": true,
+  "nodes": [
+    {
+      "id": "new-customer-trigger",
+      "name": "new_customer_signup",
+      "type": "n8n-nodes-base.webhook",
+      "position": [200, 300],
+      "parameters": {
+        "path": "new-customer",
+        "httpMethod": "POST",
+        "responseMode": "onReceived"
+      }
+    },
+    {
+      "id": "welcome-email",
+      "name": "send_welcome_email", 
+      "type": "n8n-nodes-base.emailSend",
+      "position": [400, 300],
+      "parameters": {
+        "to": "={{$json.email}}",
+        "subject": "Welcome to {{$json.company_name}}!",
+        "html": "<h1>Welcome!</h1><p>Thank you for signing up. We're excited to work with you.</p>"
+      }
+    },
+    {
+      "id": "create-project",
+      "name": "setup_project_workspace",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [600, 300],
+      "parameters": {
+        "url": "{{$env.PROJECT_API_URL}}/projects",
+        "method": "POST",
+        "headers": {
+          "Authorization": "Bearer {{$credentials.project_api.token}}"
+        },
+        "body": {
+          "customer_id": "={{$json.customer_id}}",
+          "project_name": "={{$json.company_name}} - Onboarding",
+          "template": "standard_onboarding"
+        }
+      }
+    },
+    {
+      "id": "schedule-kickoff",
+      "name": "schedule_kickoff_call",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [800, 300], 
+      "parameters": {
+        "url": "{{$env.CALENDAR_API_URL}}/events",
+        "method": "POST",
+        "headers": {
+          "Authorization": "Bearer {{$credentials.calendar_api.token}}"
+        },
+        "body": {
+          "title": "Kickoff Call - {{$json.company_name}}",
+          "duration": 60,
+          "attendees": ["={{$json.email}}", "sales@company.com"]
+        }
+      }
+    }
+  ],
+  "connections": {
+    "new_customer_signup": {
+      "main": [[{"node": "send_welcome_email", "type": "main", "index": 0}]]
+    },
+    "send_welcome_email": {
+      "main": [[{"node": "setup_project_workspace", "type": "main", "index": 0}]]
+    },
+    "setup_project_workspace": {
+      "main": [[{"node": "schedule_kickoff_call", "type": "main", "index": 0}]]
+    }
+  },
+  "settings": {},
+  "tags": ["onboarding", "customer-success", "automation"],
+  "createdAt": "2025-08-11T18:00:00.000Z",
+  "updatedAt": "2025-08-11T18:00:00.000Z"
+}

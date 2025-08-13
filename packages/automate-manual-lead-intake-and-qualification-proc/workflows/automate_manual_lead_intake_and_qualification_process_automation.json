@@ -1,0 +1,819 @@
+{
+  "name": "automate_manual_lead_intake_and_qualification_process_automation",
+  "nodes": [
+    {
+      "id": "new-customer-trigger",
+      "name": "webhook_new_customer_signup",
+      "type": "n8n-nodes-base.webhook",
+      "position": [
+        200.0,
+        300.0
+      ],
+      "parameters": {
+        "path": "new-customer",
+        "httpMethod": "POST",
+        "responseMode": "onReceived"
+      }
+    },
+    {
+      "id": "welcome-email",
+      "name": "send_welcome_email",
+      "type": "n8n-nodes-base.emailSend",
+      "position": [
+        400.0,
+        300.0
+      ],
+      "parameters": {
+        "to": "={{$json.email}}",
+        "subject": "Welcome to {{$json.company_name}}!",
+        "html": "<h1>Welcome!</h1><p>Thank you for signing up. We're excited to work with you.</p>"
+      }
+    },
+    {
+      "id": "create-project",
+      "name": "setup_project_workspace",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        600.0,
+        300.0
+      ],
+      "parameters": {
+        "url": "{{$env.PROJECT_API_URL}}/projects",
+        "method": "POST",
+        "headers": {
+          "Authorization": "Bearer {{$credentials.project_api.token}}"
+        },
+        "body": {
+          "customer_id": "={{$json.customer_id}}",
+          "project_name": "={{$json.company_name}} - Onboarding",
+          "template": "standard_onboarding"
+        }
+      }
+    },
+    {
+      "id": "schedule-kickoff",
+      "name": "schedule_kickoff_call",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        800.0,
+        300.0
+      ],
+      "parameters": {
+        "url": "{{$env.CALENDAR_API_URL}}/events",
+        "method": "POST",
+        "headers": {
+          "Authorization": "Bearer {{$credentials.calendar_api.token}}"
+        },
+        "body": {
+          "title": "Kickoff Call - {{$json.company_name}}",
+          "duration": 60,
+          "attendees": [
+            "={{$json.email}}",
+            "sales@company.com"
+          ]
+        }
+      }
+    },
+    {
+      "id": "lead_qualification_workflow_webhook-trigger",
+      "name": "webhook_lead_qualification_workflow_webhook_trigger",
+      "type": "n8n-nodes-base.webhook",
+      "position": [
+        600.0,
+        300.0
+      ],
+      "parameters": {
+        "path": "lead-intake",
+        "httpMethod": "POST",
+        "responseMode": "onReceived"
+      }
+    },
+    {
+      "id": "lead_qualification_workflow_validate-data",
+      "name": "lead_qualification_workflow_validate_lead_data",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        800.0,
+        300.0
+      ],
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "status",
+              "value": "validated"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "lead_qualification_workflow_crm-create",
+      "name": "lead_qualification_workflow_create_crm_record",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        1000.0,
+        300.0
+      ],
+      "parameters": {
+        "url": "https://api.crm-system.com/leads",
+        "method": "POST",
+        "headers": {
+          "Authorization": "Bearer {{$credentials.crm_api.token}}"
+        }
+      }
+    },
+    {
+      "id": "lead_qualification_workflow_send-notification",
+      "name": "lead_qualification_workflow_send_notification",
+      "type": "n8n-nodes-base.emailSend",
+      "position": [
+        1200.0,
+        300.0
+      ],
+      "parameters": {
+        "to": "sales@company.com",
+        "subject": "New Lead: {{$json['company_name']}}",
+        "message": "New lead received and processed automatically."
+      }
+    },
+    {
+      "id": "lead_qualification_workflow_error-handler",
+      "name": "lead_qualification_workflow_error_handle_failures",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        900.0,
+        500.0
+      ],
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "error_status",
+              "value": "failed"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "log_new-customer-trigger_0",
+      "name": "log__webhook_new_customer_signup",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        500.0,
+        300.0
+      ],
+      "parameters": {
+        "values": {
+          "timestamp": "{{ new Date().toISOString() }}",
+          "node_id": "new-customer-trigger",
+          "node_name": "webhook_new_customer_signup",
+          "workflow_name": "automate_manual_lead_intake_and_qualification_process_automation",
+          "execution_time": "{{ $now - $nodeExecutionStart }}",
+          "success": "{{ $node.success }}",
+          "item_count": "{{ $input.all().length }}"
+        },
+        "options": {
+          "dotNotation": true
+        }
+      }
+    },
+    {
+      "id": "log_welcome-email_1",
+      "name": "log__send_welcome_email",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        700.0,
+        300.0
+      ],
+      "parameters": {
+        "values": {
+          "timestamp": "{{ new Date().toISOString() }}",
+          "node_id": "welcome-email",
+          "node_name": "send_welcome_email",
+          "workflow_name": "automate_manual_lead_intake_and_qualification_process_automation",
+          "execution_time": "{{ $now - $nodeExecutionStart }}",
+          "success": "{{ $node.success }}",
+          "item_count": "{{ $input.all().length }}"
+        },
+        "options": {
+          "dotNotation": true
+        }
+      }
+    },
+    {
+      "id": "log_create-project_2",
+      "name": "log__setup_project_workspace",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        900.0,
+        300.0
+      ],
+      "parameters": {
+        "values": {
+          "timestamp": "{{ new Date().toISOString() }}",
+          "node_id": "create-project",
+          "node_name": "setup_project_workspace",
+          "workflow_name": "automate_manual_lead_intake_and_qualification_process_automation",
+          "execution_time": "{{ $now - $nodeExecutionStart }}",
+          "success": "{{ $node.success }}",
+          "item_count": "{{ $input.all().length }}"
+        },
+        "options": {
+          "dotNotation": true
+        }
+      }
+    },
+    {
+      "id": "log_schedule-kickoff_3",
+      "name": "log__schedule_kickoff_call",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        1100.0,
+        300.0
+      ],
+      "parameters": {
+        "values": {
+          "timestamp": "{{ new Date().toISOString() }}",
+          "node_id": "schedule-kickoff",
+          "node_name": "schedule_kickoff_call",
+          "workflow_name": "automate_manual_lead_intake_and_qualification_process_automation",
+          "execution_time": "{{ $now - $nodeExecutionStart }}",
+          "success": "{{ $node.success }}",
+          "item_count": "{{ $input.all().length }}"
+        },
+        "options": {
+          "dotNotation": true
+        }
+      }
+    },
+    {
+      "id": "log_lead_qualification_workflow_webhook-trigger_4",
+      "name": "log__webhook_lead_qualification_workflow_webhook_trigger",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        900.0,
+        300.0
+      ],
+      "parameters": {
+        "values": {
+          "timestamp": "{{ new Date().toISOString() }}",
+          "node_id": "lead_qualification_workflow_webhook-trigger",
+          "node_name": "webhook_lead_qualification_workflow_webhook_trigger",
+          "workflow_name": "automate_manual_lead_intake_and_qualification_process_automation",
+          "execution_time": "{{ $now - $nodeExecutionStart }}",
+          "success": "{{ $node.success }}",
+          "item_count": "{{ $input.all().length }}"
+        },
+        "options": {
+          "dotNotation": true
+        }
+      }
+    },
+    {
+      "id": "log_lead_qualification_workflow_validate-data_5",
+      "name": "log__lead_qualification_workflow_validate_lead_data",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        1100.0,
+        300.0
+      ],
+      "parameters": {
+        "values": {
+          "timestamp": "{{ new Date().toISOString() }}",
+          "node_id": "lead_qualification_workflow_validate-data",
+          "node_name": "lead_qualification_workflow_validate_lead_data",
+          "workflow_name": "automate_manual_lead_intake_and_qualification_process_automation",
+          "execution_time": "{{ $now - $nodeExecutionStart }}",
+          "success": "{{ $node.success }}",
+          "item_count": "{{ $input.all().length }}"
+        },
+        "options": {
+          "dotNotation": true
+        }
+      }
+    },
+    {
+      "id": "log_lead_qualification_workflow_crm-create_6",
+      "name": "log__lead_qualification_workflow_create_crm_record",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        1300.0,
+        300.0
+      ],
+      "parameters": {
+        "values": {
+          "timestamp": "{{ new Date().toISOString() }}",
+          "node_id": "lead_qualification_workflow_crm-create",
+          "node_name": "lead_qualification_workflow_create_crm_record",
+          "workflow_name": "automate_manual_lead_intake_and_qualification_process_automation",
+          "execution_time": "{{ $now - $nodeExecutionStart }}",
+          "success": "{{ $node.success }}",
+          "item_count": "{{ $input.all().length }}"
+        },
+        "options": {
+          "dotNotation": true
+        }
+      }
+    },
+    {
+      "id": "log_lead_qualification_workflow_send-notification_7",
+      "name": "log__lead_qualification_workflow_send_notification",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        1500.0,
+        300.0
+      ],
+      "parameters": {
+        "values": {
+          "timestamp": "{{ new Date().toISOString() }}",
+          "node_id": "lead_qualification_workflow_send-notification",
+          "node_name": "lead_qualification_workflow_send_notification",
+          "workflow_name": "automate_manual_lead_intake_and_qualification_process_automation",
+          "execution_time": "{{ $now - $nodeExecutionStart }}",
+          "success": "{{ $node.success }}",
+          "item_count": "{{ $input.all().length }}"
+        },
+        "options": {
+          "dotNotation": true
+        }
+      }
+    },
+    {
+      "id": "log_lead_qualification_workflow_error-handler_8",
+      "name": "log__lead_qualification_workflow_error_handle_failures",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        1200.0,
+        500.0
+      ],
+      "parameters": {
+        "values": {
+          "timestamp": "{{ new Date().toISOString() }}",
+          "node_id": "lead_qualification_workflow_error-handler",
+          "node_name": "lead_qualification_workflow_error_handle_failures",
+          "workflow_name": "automate_manual_lead_intake_and_qualification_process_automation",
+          "execution_time": "{{ $now - $nodeExecutionStart }}",
+          "success": "{{ $node.success }}",
+          "item_count": "{{ $input.all().length }}"
+        },
+        "options": {
+          "dotNotation": true
+        }
+      }
+    },
+    {
+      "id": "error_new-customer-trigger_0",
+      "name": "error__webhook_new_customer_signup",
+      "type": "n8n-nodes-base.webhook",
+      "position": [
+        200.0,
+        600.0
+      ],
+      "parameters": {
+        "path": "/error-handler",
+        "httpMethod": "POST",
+        "responseMode": "onReceived",
+        "errorData": {
+          "original_node": "webhook_new_customer_signup",
+          "workflow_name": "automate_manual_lead_intake_and_qualification_process_automation",
+          "timestamp": "{{ new Date().toISOString() }}",
+          "error_message": "{{ $json.error }}",
+          "input_data": "{{ $json.input }}"
+        }
+      }
+    },
+    {
+      "id": "error_welcome-email_1",
+      "name": "error__send_welcome_email",
+      "type": "n8n-nodes-base.webhook",
+      "position": [
+        400.0,
+        600.0
+      ],
+      "parameters": {
+        "path": "/error-handler",
+        "httpMethod": "POST",
+        "responseMode": "onReceived",
+        "errorData": {
+          "original_node": "send_welcome_email",
+          "workflow_name": "automate_manual_lead_intake_and_qualification_process_automation",
+          "timestamp": "{{ new Date().toISOString() }}",
+          "error_message": "{{ $json.error }}",
+          "input_data": "{{ $json.input }}"
+        }
+      }
+    },
+    {
+      "id": "error_create-project_2",
+      "name": "error__setup_project_workspace",
+      "type": "n8n-nodes-base.webhook",
+      "position": [
+        600.0,
+        600.0
+      ],
+      "parameters": {
+        "path": "/error-handler",
+        "httpMethod": "POST",
+        "responseMode": "onReceived",
+        "errorData": {
+          "original_node": "setup_project_workspace",
+          "workflow_name": "automate_manual_lead_intake_and_qualification_process_automation",
+          "timestamp": "{{ new Date().toISOString() }}",
+          "error_message": "{{ $json.error }}",
+          "input_data": "{{ $json.input }}"
+        }
+      }
+    },
+    {
+      "id": "error_schedule-kickoff_3",
+      "name": "error__schedule_kickoff_call",
+      "type": "n8n-nodes-base.webhook",
+      "position": [
+        800.0,
+        600.0
+      ],
+      "parameters": {
+        "path": "/error-handler",
+        "httpMethod": "POST",
+        "responseMode": "onReceived",
+        "errorData": {
+          "original_node": "schedule_kickoff_call",
+          "workflow_name": "automate_manual_lead_intake_and_qualification_process_automation",
+          "timestamp": "{{ new Date().toISOString() }}",
+          "error_message": "{{ $json.error }}",
+          "input_data": "{{ $json.input }}"
+        }
+      }
+    },
+    {
+      "id": "error_lead_qualification_workflow_webhook-trigger_4",
+      "name": "error__webhook_lead_qualification_workflow_webhook_trigger",
+      "type": "n8n-nodes-base.webhook",
+      "position": [
+        600.0,
+        600.0
+      ],
+      "parameters": {
+        "path": "/error-handler",
+        "httpMethod": "POST",
+        "responseMode": "onReceived",
+        "errorData": {
+          "original_node": "webhook_lead_qualification_workflow_webhook_trigger",
+          "workflow_name": "automate_manual_lead_intake_and_qualification_process_automation",
+          "timestamp": "{{ new Date().toISOString() }}",
+          "error_message": "{{ $json.error }}",
+          "input_data": "{{ $json.input }}"
+        }
+      }
+    },
+    {
+      "id": "error_lead_qualification_workflow_validate-data_5",
+      "name": "error__lead_qualification_workflow_validate_lead_data",
+      "type": "n8n-nodes-base.webhook",
+      "position": [
+        800.0,
+        600.0
+      ],
+      "parameters": {
+        "path": "/error-handler",
+        "httpMethod": "POST",
+        "responseMode": "onReceived",
+        "errorData": {
+          "original_node": "lead_qualification_workflow_validate_lead_data",
+          "workflow_name": "automate_manual_lead_intake_and_qualification_process_automation",
+          "timestamp": "{{ new Date().toISOString() }}",
+          "error_message": "{{ $json.error }}",
+          "input_data": "{{ $json.input }}"
+        }
+      }
+    },
+    {
+      "id": "error_lead_qualification_workflow_crm-create_6",
+      "name": "error__lead_qualification_workflow_create_crm_record",
+      "type": "n8n-nodes-base.webhook",
+      "position": [
+        1000.0,
+        600.0
+      ],
+      "parameters": {
+        "path": "/error-handler",
+        "httpMethod": "POST",
+        "responseMode": "onReceived",
+        "errorData": {
+          "original_node": "lead_qualification_workflow_create_crm_record",
+          "workflow_name": "automate_manual_lead_intake_and_qualification_process_automation",
+          "timestamp": "{{ new Date().toISOString() }}",
+          "error_message": "{{ $json.error }}",
+          "input_data": "{{ $json.input }}"
+        }
+      }
+    },
+    {
+      "id": "error_lead_qualification_workflow_send-notification_7",
+      "name": "error__lead_qualification_workflow_send_notification",
+      "type": "n8n-nodes-base.webhook",
+      "position": [
+        1200.0,
+        600.0
+      ],
+      "parameters": {
+        "path": "/error-handler",
+        "httpMethod": "POST",
+        "responseMode": "onReceived",
+        "errorData": {
+          "original_node": "lead_qualification_workflow_send_notification",
+          "workflow_name": "automate_manual_lead_intake_and_qualification_process_automation",
+          "timestamp": "{{ new Date().toISOString() }}",
+          "error_message": "{{ $json.error }}",
+          "input_data": "{{ $json.input }}"
+        }
+      }
+    },
+    {
+      "id": "error_lead_qualification_workflow_error-handler_8",
+      "name": "error__lead_qualification_workflow_error_handle_failures",
+      "type": "n8n-nodes-base.webhook",
+      "position": [
+        900.0,
+        800.0
+      ],
+      "parameters": {
+        "path": "/error-handler",
+        "httpMethod": "POST",
+        "responseMode": "onReceived",
+        "errorData": {
+          "original_node": "lead_qualification_workflow_error_handle_failures",
+          "workflow_name": "automate_manual_lead_intake_and_qualification_process_automation",
+          "timestamp": "{{ new Date().toISOString() }}",
+          "error_message": "{{ $json.error }}",
+          "input_data": "{{ $json.input }}"
+        }
+      }
+    },
+    {
+      "id": "error_log_new-customer-trigger_0_9",
+      "name": "error__log__webhook_new_customer_signup",
+      "type": "n8n-nodes-base.webhook",
+      "position": [
+        500.0,
+        600.0
+      ],
+      "parameters": {
+        "path": "/error-handler",
+        "httpMethod": "POST",
+        "responseMode": "onReceived",
+        "errorData": {
+          "original_node": "log__webhook_new_customer_signup",
+          "workflow_name": "automate_manual_lead_intake_and_qualification_process_automation",
+          "timestamp": "{{ new Date().toISOString() }}",
+          "error_message": "{{ $json.error }}",
+          "input_data": "{{ $json.input }}"
+        }
+      }
+    },
+    {
+      "id": "error_log_welcome-email_1_10",
+      "name": "error__log__send_welcome_email",
+      "type": "n8n-nodes-base.webhook",
+      "position": [
+        700.0,
+        600.0
+      ],
+      "parameters": {
+        "path": "/error-handler",
+        "httpMethod": "POST",
+        "responseMode": "onReceived",
+        "errorData": {
+          "original_node": "log__send_welcome_email",
+          "workflow_name": "automate_manual_lead_intake_and_qualification_process_automation",
+          "timestamp": "{{ new Date().toISOString() }}",
+          "error_message": "{{ $json.error }}",
+          "input_data": "{{ $json.input }}"
+        }
+      }
+    },
+    {
+      "id": "error_log_create-project_2_11",
+      "name": "error__log__setup_project_workspace",
+      "type": "n8n-nodes-base.webhook",
+      "position": [
+        900.0,
+        600.0
+      ],
+      "parameters": {
+        "path": "/error-handler",
+        "httpMethod": "POST",
+        "responseMode": "onReceived",
+        "errorData": {
+          "original_node": "log__setup_project_workspace",
+          "workflow_name": "automate_manual_lead_intake_and_qualification_process_automation",
+          "timestamp": "{{ new Date().toISOString() }}",
+          "error_message": "{{ $json.error }}",
+          "input_data": "{{ $json.input }}"
+        }
+      }
+    },
+    {
+      "id": "error_log_schedule-kickoff_3_12",
+      "name": "error__log__schedule_kickoff_call",
+      "type": "n8n-nodes-base.webhook",
+      "position": [
+        1100.0,
+        600.0
+      ],
+      "parameters": {
+        "path": "/error-handler",
+        "httpMethod": "POST",
+        "responseMode": "onReceived",
+        "errorData": {
+          "original_node": "log__schedule_kickoff_call",
+          "workflow_name": "automate_manual_lead_intake_and_qualification_process_automation",
+          "timestamp": "{{ new Date().toISOString() }}",
+          "error_message": "{{ $json.error }}",
+          "input_data": "{{ $json.input }}"
+        }
+      }
+    },
+    {
+      "id": "error_log_lead_qualification_workflow_webhook-trigger_4_13",
+      "name": "error__log__webhook_lead_qualification_workflow_webhook_trigger",
+      "type": "n8n-nodes-base.webhook",
+      "position": [
+        900.0,
+        600.0
+      ],
+      "parameters": {
+        "path": "/error-handler",
+        "httpMethod": "POST",
+        "responseMode": "onReceived",
+        "errorData": {
+          "original_node": "log__webhook_lead_qualification_workflow_webhook_trigger",
+          "workflow_name": "automate_manual_lead_intake_and_qualification_process_automation",
+          "timestamp": "{{ new Date().toISOString() }}",
+          "error_message": "{{ $json.error }}",
+          "input_data": "{{ $json.input }}"
+        }
+      }
+    },
+    {
+      "id": "error_log_lead_qualification_workflow_validate-data_5_14",
+      "name": "error__log__lead_qualification_workflow_validate_lead_data",
+      "type": "n8n-nodes-base.webhook",
+      "position": [
+        1100.0,
+        600.0
+      ],
+      "parameters": {
+        "path": "/error-handler",
+        "httpMethod": "POST",
+        "responseMode": "onReceived",
+        "errorData": {
+          "original_node": "log__lead_qualification_workflow_validate_lead_data",
+          "workflow_name": "automate_manual_lead_intake_and_qualification_process_automation",
+          "timestamp": "{{ new Date().toISOString() }}",
+          "error_message": "{{ $json.error }}",
+          "input_data": "{{ $json.input }}"
+        }
+      }
+    },
+    {
+      "id": "error_log_lead_qualification_workflow_crm-create_6_15",
+      "name": "error__log__lead_qualification_workflow_create_crm_record",
+      "type": "n8n-nodes-base.webhook",
+      "position": [
+        1300.0,
+        600.0
+      ],
+      "parameters": {
+        "path": "/error-handler",
+        "httpMethod": "POST",
+        "responseMode": "onReceived",
+        "errorData": {
+          "original_node": "log__lead_qualification_workflow_create_crm_record",
+          "workflow_name": "automate_manual_lead_intake_and_qualification_process_automation",
+          "timestamp": "{{ new Date().toISOString() }}",
+          "error_message": "{{ $json.error }}",
+          "input_data": "{{ $json.input }}"
+        }
+      }
+    },
+    {
+      "id": "error_log_lead_qualification_workflow_send-notification_7_16",
+      "name": "error__log__lead_qualification_workflow_send_notification",
+      "type": "n8n-nodes-base.webhook",
+      "position": [
+        1500.0,
+        600.0
+      ],
+      "parameters": {
+        "path": "/error-handler",
+        "httpMethod": "POST",
+        "responseMode": "onReceived",
+        "errorData": {
+          "original_node": "log__lead_qualification_workflow_send_notification",
+          "workflow_name": "automate_manual_lead_intake_and_qualification_process_automation",
+          "timestamp": "{{ new Date().toISOString() }}",
+          "error_message": "{{ $json.error }}",
+          "input_data": "{{ $json.input }}"
+        }
+      }
+    },
+    {
+      "id": "error_log_lead_qualification_workflow_error-handler_8_17",
+      "name": "error__log__lead_qualification_workflow_error_handle_failures",
+      "type": "n8n-nodes-base.webhook",
+      "position": [
+        1200.0,
+        800.0
+      ],
+      "parameters": {
+        "path": "/error-handler",
+        "httpMethod": "POST",
+        "responseMode": "onReceived",
+        "errorData": {
+          "original_node": "log__lead_qualification_workflow_error_handle_failures",
+          "workflow_name": "automate_manual_lead_intake_and_qualification_process_automation",
+          "timestamp": "{{ new Date().toISOString() }}",
+          "error_message": "{{ $json.error }}",
+          "input_data": "{{ $json.input }}"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "new_customer_signup": {
+      "main": [
+        [
+          {
+            "node": "send_welcome_email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "send_welcome_email": {
+      "main": [
+        [
+          {
+            "node": "setup_project_workspace",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "setup_project_workspace": {
+      "main": [
+        [
+          {
+            "node": "schedule_kickoff_call",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "lead_qualification_workflow_webhook_trigger": {
+      "main": [
+        [
+          {
+            "node": "validate_lead_data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "lead_qualification_workflow_validate_lead_data": {
+      "main": [
+        [
+          {
+            "node": "create_crm_record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "lead_qualification_workflow_create_crm_record": {
+      "main": [
+        [
+          {
+            "node": "send_notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {},
+  "id": null,
+  "active": false,
+  "tags": [],
+  "createdAt": "2025-08-12T08:43:22.725239+00:00",
+  "updatedAt": "2025-08-12T08:43:22.725240+00:00"
+}

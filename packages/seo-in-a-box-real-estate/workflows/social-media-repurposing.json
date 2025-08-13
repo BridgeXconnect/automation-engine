@@ -1,0 +1,425 @@
+{
+  "name": "📱 Social Media Content Repurposing - Real Estate Multi-Platform",
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": "seo-error-handler-workflow-id"
+  },
+  "nodes": [
+    {
+      "id": "social-media-trigger",
+      "name": "🎬 Social Media Content Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [200, 400],
+      "parameters": {
+        "path": "social-media-repurposing",
+        "httpMethod": "POST",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "*",
+          "rawBody": true
+        }
+      }
+    },
+    {
+      "id": "social-media-strategist",
+      "name": "🏠 Real Estate Social Media Strategist",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.8,
+      "position": [500, 400],
+      "parameters": {
+        "agent": "toolCallingAgent",
+        "promptTemplate": "You are the premier real estate social media strategist with comprehensive knowledge of multi-platform content optimization, engagement strategies, and property marketing.\\n\\n**Content Input:**\\n{{$json}}\\n\\n**Advanced Real Estate Social Media Strategy:**\\n\\n1. **Multi-Platform Content Adaptation:**\\n   - **LinkedIn**: Professional market reports, industry insights, B2B real estate content\\n   - **Facebook**: Community engagement, local market updates, property showcases\\n   - **Instagram**: Visual property tours, lifestyle content, behind-the-scenes stories\\n   - **Twitter/X**: Real-time market updates, quick tips, industry news commentary\\n   - **TikTok**: Educational content, property tours, market trend explanations\\n   - **YouTube**: In-depth property tours, market analysis videos, educational series\\n\\n2. **Real Estate Content Categories:**\\n   - **Property Spotlights**: Individual property features, virtual tours, highlight reels\\n   - **Market Intelligence**: Weekly market reports, trend analysis, investment insights\\n   - **Educational Content**: Buying/selling guides, financing tips, market education\\n   - **Community Focus**: Neighborhood highlights, local business features, community events\\n   - **Behind-the-Scenes**: Agent insights, day-in-the-life content, industry perspectives\\n   - **Client Success Stories**: Testimonials, closing celebrations, transformation stories\\n\\n3. **Platform-Specific Optimization:**\\n   - **Visual Content**: High-quality property photos, virtual tours, infographics\\n   - **Video Content**: Property walkthroughs, market updates, educational videos\\n   - **Copy Optimization**: Platform-appropriate tone, hashtag strategies, CTAs\\n   - **Posting Schedule**: Optimal timing for each platform and audience\\n   - **Engagement Strategy**: Platform-specific interaction patterns and response strategies\\n\\n4. **Real Estate Social Media Analytics:**\\n   - **Engagement Metrics**: Likes, comments, shares, saves, story interactions\\n   - **Lead Generation**: Contact forms, DM inquiries, website clicks, phone calls\\n   - **Brand Awareness**: Reach, impressions, brand mention tracking\\n   - **Conversion Tracking**: Social media to lead pipeline, attribution modeling\\n\\n5. **MCP Integration for Content Optimization:**\\n   - Use search_nodes() to discover social media automation and publishing nodes\\n   - Apply get_node_essentials() for optimal multi-platform posting configurations\\n   - Implement validate_workflow() for content quality and posting schedule validation\\n\\n**Strategic Output Requirements:**\\nProvide comprehensive social media strategy with platform-specific content adaptation, optimal posting schedules, engagement strategies, and performance tracking for real estate success.",
+        "tools": [
+          {
+            "name": "search_nodes",
+            "description": "Find social media and content automation nodes"
+          },
+          {
+            "name": "get_node_essentials",
+            "description": "Get optimal social media publishing configurations"
+          },
+          {
+            "name": "validate_workflow",
+            "description": "Validate social media workflow and content quality"
+          }
+        ],
+        "hasOutputParser": true,
+        "outputParser": {
+          "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+          "parameters": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "social_media_strategy": {"type": "object"},
+                "platform_adaptations": {"type": "object"},
+                "content_categories": {"type": "array"},
+                "posting_schedules": {"type": "object"},
+                "engagement_strategies": {"type": "object"},
+                "visual_content_plan": {"type": "object"},
+                "hashtag_strategies": {"type": "object"},
+                "analytics_tracking": {"type": "object"},
+                "lead_generation_tactics": {"type": "array"},
+                "optimization_recommendations": {"type": "array"}
+              }
+            }
+          }
+        },
+        "options": {
+          "systemMessage": "You are the leading real estate social media expert with comprehensive knowledge of multi-platform marketing, content optimization, and property promotion strategies. Your expertise includes:\\n\\n• **Multi-Platform Mastery**: Deep understanding of LinkedIn, Facebook, Instagram, Twitter, TikTok, YouTube optimization\\n• **Real Estate Content Strategy**: Property showcases, market intelligence, educational content, community engagement\\n• **Engagement Optimization**: Platform-specific posting strategies, hashtag research, audience interaction\\n• **Lead Generation**: Social media to pipeline conversion, contact optimization, relationship building\\n• **Visual Marketing**: Property photography, video content, virtual tours, infographic design\\n• **Analytics & Optimization**: Performance tracking, ROI measurement, strategy refinement\\n\\nYour social media strategies must be comprehensive, platform-optimized, and specifically designed for real estate market success."
+        }
+      },
+      "credentials": {
+        "anthropicApi": {
+          "id": "anthropic-credentials",
+          "name": "Anthropic Claude API"
+        }
+      }
+    },
+    {
+      "id": "content-adaptation-engine",
+      "name": "✨ Multi-Platform Content Adaptation Engine",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.8,
+      "position": [800, 400],
+      "parameters": {
+        "agent": "toolCallingAgent",
+        "promptTemplate": "You are an advanced multi-platform content adaptation engine specializing in real estate social media optimization and platform-specific content creation.\\n\\n**Content Adaptation Input:**\\nOriginal Content: {{$json.content || $json.blog_content}}\\nSocial Strategy: {{$node['🏠 Real Estate Social Media Strategist'].json}}\\nTarget Platforms: {{$json.target_platforms || ['linkedin', 'facebook', 'instagram', 'twitter', 'tiktok']}}\\n\\n**Advanced Multi-Platform Content Adaptation:**\\n\\n1. **LinkedIn Professional Adaptation:**\\n   - Transform content into professional industry insights and market analysis\\n   - Create engaging B2B real estate content for agents, investors, and professionals\\n   - Optimize for LinkedIn's professional audience with industry terminology\\n   - Include relevant hashtags: #RealEstate #PropertyInvestment #MarketTrends\\n\\n2. **Facebook Community Engagement:**\\n   - Adapt content for community-focused, conversational tone\\n   - Create shareable content that encourages community discussion\\n   - Optimize for Facebook's algorithm with engagement-driving questions\\n   - Include local hashtags and community-specific references\\n\\n3. **Instagram Visual Storytelling:**\\n   - Create visually appealing captions that complement property imagery\\n   - Adapt content for Instagram Stories, Reels, and main feed posts\\n   - Use Instagram-specific hashtags and location tags\\n   - Create engaging CTAs for profile visits and DMs\\n\\n4. **Twitter/X Real-Time Updates:**\\n   - Condense content into Twitter's character limits with key insights\\n   - Create engaging threads for comprehensive market updates\\n   - Use trending hashtags and real-time market commentary\\n   - Optimize for Twitter's fast-paced, news-oriented environment\\n\\n5. **TikTok Educational Entertainment:**\\n   - Transform content into educational, entertaining video concepts\\n   - Create engaging hooks and scripts for property and market education\\n   - Use TikTok trends and audio to increase discoverability\\n   - Focus on quick tips, market insights, and property highlights\\n\\n6. **Platform-Specific Optimization:**\\n   - Adjust tone, style, and format for each platform's audience\\n   - Optimize content length and structure for platform algorithms\\n   - Include platform-specific CTAs and engagement strategies\\n   - Ensure content aligns with platform best practices\\n\\n**Content Adaptation Output Requirements:**\\nProvide comprehensive platform-specific content adaptations with optimized copy, hashtag strategies, posting recommendations, and engagement tactics for maximum real estate social media impact.",
+        "tools": [
+          {
+            "name": "validate_workflow",
+            "description": "Validate content adaptation quality and platform optimization"
+          },
+          {
+            "name": "search_nodes",
+            "description": "Find content processing and optimization nodes"
+          }
+        ],
+        "hasOutputParser": true,
+        "outputParser": {
+          "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+          "parameters": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "linkedin_content": {"type": "object"},
+                "facebook_content": {"type": "object"},
+                "instagram_content": {"type": "object"},
+                "twitter_content": {"type": "object"},
+                "tiktok_content": {"type": "object"},
+                "youtube_content": {"type": "object"},
+                "platform_hashtags": {"type": "object"},
+                "posting_recommendations": {"type": "object"},
+                "engagement_strategies": {"type": "object"},
+                "content_calendar": {"type": "array"}
+              }
+            }
+          }
+        },
+        "memory": {
+          "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+          "windowLength": 10
+        },
+        "options": {
+          "systemMessage": "You are the premier multi-platform content adaptation specialist with expertise in real estate social media marketing. Your capabilities include:\\n\\n• **Platform Optimization**: Expert knowledge of LinkedIn, Facebook, Instagram, Twitter, TikTok, YouTube algorithms and best practices\\n• **Content Transformation**: Advanced ability to adapt single content pieces into multiple platform-optimized versions\\n• **Real Estate Marketing**: Deep understanding of property marketing, market intelligence, and real estate audience preferences\\n• **Engagement Optimization**: Strategic hashtag research, CTA development, and platform-specific engagement tactics\\n• **Visual Content Strategy**: Integration with visual elements, video concepts, and multimedia content planning\\n• **Performance Focus**: Content optimization for maximum reach, engagement, and lead generation\\n\\nYour adaptations must be authentic, platform-native, and optimized for real estate marketing success."
+        }
+      },
+      "credentials": {
+        "anthropicApi": {
+          "id": "anthropic-credentials",
+          "name": "Anthropic Claude API"
+        }
+      }
+    },
+    {
+      "id": "linkedin-publisher",
+      "name": "💼 LinkedIn Professional Publisher",
+      "type": "n8n-nodes-base.linkedIn",
+      "typeVersion": 1,
+      "position": [1100, 200],
+      "parameters": {
+        "resource": "post",
+        "operation": "create",
+        "text": "{{$node['✨ Multi-Platform Content Adaptation Engine'].json.linkedin_content.post_text}}",
+        "options": {
+          "visibilityType": "anyone"
+        }
+      },
+      "credentials": {
+        "linkedInOAuth2Api": {
+          "id": "linkedin-credentials",
+          "name": "LinkedIn API"
+        }
+      }
+    },
+    {
+      "id": "facebook-publisher",
+      "name": "📘 Facebook Community Publisher",
+      "type": "n8n-nodes-base.facebook",
+      "typeVersion": 1,
+      "position": [1100, 350],
+      "parameters": {
+        "resource": "post",
+        "operation": "create",
+        "pageId": "{{$json.facebook_page_id}}",
+        "content": "{{$node['✨ Multi-Platform Content Adaptation Engine'].json.facebook_content.post_text}}"
+      },
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "facebook-credentials",
+          "name": "Facebook API"
+        }
+      }
+    },
+    {
+      "id": "instagram-publisher",
+      "name": "📸 Instagram Visual Publisher",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1100, 500],
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v18.0/{{$json.instagram_account_id}}/media",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "facebookGraphApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "image_url",
+              "value": "{{$json.image_url}}"
+            },
+            {
+              "name": "caption",
+              "value": "{{$node['✨ Multi-Platform Content Adaptation Engine'].json.instagram_content.caption}}"
+            },
+            {
+              "name": "access_token",
+              "value": "{{$credentials.facebookGraphApi.accessToken}}"
+            }
+          ]
+        }
+      },
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "facebook-credentials",
+          "name": "Facebook API"
+        }
+      }
+    },
+    {
+      "id": "twitter-publisher",
+      "name": "🐦 Twitter Real-Time Publisher",
+      "type": "n8n-nodes-base.twitter",
+      "typeVersion": 2,
+      "position": [1100, 650],
+      "parameters": {
+        "resource": "tweet",
+        "operation": "create",
+        "text": "{{$node['✨ Multi-Platform Content Adaptation Engine'].json.twitter_content.tweet_text}}"
+      },
+      "credentials": {
+        "twitterOAuth2Api": {
+          "id": "twitter-credentials",
+          "name": "Twitter API"
+        }
+      }
+    },
+    {
+      "id": "scheduling-coordinator",
+      "name": "⏰ Multi-Platform Scheduling Coordinator",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1400, 400],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "// Advanced Social Media Scheduling and Performance Tracking\\nconst strategy = $node['🏠 Real Estate Social Media Strategist'].json;\\nconst adaptedContent = $node['✨ Multi-Platform Content Adaptation Engine'].json;\\n\\n// Collect publishing results\\nconst linkedinResult = $node['💼 LinkedIn Professional Publisher']?.json || {};\\nconst facebookResult = $node['📘 Facebook Community Publisher']?.json || {};\\nconst instagramResult = $node['📸 Instagram Visual Publisher']?.json || {};\\nconst twitterResult = $node['🐦 Twitter Real-Time Publisher']?.json || {};\\n\\nconst socialMediaResults = {\\n  campaign_id: `social_campaign_${Date.now()}`,\\n  timestamp: new Date().toISOString(),\\n  content_source: $input.first().json.content_source || 'Blog Content',\\n  \\n  // Publishing Strategy\\n  social_strategy: strategy.social_media_strategy,\\n  platform_adaptations: strategy.platform_adaptations,\\n  posting_schedules: strategy.posting_schedules,\\n  \\n  // Content Adaptations\\n  platform_content: {\\n    linkedin: {\\n      content: adaptedContent.linkedin_content,\\n      publishing_result: linkedinResult,\\n      status: linkedinResult.id ? 'published' : 'failed',\\n      optimal_time: strategy.posting_schedules?.linkedin || '9:00 AM weekdays'\\n    },\\n    facebook: {\\n      content: adaptedContent.facebook_content,\\n      publishing_result: facebookResult,\\n      status: facebookResult.id ? 'published' : 'failed',\\n      optimal_time: strategy.posting_schedules?.facebook || '12:00 PM weekdays'\\n    },\\n    instagram: {\\n      content: adaptedContent.instagram_content,\\n      publishing_result: instagramResult,\\n      status: instagramResult.id ? 'published' : 'failed',\\n      optimal_time: strategy.posting_schedules?.instagram || '6:00 PM daily'\\n    },\\n    twitter: {\\n      content: adaptedContent.twitter_content,\\n      publishing_result: twitterResult,\\n      status: twitterResult.id ? 'published' : 'failed',\\n      optimal_time: strategy.posting_schedules?.twitter || '11:00 AM, 3:00 PM daily'\\n    }\\n  },\\n  \\n  // Engagement Strategy\\n  engagement_tactics: {\\n    hashtag_strategies: adaptedContent.platform_hashtags || strategy.hashtag_strategies,\\n    posting_recommendations: adaptedContent.posting_recommendations,\\n    engagement_strategies: adaptedContent.engagement_strategies\\n  },\\n  \\n  // Performance Tracking\\n  publishing_metrics: {\\n    platforms_published: Object.values({\\n      linkedin: linkedinResult.id ? 1 : 0,\\n      facebook: facebookResult.id ? 1 : 0,\\n      instagram: instagramResult.id ? 1 : 0,\\n      twitter: twitterResult.id ? 1 : 0\\n    }).reduce((sum, status) => sum + status, 0),\\n    total_platforms: 4,\\n    publishing_success_rate: (Object.values({\\n      linkedin: linkedinResult.id ? 1 : 0,\\n      facebook: facebookResult.id ? 1 : 0,\\n      instagram: instagramResult.id ? 1 : 0,\\n      twitter: twitterResult.id ? 1 : 0\\n    }).reduce((sum, status) => sum + status, 0) / 4 * 100).toFixed(1) + '%',\\n    content_variations: Object.keys(adaptedContent).length\\n  },\\n  \\n  // Content Calendar Integration\\n  content_calendar: adaptedContent.content_calendar || [\\n    {\\n      platform: 'LinkedIn',\\n      scheduled_time: strategy.posting_schedules?.linkedin || '9:00 AM weekdays',\\n      content_type: 'Professional market insights',\\n      engagement_goal: 'B2B networking and thought leadership'\\n    },\\n    {\\n      platform: 'Facebook',\\n      scheduled_time: strategy.posting_schedules?.facebook || '12:00 PM weekdays', \\n      content_type: 'Community-focused property content',\\n      engagement_goal: 'Local community engagement and lead generation'\\n    },\\n    {\\n      platform: 'Instagram',\\n      scheduled_time: strategy.posting_schedules?.instagram || '6:00 PM daily',\\n      content_type: 'Visual property showcases and lifestyle',\\n      engagement_goal: 'Brand awareness and visual engagement'\\n    },\\n    {\\n      platform: 'Twitter',\\n      scheduled_time: strategy.posting_schedules?.twitter || '11:00 AM, 3:00 PM daily',\\n      content_type: 'Real-time market updates and tips',\\n      engagement_goal: 'Industry authority and quick engagement'\\n    }\\n  ],\\n  \\n  // Next Actions\\n  next_steps: [\\n    'Monitor engagement across all platforms',\\n    'Track lead generation from social media traffic',\\n    'Analyze performance metrics and optimize posting times',\\n    'Prepare follow-up content based on engagement patterns'\\n  ],\\n  \\n  // Real Estate Focus\\n  real_estate_optimization: {\\n    property_showcase_optimization: 'Visual content prioritized for Instagram and Facebook',\\n    market_intelligence_distribution: 'Professional insights shared on LinkedIn and Twitter',\\n    community_engagement_focus: 'Local market content optimized for Facebook',\\n    lead_generation_strategy: 'Multi-platform CTA optimization and contact form integration'\\n  }\\n};\\n\\nreturn [socialMediaResults];"
+      }
+    },
+    {
+      "id": "social-media-notification",
+      "name": "📢 Social Media Campaign Notification",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.2,
+      "position": [1700, 400],
+      "parameters": {
+        "resource": "message",
+        "operation": "post",
+        "channel": "#seo-automation",
+        "text": "📱 **Social Media Content Repurposing Completed - Multi-Platform Campaign!**\\n\\n🚀 **Campaign Summary:**\\n• Campaign ID: {{$node['⏰ Multi-Platform Scheduling Coordinator'].json.campaign_id}}\\n• Content Source: {{$node['⏰ Multi-Platform Scheduling Coordinator'].json.content_source}}\\n• Platforms Published: {{$node['⏰ Multi-Platform Scheduling Coordinator'].json.publishing_metrics.platforms_published}}/{{$node['⏰ Multi-Platform Scheduling Coordinator'].json.publishing_metrics.total_platforms}}\\n• Success Rate: {{$node['⏰ Multi-Platform Scheduling Coordinator'].json.publishing_metrics.publishing_success_rate}}\\n\\n💼 **LinkedIn Professional:**\\n• Status: {{$node['⏰ Multi-Platform Scheduling Coordinator'].json.platform_content.linkedin.status}}\\n• Optimal Time: {{$node['⏰ Multi-Platform Scheduling Coordinator'].json.platform_content.linkedin.optimal_time}}\\n• Content Type: Professional market insights and B2B engagement\\n\\n📘 **Facebook Community:**\\n• Status: {{$node['⏰ Multi-Platform Scheduling Coordinator'].json.platform_content.facebook.status}}\\n• Optimal Time: {{$node['⏰ Multi-Platform Scheduling Coordinator'].json.platform_content.facebook.optimal_time}}\\n• Content Type: Community-focused property showcases\\n\\n📸 **Instagram Visual:**\\n• Status: {{$node['⏰ Multi-Platform Scheduling Coordinator'].json.platform_content.instagram.status}}\\n• Optimal Time: {{$node['⏰ Multi-Platform Scheduling Coordinator'].json.platform_content.instagram.optimal_time}}\\n• Content Type: Visual property tours and lifestyle content\\n\\n🐦 **Twitter Real-Time:**\\n• Status: {{$node['⏰ Multi-Platform Scheduling Coordinator'].json.platform_content.twitter.status}}\\n• Optimal Time: {{$node['⏰ Multi-Platform Scheduling Coordinator'].json.platform_content.twitter.optimal_time}}\\n• Content Type: Market updates and quick insights\\n\\n📊 **Performance Intelligence:**\\n• Content Variations: {{$node['⏰ Multi-Platform Scheduling Coordinator'].json.publishing_metrics.content_variations}}\\n• Multi-Platform Strategy: Comprehensive real estate social media optimization\\n• Engagement Focus: Lead generation, brand awareness, community building\\n\\n🏠 **Real Estate Optimization:**\\n• Property showcases optimized for visual platforms\\n• Market intelligence distributed across professional networks\\n• Community engagement focused on local market content\\n• Multi-platform lead generation and contact optimization\\n\\n🔄 **Next Steps:**\\n• Monitor engagement metrics across all platforms\\n• Track social media to lead pipeline conversion\\n• Analyze performance and optimize posting strategies\\n• Prepare follow-up content based on audience response\\n\\n🎯 **Social media content ecosystem is now actively driving real estate engagement and lead generation!**",
+        "attachments": [],
+        "otherOptions": {
+          "mrkdwn": true
+        }
+      },
+      "credentials": {
+        "slackApi": {
+          "id": "slack-credentials",
+          "name": "Slack API"
+        }
+      }
+    },
+    {
+      "id": "social-media-response",
+      "name": "✨ Social Media Campaign Success Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [2000, 400],
+      "parameters": {
+        "options": {},
+        "responseBody": "{\\n  \\\"status\\\": \\\"success\\\",\\n  \\\"message\\\": \\\"📱 Social media content repurposing completed with multi-platform optimization!\\\",\\n  \\\"campaign_results\\\": {\\n    \\\"campaign_id\\\": \\\"{{$node['⏰ Multi-Platform Scheduling Coordinator'].json.campaign_id}}\\\",\\n    \\\"content_source\\\": \\\"{{$node['⏰ Multi-Platform Scheduling Coordinator'].json.content_source}}\\\",\\n    \\\"platforms_published\\\": {{$node['⏰ Multi-Platform Scheduling Coordinator'].json.publishing_metrics.platforms_published}},\\n    \\\"success_rate\\\": \\\"{{$node['⏰ Multi-Platform Scheduling Coordinator'].json.publishing_metrics.publishing_success_rate}}\\\",\\n    \\\"content_variations\\\": {{$node['⏰ Multi-Platform Scheduling Coordinator'].json.publishing_metrics.content_variations}}\\n  },\\n  \\\"platform_performance\\\": {\\n    \\\"linkedin\\\": {{$node['⏰ Multi-Platform Scheduling Coordinator'].json.platform_content.linkedin}},\\n    \\\"facebook\\\": {{$node['⏰ Multi-Platform Scheduling Coordinator'].json.platform_content.facebook}},\\n    \\\"instagram\\\": {{$node['⏰ Multi-Platform Scheduling Coordinator'].json.platform_content.instagram}},\\n    \\\"twitter\\\": {{$node['⏰ Multi-Platform Scheduling Coordinator'].json.platform_content.twitter}}\\n  },\\n  \\\"engagement_strategy\\\": {{$node['⏰ Multi-Platform Scheduling Coordinator'].json.engagement_tactics}},\\n  \\\"content_calendar\\\": {{$node['⏰ Multi-Platform Scheduling Coordinator'].json.content_calendar}},\\n  \\\"real_estate_optimization\\\": {{$node['⏰ Multi-Platform Scheduling Coordinator'].json.real_estate_optimization}},\\n  \\\"next_steps\\\": {{$node['⏰ Multi-Platform Scheduling Coordinator'].json.next_steps}},\\n  \\\"social_media_intelligence\\\": {\\n    \\\"multi_platform_distribution\\\": \\\"Content optimized for LinkedIn, Facebook, Instagram, Twitter\\\",\\n    \\\"real_estate_focus\\\": \\\"Property showcases, market insights, community engagement\\\",\\n    \\\"engagement_optimization\\\": \\\"Platform-specific posting times and audience targeting\\\",\\n    \\\"lead_generation_integration\\\": \\\"Social media to pipeline conversion optimization\\\"\\n  }\\n}",
+        "responseHeaders": {
+          "entries": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "responseCode": 200
+      }
+    }
+  ],
+  "connections": {
+    "🎬 Social Media Content Trigger": {
+      "main": [
+        [
+          {
+            "node": "🏠 Real Estate Social Media Strategist",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🏠 Real Estate Social Media Strategist": {
+      "main": [
+        [
+          {
+            "node": "✨ Multi-Platform Content Adaptation Engine",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "✨ Multi-Platform Content Adaptation Engine": {
+      "main": [
+        [
+          {
+            "node": "💼 LinkedIn Professional Publisher",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "📘 Facebook Community Publisher",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "📸 Instagram Visual Publisher",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "🐦 Twitter Real-Time Publisher",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "💼 LinkedIn Professional Publisher": {
+      "main": [
+        [
+          {
+            "node": "⏰ Multi-Platform Scheduling Coordinator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📘 Facebook Community Publisher": {
+      "main": [
+        [
+          {
+            "node": "⏰ Multi-Platform Scheduling Coordinator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📸 Instagram Visual Publisher": {
+      "main": [
+        [
+          {
+            "node": "⏰ Multi-Platform Scheduling Coordinator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🐦 Twitter Real-Time Publisher": {
+      "main": [
+        [
+          {
+            "node": "⏰ Multi-Platform Scheduling Coordinator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "⏰ Multi-Platform Scheduling Coordinator": {
+      "main": [
+        [
+          {
+            "node": "📢 Social Media Campaign Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📢 Social Media Campaign Notification": {
+      "main": [
+        [
+          {
+            "node": "✨ Social Media Campaign Success Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": false,
+    "instanceId": "social-media-repurposing-v1.0"
+  },
+  "tags": [
+    {
+      "id": "social-media",
+      "name": "Social Media"
+    },
+    {
+      "id": "content-repurposing",
+      "name": "Content Repurposing"
+    },
+    {
+      "id": "multi-platform",
+      "name": "Multi-Platform"
+    },
+    {
+      "id": "real-estate-marketing",
+      "name": "Real Estate Marketing"
+    }
+  ]
+}

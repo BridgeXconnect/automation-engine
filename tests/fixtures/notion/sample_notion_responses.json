@@ -1,0 +1,231 @@
+{
+  "create_database_response": {
+    "object": "database",
+    "id": "db_12345678-1234-5678-9012-123456789012",
+    "created_time": "2024-01-15T10:30:00.000Z",
+    "created_by": {
+      "object": "user",
+      "id": "user_12345"
+    },
+    "last_edited_time": "2024-01-15T10:30:00.000Z",
+    "last_edited_by": {
+      "object": "user", 
+      "id": "user_12345"
+    },
+    "title": [
+      {
+        "type": "text",
+        "text": {
+          "content": "Library - Canonical Packages"
+        }
+      }
+    ],
+    "properties": {
+      "Name": {
+        "id": "title",
+        "name": "Name", 
+        "type": "title",
+        "title": {}
+      },
+      "Status": {
+        "id": "status",
+        "name": "Status",
+        "type": "select",
+        "select": {
+          "options": [
+            {
+              "id": "1", 
+              "name": "Draft",
+              "color": "gray"
+            },
+            {
+              "id": "2",
+              "name": "Validated", 
+              "color": "yellow"
+            },
+            {
+              "id": "3",
+              "name": "Deployed",
+              "color": "green"
+            }
+          ]
+        }
+      }
+    },
+    "parent": {
+      "type": "page_id",
+      "page_id": "page_12345678-1234-5678-9012-123456789012"
+    },
+    "url": "https://notion.so/db_12345678123456789012123456789012"
+  },
+  
+  "create_page_response": {
+    "object": "page",
+    "id": "page_87654321-4321-8765-2109-876543210987",
+    "created_time": "2024-01-15T11:00:00.000Z",
+    "created_by": {
+      "object": "user",
+      "id": "user_12345"
+    },
+    "last_edited_time": "2024-01-15T11:00:00.000Z",
+    "last_edited_by": {
+      "object": "user",
+      "id": "user_12345"
+    },
+    "parent": {
+      "type": "database_id", 
+      "database_id": "db_12345678-1234-5678-9012-123456789012"
+    },
+    "properties": {
+      "Name": {
+        "id": "title",
+        "type": "title",
+        "title": [
+          {
+            "type": "text",
+            "text": {
+              "content": "CRM Lead Qualification Automation"
+            }
+          }
+        ]
+      },
+      "Status": {
+        "id": "status",
+        "type": "select",
+        "select": {
+          "id": "2",
+          "name": "Validated",
+          "color": "yellow"
+        }
+      },
+      "Version": {
+        "id": "version",
+        "type": "rich_text",
+        "rich_text": [
+          {
+            "type": "text",
+            "text": {
+              "content": "1.3.0"
+            }
+          }
+        ]
+      }
+    },
+    "url": "https://notion.so/page_87654321432187652109876543210987"
+  },
+
+  "query_database_response": {
+    "object": "list",
+    "results": [
+      {
+        "object": "page",
+        "id": "page_11111111-2222-3333-4444-555555555555",
+        "created_time": "2024-01-15T09:00:00.000Z",
+        "last_edited_time": "2024-01-15T09:30:00.000Z",
+        "parent": {
+          "type": "database_id",
+          "database_id": "db_12345678-1234-5678-9012-123456789012"
+        },
+        "properties": {
+          "Name": {
+            "id": "title",
+            "type": "title", 
+            "title": [
+              {
+                "type": "text",
+                "text": {
+                  "content": "Lead Qualification Automation"
+                }
+              }
+            ]
+          },
+          "Status": {
+            "id": "status",
+            "type": "select",
+            "select": {
+              "name": "Validated",
+              "color": "yellow"
+            }
+          },
+          "Niche Tags": {
+            "id": "niche",
+            "type": "multi_select",
+            "multi_select": [
+              {"name": "crm", "color": "blue"},
+              {"name": "sales", "color": "green"}
+            ]
+          }
+        }
+      },
+      {
+        "object": "page", 
+        "id": "page_22222222-3333-4444-5555-666666666666",
+        "created_time": "2024-01-14T15:00:00.000Z",
+        "last_edited_time": "2024-01-14T15:30:00.000Z",
+        "parent": {
+          "type": "database_id",
+          "database_id": "db_12345678-1234-5678-9012-123456789012"
+        },
+        "properties": {
+          "Name": {
+            "id": "title",
+            "type": "title",
+            "title": [
+              {
+                "type": "text", 
+                "text": {
+                  "content": "Simple Webhook Logger"
+                }
+              }
+            ]
+          },
+          "Status": {
+            "id": "status",
+            "type": "select",
+            "select": {
+              "name": "Draft",
+              "color": "gray"
+            }
+          },
+          "Niche Tags": {
+            "id": "niche",
+            "type": "multi_select",
+            "multi_select": [
+              {"name": "logging", "color": "purple"},
+              {"name": "webhook", "color": "orange"}
+            ]
+          }
+        }
+      }
+    ],
+    "next_cursor": null,
+    "has_more": false
+  },
+
+  "error_responses": {
+    "unauthorized": {
+      "object": "error",
+      "status": 401,
+      "code": "unauthorized", 
+      "message": "The bearer token is not valid."
+    },
+    "object_not_found": {
+      "object": "error",
+      "status": 404,
+      "code": "object_not_found",
+      "message": "Could not find database with ID: invalid_id"
+    },
+    "rate_limited": {
+      "object": "error",
+      "status": 429,
+      "code": "rate_limited",
+      "message": "Rate limited. Please retry after 60 seconds."
+    },
+    "validation_error": {
+      "object": "error",
+      "status": 400,
+      "code": "validation_error", 
+      "message": "Properties do not match the database schema."
+    }
+  }
+}

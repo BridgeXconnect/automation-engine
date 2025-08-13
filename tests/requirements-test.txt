@@ -1,0 +1,53 @@
+# Testing dependencies for automation package testing
+
+# Core testing framework
+pytest>=7.0.0
+pytest-asyncio>=0.21.0
+pytest-mock>=3.10.0
+pytest-cov>=4.0.0
+pytest-html>=3.1.0
+pytest-xdist>=3.0.0
+pytest-timeout>=2.1.0
+pytest-benchmark>=4.0.0
+
+# Test data and fixtures
+factory-boy>=3.2.0
+faker>=18.0.0
+freezegun>=1.2.0
+responses>=0.23.0
+
+# Mocking and patching
+unittest-mock>=1.0.0
+httpx>=0.24.0
+respx>=0.20.0
+
+# Code quality and coverage
+coverage>=7.0.0
+pytest-clarity>=1.0.0
+pytest-sugar>=0.9.0
+
+# Performance and load testing
+locust>=2.14.0
+pytest-profiling>=1.7.0
+
+# Environment and configuration
+python-dotenv>=1.0.0
+pydantic-settings>=2.0.0
+
+# Integration testing helpers
+testcontainers>=3.7.0
+docker>=6.0.0
+
+# Database testing (if needed)
+pytest-postgresql>=4.1.0
+pytest-redis>=3.0.0
+
+# API testing
+httpx>=0.24.0
+requests-mock>=1.10.0
+
+# Documentation testing
+pytest-doctest-modules>=1.0.0
+
+# Parallel execution
+pytest-parallel>=0.1.0

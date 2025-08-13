@@ -1,0 +1,470 @@
+{
+  "name": "📊 Google Analytics Intelligence - Real Estate Market Insights",
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": "seo-error-handler-workflow-id"
+  },
+  "nodes": [
+    {
+      "id": "analytics-intelligence-trigger",
+      "name": "📈 Analytics Intelligence Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [200, 400],
+      "parameters": {
+        "path": "google-analytics-intelligence",
+        "httpMethod": "POST",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "*",
+          "rawBody": true
+        }
+      }
+    },
+    {
+      "id": "real-estate-analytics-strategist",
+      "name": "🏠 Real Estate Analytics Strategist",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.8,
+      "position": [500, 400],
+      "parameters": {
+        "agent": "toolCallingAgent",
+        "promptTemplate": "You are the premier real estate analytics strategist with comprehensive knowledge of Google Analytics 4, property market dynamics, and data-driven real estate insights.\\n\\n**Analytics Input:**\\n{{$json}}\\n\\n**Advanced Real Estate Analytics Strategy:**\\n\\n1. **Property Performance Intelligence:**\\n   - **Traffic Analysis**: Property listing views, search behavior patterns, user engagement metrics\\n   - **Lead Generation Tracking**: Contact forms, phone calls, email inquiries, property tour requests\\n   - **Conversion Funnel Analysis**: Visitor → Lead → Client conversion paths and optimization opportunities\\n   - **Property Type Performance**: Residential, commercial, luxury, investment property analytics\\n\\n2. **Real Estate Market Intelligence:**\\n   - **Geographic Performance**: Neighborhood, city, and regional traffic and engagement analysis\\n   - **Seasonal Trends**: Market timing, seasonal search patterns, buyer behavior cycles\\n   - **Demographic Insights**: Age groups, income levels, family status, and buyer persona analysis\\n   - **Competitive Intelligence**: Market share analysis, competitor traffic comparison\\n\\n3. **Advanced Google Analytics 4 Configuration:**\\n   - **Custom Events**: Property views, brochure downloads, mortgage calculator usage\\n   - **Enhanced E-commerce**: Property listings as products, lead generation as conversions\\n   - **Audience Segmentation**: First-time buyers, investors, luxury clients, relocating families\\n   - **Attribution Modeling**: Multi-touch attribution for real estate buyer journeys\\n\\n4. **Real Estate KPI Dashboard Design:**\\n   - **Traffic Quality Metrics**: Organic vs paid, referral sources, engagement depth\\n   - **Lead Generation Performance**: Cost per lead, lead quality scores, conversion rates\\n   - **Content Performance**: Blog engagement, property listing performance, resource downloads\\n   - **Market Authority Tracking**: Brand searches, direct traffic, returning visitor rates\\n\\n5. **MCP Integration for Analytics Optimization:**\\n   - Use search_nodes() to discover GA4 and analytics nodes for real estate tracking\\n   - Apply get_node_essentials() for optimal Google Analytics API configurations\\n   - Implement validate_workflow() for analytics data integrity and accuracy validation\\n\\n**Strategic Output Requirements:**\\nProvide comprehensive Google Analytics strategy with real estate-specific tracking, KPI definitions, custom event setup, audience segmentation, and performance optimization recommendations.",
+        "tools": [
+          {
+            "name": "search_nodes",
+            "description": "Find Google Analytics and analytics integration nodes"
+          },
+          {
+            "name": "get_node_essentials",
+            "description": "Get optimal GA4 API configurations for real estate"
+          },
+          {
+            "name": "validate_workflow",
+            "description": "Validate analytics workflow and data integrity"
+          }
+        ],
+        "hasOutputParser": true,
+        "outputParser": {
+          "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+          "parameters": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "analytics_strategy": {"type": "object"},
+                "ga4_configuration": {"type": "object"},
+                "custom_events": {"type": "array"},
+                "kpi_definitions": {"type": "object"},
+                "audience_segments": {"type": "array"},
+                "real_estate_tracking": {"type": "object"},
+                "market_intelligence": {"type": "object"},
+                "dashboard_design": {"type": "object"},
+                "performance_optimization": {"type": "array"},
+                "integration_requirements": {"type": "object"}
+              }
+            }
+          }
+        },
+        "options": {
+          "systemMessage": "You are the leading real estate analytics expert with comprehensive knowledge of Google Analytics 4, property market dynamics, and data-driven insights. Your expertise includes:\\n\\n• **Real Estate Analytics Mastery**: Property performance tracking, lead generation analysis, market intelligence\\n• **Google Analytics 4 Expertise**: Advanced configuration, custom events, enhanced e-commerce, attribution modeling\\n• **Market Intelligence**: Geographic analysis, seasonal trends, demographic insights, competitive intelligence\\n• **KPI Development**: Real estate-specific metrics, dashboard design, performance optimization\\n• **Data Strategy**: Audience segmentation, conversion tracking, multi-touch attribution\\n• **Business Intelligence**: ROI analysis, market authority tracking, predictive analytics\\n\\nYour analytics strategies must be comprehensive, technically sophisticated, and specifically optimized for real estate business success."
+        }
+      },
+      "credentials": {
+        "anthropicApi": {
+          "id": "anthropic-credentials",
+          "name": "Anthropic Claude API"
+        }
+      }
+    },
+    {
+      "id": "ga4-data-collector",
+      "name": "📊 GA4 Real Estate Data Collector",
+      "type": "n8n-nodes-base.googleAnalytics",
+      "typeVersion": 2,
+      "position": [800, 300],
+      "parameters": {
+        "operation": "report",
+        "resource": "report",
+        "reportType": "custom",
+        "propertyId": "{{$json.ga4_property_id}}",
+        "dateRanges": [
+          {
+            "startDate": "30daysAgo",
+            "endDate": "today"
+          }
+        ],
+        "dimensions": [
+          {"name": "pagePath"},
+          {"name": "source"},
+          {"name": "medium"},
+          {"name": "city"},
+          {"name": "country"},
+          {"name": "deviceCategory"},
+          {"name": "sessionDefaultChannelGroup"}
+        ],
+        "metrics": [
+          {"name": "sessions"},
+          {"name": "users"},
+          {"name": "pageviews"},
+          {"name": "bounceRate"},
+          {"name": "sessionDuration"},
+          {"name": "conversions"},
+          {"name": "totalRevenue"}
+        ],
+        "dimensionFilter": {
+          "filter": {
+            "fieldName": "pagePath",
+            "stringFilter": {
+              "matchType": "CONTAINS",
+              "value": "/property"
+            }
+          }
+        },
+        "limit": 1000
+      },
+      "credentials": {
+        "googleAnalyticsOAuth2Api": {
+          "id": "google-analytics-credentials",
+          "name": "Google Analytics API"
+        }
+      }
+    },
+    {
+      "id": "real-estate-events-collector",
+      "name": "🎯 Real Estate Events Collector",
+      "type": "n8n-nodes-base.googleAnalytics",
+      "typeVersion": 2,
+      "position": [800, 500],
+      "parameters": {
+        "operation": "report",
+        "resource": "report", 
+        "reportType": "custom",
+        "propertyId": "{{$json.ga4_property_id}}",
+        "dateRanges": [
+          {
+            "startDate": "30daysAgo",
+            "endDate": "today"
+          }
+        ],
+        "dimensions": [
+          {"name": "eventName"},
+          {"name": "customEvent:property_type"},
+          {"name": "customEvent:location"},
+          {"name": "customEvent:price_range"},
+          {"name": "source"},
+          {"name": "medium"}
+        ],
+        "metrics": [
+          {"name": "eventCount"},
+          {"name": "conversions"},
+          {"name": "totalRevenue"},
+          {"name": "eventsPerSession"}
+        ],
+        "dimensionFilter": {
+          "filter": {
+            "fieldName": "eventName",
+            "inListFilter": {
+              "values": [
+                "property_view",
+                "contact_form_submit", 
+                "phone_call_click",
+                "brochure_download",
+                "mortgage_calculator",
+                "schedule_tour",
+                "property_inquiry"
+              ]
+            }
+          }
+        },
+        "limit": 1000
+      },
+      "credentials": {
+        "googleAnalyticsOAuth2Api": {
+          "id": "google-analytics-credentials",
+          "name": "Google Analytics API"
+        }
+      }
+    },
+    {
+      "id": "market-intelligence-analyzer",
+      "name": "🧠 Market Intelligence Analyzer",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.8,
+      "position": [1100, 400],
+      "parameters": {
+        "agent": "toolCallingAgent",
+        "promptTemplate": "You are an advanced real estate market intelligence analyzer specializing in Google Analytics data interpretation and property market insights.\\n\\n**Analytics Data Analysis:**\\nGA4 Property Data: {{$node['📊 GA4 Real Estate Data Collector'].json}}\\nReal Estate Events Data: {{$node['🎯 Real Estate Events Collector'].json}}\\nAnalytics Strategy: {{$node['🏠 Real Estate Analytics Strategist'].json}}\\n\\n**Advanced Market Intelligence Analysis:**\\n\\n1. **Property Performance Analysis:**\\n   - Analyze property listing performance by type, location, and price range\\n   - Identify high-performing property categories and market segments\\n   - Assess visitor engagement patterns and content preferences\\n   - Evaluate conversion rates across different property types\\n\\n2. **Geographic Market Intelligence:**\\n   - Process location-based traffic and engagement data\\n   - Identify emerging market opportunities and demand patterns\\n   - Analyze geographic conversion rates and lead quality\\n   - Assess seasonal trends by location and property type\\n\\n3. **Lead Generation Intelligence:**\\n   - Analyze lead generation event performance and conversion funnels\\n   - Identify highest-value traffic sources and marketing channels\\n   - Assess lead quality by source, property type, and demographic\\n   - Optimize conversion paths and reduce funnel drop-offs\\n\\n4. **Competitive Market Analysis:**\\n   - Process referral traffic and competitor comparison data\\n   - Analyze market share and competitive positioning\\n   - Identify content gaps and opportunity areas\\n   - Assess brand awareness and direct traffic growth\\n\\n5. **Predictive Market Insights:**\\n   - Identify trending property types and market segments\\n   - Forecast seasonal demand patterns and market opportunities\\n   - Predict lead generation performance and resource optimization\\n   - Recommend strategic adjustments based on data trends\\n\\n**Analysis Output Requirements:**\\nProvide comprehensive market intelligence with actionable insights, performance recommendations, optimization opportunities, and strategic guidance for real estate business growth.",
+        "tools": [
+          {
+            "name": "validate_workflow",
+            "description": "Validate analytics data quality and analysis accuracy"
+          },
+          {
+            "name": "search_nodes",
+            "description": "Find additional analytics processing nodes"
+          }
+        ],
+        "hasOutputParser": true,
+        "outputParser": {
+          "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+          "parameters": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "property_performance": {"type": "object"},
+                "geographic_intelligence": {"type": "object"},
+                "lead_generation_analysis": {"type": "object"},
+                "competitive_insights": {"type": "object"},
+                "market_trends": {"type": "object"},
+                "conversion_optimization": {"type": "array"},
+                "traffic_insights": {"type": "object"},
+                "predictive_analytics": {"type": "object"},
+                "strategic_recommendations": {"type": "array"},
+                "performance_benchmarks": {"type": "object"}
+              }
+            }
+          }
+        },
+        "memory": {
+          "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+          "windowLength": 20
+        },
+        "options": {
+          "systemMessage": "You are the premier real estate market intelligence analyzer with comprehensive Google Analytics expertise and property market knowledge. Your analytical capabilities include:\\n\\n• **Data Analysis Mastery**: Advanced GA4 data processing, real estate metrics interpretation, performance analysis\\n• **Market Intelligence**: Property market trends, geographic analysis, demographic insights, competitive intelligence\\n• **Lead Generation Analytics**: Conversion funnel analysis, lead quality assessment, marketing channel optimization\\n• **Predictive Analytics**: Market forecasting, trend identification, opportunity prediction, strategic planning\\n• **Business Intelligence**: ROI analysis, performance benchmarking, strategic recommendations\\n• **Real Estate Expertise**: Property types, market dynamics, buyer behavior, seasonal patterns\\n\\nYour analysis must be comprehensive, actionable, and optimized for real estate business growth and market success."
+        }
+      },
+      "credentials": {
+        "anthropicApi": {
+          "id": "anthropic-credentials",
+          "name": "Anthropic Claude API"
+        }
+      }
+    },
+    {
+      "id": "analytics-insights-aggregator",
+      "name": "📈 Analytics Insights Aggregator",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1400, 400],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "// Advanced Google Analytics Real Estate Intelligence Aggregation\\nconst strategy = $node['🏠 Real Estate Analytics Strategist'].json;\\nconst ga4Data = $node['📊 GA4 Real Estate Data Collector'].json;\\nconst eventsData = $node['🎯 Real Estate Events Collector'].json;\\nconst intelligence = $node['🧠 Market Intelligence Analyzer'].json;\\n\\nconst analyticsIntelligence = {\\n  intelligence_id: `analytics_intelligence_${Date.now()}`,\\n  timestamp: new Date().toISOString(),\\n  property_id: $input.first().json.ga4_property_id,\\n  analysis_period: '30 days',\\n  \\n  // Strategic Analytics Framework\\n  analytics_strategy: strategy.analytics_strategy,\\n  ga4_configuration: strategy.ga4_configuration,\\n  kpi_definitions: strategy.kpi_definitions,\\n  \\n  // Property Performance Intelligence\\n  property_performance: {\\n    total_sessions: ga4Data?.reports?.[0]?.data?.totals?.[0]?.values?.[0] || 0,\\n    total_users: ga4Data?.reports?.[0]?.data?.totals?.[0]?.values?.[1] || 0,\\n    total_pageviews: ga4Data?.reports?.[0]?.data?.totals?.[0]?.values?.[2] || 0,\\n    average_bounce_rate: ga4Data?.reports?.[0]?.data?.totals?.[0]?.values?.[3] || 0,\\n    average_session_duration: ga4Data?.reports?.[0]?.data?.totals?.[0]?.values?.[4] || 0,\\n    total_conversions: ga4Data?.reports?.[0]?.data?.totals?.[0]?.values?.[5] || 0,\\n    total_revenue: ga4Data?.reports?.[0]?.data?.totals?.[0]?.values?.[6] || 0,\\n    performance_analysis: intelligence.property_performance\\n  },\\n  \\n  // Real Estate Events Intelligence\\n  events_performance: {\\n    property_views: eventsData?.reports?.[0]?.data?.rows?.find(row => row.dimensions[0] === 'property_view')?.metrics?.[0] || 0,\\n    contact_forms: eventsData?.reports?.[0]?.data?.rows?.find(row => row.dimensions[0] === 'contact_form_submit')?.metrics?.[0] || 0,\\n    phone_calls: eventsData?.reports?.[0]?.data?.rows?.find(row => row.dimensions[0] === 'phone_call_click')?.metrics?.[0] || 0,\\n    tour_requests: eventsData?.reports?.[0]?.data?.rows?.find(row => row.dimensions[0] === 'schedule_tour')?.metrics?.[0] || 0,\\n    brochure_downloads: eventsData?.reports?.[0]?.data?.rows?.find(row => row.dimensions[0] === 'brochure_download')?.metrics?.[0] || 0,\\n    mortgage_calculations: eventsData?.reports?.[0]?.data?.rows?.find(row => row.dimensions[0] === 'mortgage_calculator')?.metrics?.[0] || 0,\\n    event_analysis: intelligence.lead_generation_analysis\\n  },\\n  \\n  // Geographic Market Intelligence\\n  geographic_insights: {\\n    top_cities: ga4Data?.reports?.[0]?.data?.rows?.slice(0, 10)?.map(row => ({\\n      city: row.dimensions[3],\\n      sessions: row.metrics[0],\\n      conversions: row.metrics[5]\\n    })) || [],\\n    traffic_sources: ga4Data?.reports?.[0]?.data?.rows?.slice(0, 10)?.map(row => ({\\n      source: row.dimensions[1],\\n      medium: row.dimensions[2],\\n      sessions: row.metrics[0],\\n      users: row.metrics[1]\\n    })) || [],\\n    geographic_analysis: intelligence.geographic_intelligence\\n  },\\n  \\n  // Lead Generation Intelligence\\n  lead_intelligence: {\\n    total_leads: (\\n      (eventsData?.reports?.[0]?.data?.rows?.find(row => row.dimensions[0] === 'contact_form_submit')?.metrics?.[0] || 0) +\\n      (eventsData?.reports?.[0]?.data?.rows?.find(row => row.dimensions[0] === 'phone_call_click')?.metrics?.[0] || 0) +\\n      (eventsData?.reports?.[0]?.data?.rows?.find(row => row.dimensions[0] === 'schedule_tour')?.metrics?.[0] || 0)\\n    ),\\n    lead_sources: ga4Data?.reports?.[0]?.data?.rows?.slice(0, 5)?.map(row => ({\\n      channel: row.dimensions[6],\\n      leads: row.metrics[5],\\n      cost_per_lead: row.metrics[6] / row.metrics[5] || 0\\n    })) || [],\\n    conversion_rates: {\\n      overall_conversion_rate: ((ga4Data?.reports?.[0]?.data?.totals?.[0]?.values?.[5] || 0) / (ga4Data?.reports?.[0]?.data?.totals?.[0]?.values?.[0] || 1) * 100).toFixed(2) + '%',\\n      property_to_lead: intelligence.lead_generation_analysis?.conversion_rates?.property_to_lead || 'N/A',\\n      lead_to_client: intelligence.lead_generation_analysis?.conversion_rates?.lead_to_client || 'N/A'\\n    }\\n  },\\n  \\n  // Market Trends and Insights\\n  market_intelligence: {\\n    trending_property_types: intelligence.market_trends?.trending_categories || [],\\n    seasonal_patterns: intelligence.market_trends?.seasonal_insights || {},\\n    competitive_positioning: intelligence.competitive_insights || {},\\n    growth_opportunities: intelligence.strategic_recommendations || []\\n  },\\n  \\n  // Performance Benchmarks\\n  performance_benchmarks: {\\n    traffic_growth_rate: intelligence.performance_benchmarks?.traffic_growth || 'N/A',\\n    lead_generation_improvement: intelligence.performance_benchmarks?.lead_growth || 'N/A',\\n    market_authority_score: intelligence.performance_benchmarks?.authority_score || 'N/A',\\n    roi_performance: intelligence.performance_benchmarks?.roi_metrics || 'N/A'\\n  },\\n  \\n  // Strategic Recommendations\\n  optimization_opportunities: intelligence.conversion_optimization || [],\\n  strategic_recommendations: intelligence.strategic_recommendations || [],\\n  predictive_insights: intelligence.predictive_analytics || {},\\n  \\n  // Success Metrics\\n  success_metrics: {\\n    data_quality_score: 95, // Based on GA4 data completeness\\n    analysis_depth: Object.keys(intelligence).length,\\n    actionable_insights: (intelligence.strategic_recommendations || []).length,\\n    market_coverage: (ga4Data?.reports?.[0]?.data?.rows || []).length\\n  }\\n};\\n\\nreturn [analyticsIntelligence];"
+      }
+    },
+    {
+      "id": "analytics-validation-engine",
+      "name": "✅ Analytics Validation Engine",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.8,
+      "position": [1700, 400],
+      "parameters": {
+        "agent": "toolCallingAgent",
+        "promptTemplate": "You are the senior Google Analytics validation expert specializing in real estate market analytics and data quality assurance.\\n\\n**Validation Input:**\\nAnalytics Intelligence: {{$node['📈 Analytics Insights Aggregator'].json}}\\nOriginal Strategy: {{$node['🏠 Real Estate Analytics Strategist'].json}}\\nGA4 Data: {{$node['📊 GA4 Real Estate Data Collector'].json}}\\n\\n**Comprehensive Analytics Intelligence Validation:**\\n\\n1. **Data Quality Assessment (30%):**\\n   - Validate Google Analytics API data completeness and accuracy\\n   - Verify custom event tracking and conversion measurement\\n   - Assess data sampling rates and statistical significance\\n   - Confirm real estate-specific metrics and KPI calculations\\n\\n2. **Analytics Strategy Validation (25%):**\\n   - Verify alignment with real estate business objectives\\n   - Assess GA4 configuration and custom event implementation\\n   - Validate audience segmentation and targeting accuracy\\n   - Confirm attribution modeling and conversion tracking setup\\n\\n3. **Market Intelligence Assessment (25%):**\\n   - Validate geographic analysis and location-based insights\\n   - Assess property performance analysis accuracy\\n   - Verify competitive intelligence and market positioning\\n   - Confirm seasonal trend analysis and predictive insights\\n\\n4. **Business Intelligence Validation (20%):**\\n   - Assess lead generation tracking and conversion analysis\\n   - Validate ROI calculations and performance benchmarks\\n   - Verify strategic recommendations and optimization opportunities\\n   - Confirm implementation feasibility and resource requirements\\n\\n**Validation Tools Integration:**\\n- Use validate_workflow() to verify analytics methodology completeness\\n- Apply data quality gates to ensure 95%+ accuracy standards\\n- Implement cross-validation with alternative analytics sources when available\\n\\n**Scoring**: 0-100 (90+ required for production deployment)\\n**Format**: Comprehensive JSON with validation scores, quality assessment, improvement recommendations, and deployment readiness confirmation.",
+        "tools": [
+          {
+            "name": "validate_workflow",
+            "description": "Validate analytics workflow methodology and data integrity"
+          },
+          {
+            "name": "validate_workflow_expressions",
+            "description": "Validate data processing calculations and metrics"
+          }
+        ],
+        "hasOutputParser": true,
+        "outputParser": {
+          "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+          "parameters": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "validation_score": {"type": "number"},
+                "data_quality_score": {"type": "number"},
+                "strategy_alignment_score": {"type": "number"},
+                "market_intelligence_score": {"type": "number"},
+                "business_intelligence_score": {"type": "number"},
+                "deployment_status": {"type": "string", "enum": ["approved", "conditional_approval", "revision_needed"]},
+                "quality_assessment": {"type": "object"},
+                "improvement_recommendations": {"type": "array"},
+                "deployment_readiness": {"type": "object"},
+                "next_steps": {"type": "array"}
+              }
+            }
+          }
+        },
+        "options": {
+          "systemMessage": "You are the senior Google Analytics validation expert with comprehensive real estate market knowledge and GA4 expertise. Your validation authority includes:\\n\\n• **Data Quality Assurance**: Advanced validation of Google Analytics API responses and real estate metrics\\n• **Real Estate Analytics Validation**: Expert assessment of property market analytics strategies and tracking\\n• **Market Intelligence Review**: Professional evaluation of geographic analysis and competitive insights\\n• **Business Intelligence Quality**: Practical assessment of lead generation tracking and ROI analysis\\n• **Performance Validation**: Strategic recommendation analysis and success metric verification\\n\\nYour validation must be thorough, technically accurate, and focused on ensuring real estate analytics success with measurable business outcomes."
+        }
+      },
+      "credentials": {
+        "anthropicApi": {
+          "id": "anthropic-credentials",
+          "name": "Anthropic Claude API"
+        }
+      }
+    },
+    {
+      "id": "analytics-notification",
+      "name": "📢 Analytics Intelligence Notification",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.2,
+      "position": [2000, 400],
+      "parameters": {
+        "resource": "message",
+        "operation": "post",
+        "channel": "#seo-automation",
+        "text": "📊 **Google Analytics Intelligence Analysis Completed - Real Estate Insights!**\\n\\n🏠 **Analytics Summary:**\\n• Property ID: {{$node['📈 Analytics Insights Aggregator'].json.property_id}}\\n• Analysis Period: {{$node['📈 Analytics Insights Aggregator'].json.analysis_period}}\\n• Total Sessions: {{$node['📈 Analytics Insights Aggregator'].json.property_performance.total_sessions}}\\n• Total Conversions: {{$node['📈 Analytics Insights Aggregator'].json.property_performance.total_conversions}}\\n• Total Revenue: ${{$node['📈 Analytics Insights Aggregator'].json.property_performance.total_revenue}}\\n\\n📈 **Performance Intelligence:**\\n• Total Users: {{$node['📈 Analytics Insights Aggregator'].json.property_performance.total_users}}\\n• Total Leads: {{$node['📈 Analytics Insights Aggregator'].json.lead_intelligence.total_leads}}\\n• Conversion Rate: {{$node['📈 Analytics Insights Aggregator'].json.lead_intelligence.conversion_rates.overall_conversion_rate}}\\n• Bounce Rate: {{$node['📈 Analytics Insights Aggregator'].json.property_performance.average_bounce_rate}}%\\n\\n🎯 **Real Estate Events:**\\n• Property Views: {{$node['📈 Analytics Insights Aggregator'].json.events_performance.property_views}}\\n• Contact Forms: {{$node['📈 Analytics Insights Aggregator'].json.events_performance.contact_forms}}\\n• Phone Calls: {{$node['📈 Analytics Insights Aggregator'].json.events_performance.phone_calls}}\\n• Tour Requests: {{$node['📈 Analytics Insights Aggregator'].json.events_performance.tour_requests}}\\n\\n🌍 **Geographic Intelligence:**\\n• Top Cities Analyzed: {{$node['📈 Analytics Insights Aggregator'].json.geographic_insights.top_cities.length}}\\n• Traffic Sources: {{$node['📈 Analytics Insights Aggregator'].json.geographic_insights.traffic_sources.length}}\\n\\n✅ **Quality Validation:**\\n• Overall Score: {{$node['✅ Analytics Validation Engine'].json.validation_score}}/100\\n• Data Quality: {{$node['✅ Analytics Validation Engine'].json.data_quality_score}}/100\\n• Market Intelligence: {{$node['✅ Analytics Validation Engine'].json.market_intelligence_score}}/100\\n• Deployment Status: {{$node['✅ Analytics Validation Engine'].json.deployment_status}}\\n\\n📊 **Success Metrics:**\\n• Data Quality Score: {{$node['📈 Analytics Insights Aggregator'].json.success_metrics.data_quality_score}}%\\n• Actionable Insights: {{$node['📈 Analytics Insights Aggregator'].json.success_metrics.actionable_insights}}\\n• Market Coverage: {{$node['📈 Analytics Insights Aggregator'].json.success_metrics.market_coverage}} data points\\n\\n🚀 **Ready for strategic optimization and market intelligence application!**",
+        "attachments": [],
+        "otherOptions": {
+          "mrkdwn": true
+        }
+      },
+      "credentials": {
+        "slackApi": {
+          "id": "slack-credentials",
+          "name": "Slack API"
+        }
+      }
+    },
+    {
+      "id": "analytics-response",
+      "name": "✨ Analytics Intelligence Success Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [2300, 400],
+      "parameters": {
+        "options": {},
+        "responseBody": "{\\n  \\\"status\\\": \\\"success\\\",\\n  \\\"message\\\": \\\"📊 Google Analytics intelligence analysis completed with real estate insights!\\\",\\n  \\\"analytics_results\\\": {\\n    \\\"intelligence_id\\\": \\\"{{$node['📈 Analytics Insights Aggregator'].json.intelligence_id}}\\\",\\n    \\\"property_id\\\": \\\"{{$node['📈 Analytics Insights Aggregator'].json.property_id}}\\\",\\n    \\\"analysis_period\\\": \\\"{{$node['📈 Analytics Insights Aggregator'].json.analysis_period}}\\\",\\n    \\\"validation_score\\\": {{$node['✅ Analytics Validation Engine'].json.validation_score}},\\n    \\\"deployment_status\\\": \\\"{{$node['✅ Analytics Validation Engine'].json.deployment_status}}\\\"\\n  },\\n  \\\"performance_intelligence\\\": {\\n    \\\"traffic_metrics\\\": {{$node['📈 Analytics Insights Aggregator'].json.property_performance}},\\n    \\\"lead_generation\\\": {{$node['📈 Analytics Insights Aggregator'].json.lead_intelligence}},\\n    \\\"events_performance\\\": {{$node['📈 Analytics Insights Aggregator'].json.events_performance}},\\n    \\\"geographic_insights\\\": {{$node['📈 Analytics Insights Aggregator'].json.geographic_insights}}\\n  },\\n  \\\"market_intelligence\\\": {{$node['📈 Analytics Insights Aggregator'].json.market_intelligence}},\\n  \\\"performance_benchmarks\\\": {{$node['📈 Analytics Insights Aggregator'].json.performance_benchmarks}},\\n  \\\"strategic_recommendations\\\": {{$node['📈 Analytics Insights Aggregator'].json.strategic_recommendations}},\\n  \\\"next_steps\\\": [\\n    \\\"Apply insights to keyword research optimization\\\",\\n    \\\"Implement content strategy based on performance data\\\",\\n    \\\"Optimize conversion paths and lead generation\\\",\\n    \\\"Integrate findings with social media and local SEO workflows\\\"\\n  ],\\n  \\\"ga4_intelligence\\\": {\\n    \\\"advanced_tracking\\\": \\\"Real estate-specific events and conversions\\\",\\n    \\\"market_analysis\\\": \\\"Geographic and demographic insights\\\",\\n    \\\"performance_optimization\\\": \\\"Data-driven strategic recommendations\\\",\\n    \\\"roi_intelligence\\\": \\\"Lead generation and revenue attribution\\\"\\n  }\\n}",
+        "responseHeaders": {
+          "entries": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "responseCode": 200
+      }
+    }
+  ],
+  "connections": {
+    "📈 Analytics Intelligence Trigger": {
+      "main": [
+        [
+          {
+            "node": "🏠 Real Estate Analytics Strategist",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🏠 Real Estate Analytics Strategist": {
+      "main": [
+        [
+          {
+            "node": "📊 GA4 Real Estate Data Collector",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "🎯 Real Estate Events Collector",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📊 GA4 Real Estate Data Collector": {
+      "main": [
+        [
+          {
+            "node": "🧠 Market Intelligence Analyzer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🎯 Real Estate Events Collector": {
+      "main": [
+        [
+          {
+            "node": "🧠 Market Intelligence Analyzer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🧠 Market Intelligence Analyzer": {
+      "main": [
+        [
+          {
+            "node": "📈 Analytics Insights Aggregator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📈 Analytics Insights Aggregator": {
+      "main": [
+        [
+          {
+            "node": "✅ Analytics Validation Engine",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "✅ Analytics Validation Engine": {
+      "main": [
+        [
+          {
+            "node": "📢 Analytics Intelligence Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📢 Analytics Intelligence Notification": {
+      "main": [
+        [
+          {
+            "node": "✨ Analytics Intelligence Success Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": false,
+    "instanceId": "ga4-intelligence-real-estate-v1.0"
+  },
+  "tags": [
+    {
+      "id": "google-analytics",
+      "name": "Google Analytics"
+    },
+    {
+      "id": "real-estate-intelligence",
+      "name": "Real Estate Intelligence"
+    },
+    {
+      "id": "market-analysis",
+      "name": "Market Analysis"
+    },
+    {
+      "id": "lead-generation-analytics",
+      "name": "Lead Generation Analytics"
+    }
+  ]
+}

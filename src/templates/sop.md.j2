@@ -1,0 +1,304 @@
+# {{ package_name }} - Standard Operating Procedures
+
+## Purpose
+Standard Operating Procedures (SOPs) for {{ package_name }} automation package. This document defines task-level procedures, role responsibilities, and quality validation processes for team members.
+
+## Task Procedures
+
+{% if task_procedures %}
+{% for task, procedures in task_procedures.items() %}
+### {{ task }}
+
+**Procedure Steps**:
+{% for procedure in procedures %}
+{{ loop.index }}. {{ procedure }}
+{% endfor %}
+
+**Quality Checks**:
+- [ ] Procedure completed successfully
+- [ ] Documentation updated as needed
+- [ ] Changes validated and tested
+- [ ] Stakeholders notified if required
+
+---
+{% endfor %}
+{% else %}
+### Workflow Deployment
+
+**Procedure Steps**:
+1. **Pre-Deployment Review**
+   - Verify workflow configuration against requirements
+   - Validate all credentials and connections
+   - Run test execution with sample data
+   - Review deployment checklist
+
+2. **Deployment Execution**
+   - Export workflow from development environment
+   - Import workflow to production n8n instance
+   - Configure production-specific settings
+   - Verify webhook URLs and external connections
+
+3. **Post-Deployment Validation**  
+   - Execute end-to-end test with real data
+   - Monitor first 10 executions for errors
+   - Verify external system integrations
+   - Update monitoring dashboards and alerts
+
+**Quality Checks**:
+- [ ] All tests pass successfully
+- [ ] Production configuration matches requirements
+- [ ] Monitoring and alerting functional
+- [ ] Documentation updated with production details
+
+---
+
+### Incident Response
+
+**Procedure Steps**:
+1. **Initial Assessment**
+   - Identify severity level (P0-P3)
+   - Document incident start time and symptoms
+   - Notify appropriate stakeholders per escalation matrix
+   - Begin immediate containment actions
+
+2. **Investigation and Resolution**
+   - Gather relevant logs and error messages
+   - Identify root cause using troubleshooting guide
+   - Implement fix or rollback as appropriate
+   - Test resolution with sample data
+
+3. **Communication and Closure**
+   - Update stakeholders on resolution status
+   - Document lessons learned and preventive measures
+   - Update procedures if gaps identified
+   - Schedule post-incident review meeting
+
+**Quality Checks**:
+- [ ] Resolution confirmed through testing
+- [ ] All stakeholders notified of resolution
+- [ ] Incident documentation completed
+- [ ] Preventive measures implemented
+
+---
+
+### Performance Optimization
+
+**Procedure Steps**:
+1. **Performance Analysis**
+   - Review performance metrics and trends
+   - Identify bottlenecks and inefficiencies
+   - Benchmark current performance against targets
+   - Prioritize optimization opportunities
+
+2. **Optimization Implementation**
+   - Design optimization approach
+   - Implement changes in development environment
+   - Test performance improvements
+   - Validate business logic remains intact
+
+3. **Production Deployment**
+   - Deploy optimizations using standard deployment procedure
+   - Monitor performance metrics post-deployment
+   - Document performance gains achieved
+   - Update performance baselines
+
+**Quality Checks**:
+- [ ] Performance improvements validated in testing
+- [ ] No regression in business functionality
+- [ ] Production metrics show expected improvements
+- [ ] Baseline metrics updated
+
+---
+
+### Configuration Management
+
+**Procedure Steps**:
+1. **Change Planning**
+   - Document required configuration changes
+   - Assess impact on dependent systems
+   - Plan rollback procedure
+   - Schedule change window
+
+2. **Change Implementation**
+   - Backup current configuration
+   - Apply changes following change plan
+   - Test configuration changes
+   - Verify dependent systems remain functional
+
+3. **Change Validation**
+   - Execute end-to-end testing
+   - Monitor system behavior post-change
+   - Update configuration documentation
+   - Communicate change completion
+
+**Quality Checks**:
+- [ ] Configuration backup completed
+- [ ] Changes tested successfully
+- [ ] Documentation updated
+- [ ] Rollback procedure verified
+{% endif %}
+
+## Roles and Responsibilities
+
+{% if roles_responsibilities %}
+{% for role, responsibility in roles_responsibilities.items() %}
+### {{ role }}
+{{ responsibility }}
+
+{% endfor %}
+{% else %}
+### Automation Developer
+**Primary Responsibilities**:
+- Design and implement automation workflows
+- Perform unit testing and integration testing
+- Create and maintain technical documentation
+- Troubleshoot technical issues and bugs
+- Optimize workflow performance
+
+**Authority Level**: Can modify development environments, requires approval for production changes
+
+**Escalation Path**: Technical Lead → DevOps Manager
+
+### DevOps Engineer
+**Primary Responsibilities**:
+- Deploy workflows to production environments
+- Monitor production system health and performance
+- Manage infrastructure and environment configuration
+- Implement and maintain CI/CD pipelines
+- Respond to production incidents
+
+**Authority Level**: Full production access, can implement emergency fixes
+
+**Escalation Path**: DevOps Manager → VP Engineering
+
+### Technical Lead
+**Primary Responsibilities**:
+- Review and approve workflow designs
+- Provide technical guidance and mentoring
+- Coordinate with business stakeholders
+- Oversee quality assurance processes
+- Make architectural decisions
+
+**Authority Level**: Approve technical designs and production deployments
+
+**Escalation Path**: VP Engineering → CTO
+
+### Business Process Owner
+**Primary Responsibilities**:
+- Define business requirements and acceptance criteria
+- Validate workflow functionality meets business needs
+- Coordinate user acceptance testing
+- Provide business context and domain expertise
+- Approve business logic changes
+
+**Authority Level**: Approve functional requirements and business logic
+
+**Escalation Path**: Director of Operations → VP Operations
+
+### QA Engineer
+**Primary Responsibilities**:
+- Develop and execute test plans
+- Perform user acceptance testing
+- Validate workflow functionality and performance
+- Document and track defects
+- Ensure quality standards compliance
+
+**Authority Level**: Can block production deployment for quality issues
+
+**Escalation Path**: QA Manager → VP Engineering
+{% endif %}
+
+## Quality Validation Checklist
+
+{% if quality_checks %}
+### Standard Quality Checks
+{% for check in quality_checks %}
+- [ ] {{ check }}
+{% endfor %}
+{% else %}
+### Pre-Deployment Quality Gates
+- [ ] **Functional Testing**: All workflow paths tested successfully
+- [ ] **Integration Testing**: External system connections validated  
+- [ ] **Performance Testing**: Execution time within acceptable limits
+- [ ] **Security Review**: Credentials and data handling reviewed
+- [ ] **Documentation Review**: All documentation complete and accurate
+- [ ] **Code Review**: Technical implementation reviewed by peer
+- [ ] **Business Validation**: Functionality approved by process owner
+- [ ] **Rollback Testing**: Rollback procedure tested and validated
+
+### Production Readiness Checklist
+- [ ] **Monitoring Configured**: Alerts and dashboards operational
+- [ ] **Backup Procedures**: Automated backups configured and tested
+- [ ] **Access Controls**: Appropriate user permissions configured
+- [ ] **Disaster Recovery**: Recovery procedures documented and tested
+- [ ] **Performance Baselines**: Expected performance metrics documented
+- [ ] **Support Documentation**: Runbook and troubleshooting guides current
+- [ ] **Training Completed**: Support team trained on new automation
+- [ ] **Stakeholder Sign-off**: Business and technical approval obtained
+
+### Post-Deployment Validation
+- [ ] **Smoke Testing**: Basic functionality verified in production
+- [ ] **Performance Monitoring**: Metrics within expected ranges
+- [ ] **Error Rate Monitoring**: Error rates below acceptable thresholds
+- [ ] **Integration Validation**: All external systems responding correctly
+- [ ] **User Feedback**: Initial user experience feedback positive
+- [ ] **Support Team Readiness**: Support team prepared for user queries
+- [ ] **Documentation Updated**: Production-specific documentation current
+- [ ] **Success Metrics Tracking**: Business success metrics being captured
+{% endif %}
+
+## Communication Protocols
+
+### Standard Communications
+- **Daily Standup**: Status updates on active automation projects
+- **Weekly Review**: Performance metrics and issue summary
+- **Monthly Business Review**: Business impact and ROI analysis
+- **Quarterly Planning**: Roadmap and priority planning
+
+### Incident Communications
+- **P0 Critical**: Immediate notification to all stakeholders
+- **P1 High**: Notification within 1 hour to relevant teams
+- **P2 Medium**: Daily status update until resolution
+- **P3 Low**: Weekly summary in standard reports
+
+### Change Communications
+- **Major Changes**: 48-hour advance notice to all stakeholders
+- **Minor Changes**: 24-hour notice to technical teams
+- **Emergency Changes**: Immediate notification during implementation
+- **Scheduled Maintenance**: 1-week advance notice
+
+## Training Requirements
+
+### New Team Member Onboarding
+1. **Week 1**: n8n platform training and basic workflow concepts
+2. **Week 2**: Package-specific training and hands-on exercises
+3. **Week 3**: Shadow experienced team member on real tasks
+4. **Week 4**: Independent task execution with mentoring
+
+### Ongoing Training
+- **Monthly**: New feature and best practice updates
+- **Quarterly**: Advanced n8n techniques and optimization
+- **Annually**: Process improvement and lessons learned review
+
+### Certification Requirements
+- **Basic n8n Certification**: Required for all automation team members
+- **Advanced n8n Certification**: Required for technical leads
+- **Business Process Certification**: Required for process owners
+- **Security Awareness**: Annual training for all team members
+
+## Process Improvement
+
+### Continuous Improvement
+- **Regular Reviews**: Monthly process effectiveness review
+- **Feedback Collection**: Continuous feedback from users and stakeholders
+- **Metrics Analysis**: Regular analysis of quality and performance metrics
+- **Best Practice Sharing**: Cross-team sharing of lessons learned
+
+### Change Management
+- **Process Changes**: Formal approval required for SOP modifications
+- **Version Control**: All procedure changes tracked and documented
+- **Training Updates**: Training materials updated with process changes
+- **Communication**: All changes communicated to affected team members
+
+---
+*Standard Operating Procedures v{{ template_variables.version | default('1.0.0') }} | Last Updated: {{ template_variables.updated_at | default('now') }}*

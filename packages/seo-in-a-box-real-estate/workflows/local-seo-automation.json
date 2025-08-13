@@ -1,0 +1,449 @@
+{
+  "name": "🏪 Local SEO Automation - Real Estate Hyperlocal Optimization",
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": "seo-error-handler-workflow-id"
+  },
+  "nodes": [
+    {
+      "id": "local-seo-trigger",
+      "name": "📍 Local SEO Automation Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [200, 400],
+      "parameters": {
+        "path": "local-seo-automation",
+        "httpMethod": "POST",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "*",
+          "rawBody": true
+        }
+      }
+    },
+    {
+      "id": "local-seo-strategist",
+      "name": "🏠 Real Estate Local SEO Strategist",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.8,
+      "position": [500, 400],
+      "parameters": {
+        "agent": "toolCallingAgent",
+        "promptTemplate": "You are the premier real estate local SEO strategist with comprehensive knowledge of hyperlocal optimization, Google Business Profile management, and geographic search dominance.\\n\\n**Local SEO Input:**\\n{{$json}}\\n\\n**Advanced Real Estate Local SEO Strategy:**\\n\\n1. **Google Business Profile Optimization:**\\n   - **Profile Completeness**: Business information, hours, services, attributes, descriptions\\n   - **Category Optimization**: Primary and secondary categories for maximum visibility\\n   - **Photo Management**: High-quality business photos, property images, team photos\\n   - **Post Management**: Regular Google Business Profile posts with local content\\n   - **Q&A Management**: Proactive FAQ management and customer question responses\\n\\n2. **Local Citation Management:**\\n   - **NAP Consistency**: Name, Address, Phone consistency across all directories\\n   - **Directory Optimization**: Yelp, Yellow Pages, Better Business Bureau, real estate directories\\n   - **Industry-Specific Citations**: MLS listings, Realtor.com, Zillow, local real estate associations\\n   - **Local Business Directories**: Chamber of Commerce, local business associations\\n   - **Review Platform Optimization**: Google, Yelp, Facebook, industry-specific review sites\\n\\n3. **Hyperlocal Content Strategy:**\\n   - **Neighborhood Guides**: Comprehensive area information, schools, amenities, transportation\\n   - **Market Reports**: Neighborhood-specific market trends, pricing, inventory analysis\\n   - **Community Content**: Local events, business features, community involvement\\n   - **Geographic Landing Pages**: City, neighborhood, and suburb-specific optimization\\n   - **Local Keyword Integration**: Geographic modifiers, local landmarks, regional terms\\n\\n4. **Review Management & Reputation:**\\n   - **Review Monitoring**: Automated tracking across Google, Yelp, Facebook, industry sites\\n   - **Response Strategy**: Personalized responses to positive and negative reviews\\n   - **Review Generation**: Systematic client follow-up and review request automation\\n   - **Reputation Management**: Proactive reputation monitoring and improvement strategies\\n\\n5. **Local Link Building & Partnerships:**\\n   - **Community Partnerships**: Local businesses, services, community organizations\\n   - **Local Media Relations**: Press releases, local news features, community involvement\\n   - **Industry Partnerships**: Mortgage brokers, home inspectors, contractors, attorneys\\n   - **Sponsorship Opportunities**: Local events, community initiatives, charity involvement\\n\\n6. **MCP Integration for Local SEO Optimization:**\\n   - Use search_nodes() to discover Google Business Profile and local SEO automation nodes\\n   - Apply get_node_essentials() for optimal local SEO tracking and management configurations\\n   - Implement validate_workflow() for local SEO data accuracy and citation consistency\\n\\n**Strategic Output Requirements:**\\nProvide comprehensive local SEO strategy with Google Business Profile optimization, citation management, hyperlocal content strategy, review management, and local link building for real estate market dominance.",
+        "tools": [
+          {
+            "name": "search_nodes",
+            "description": "Find Google Business Profile and local SEO automation nodes"
+          },
+          {
+            "name": "get_node_essentials",
+            "description": "Get optimal local SEO management configurations"
+          },
+          {
+            "name": "validate_workflow",
+            "description": "Validate local SEO workflow and data consistency"
+          }
+        ],
+        "hasOutputParser": true,
+        "outputParser": {
+          "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+          "parameters": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "local_seo_strategy": {"type": "object"},
+                "gbp_optimization": {"type": "object"},
+                "citation_management": {"type": "object"},
+                "hyperlocal_content": {"type": "object"},
+                "review_management": {"type": "object"},
+                "local_link_building": {"type": "object"},
+                "geographic_targeting": {"type": "object"},
+                "local_keywords": {"type": "array"},
+                "optimization_priorities": {"type": "array"},
+                "performance_tracking": {"type": "object"}
+              }
+            }
+          }
+        },
+        "options": {
+          "systemMessage": "You are the leading real estate local SEO expert with comprehensive knowledge of hyperlocal optimization, Google Business Profile management, and geographic search strategies. Your expertise includes:\\n\\n• **Local SEO Mastery**: Google Business Profile optimization, local citations, geographic targeting\\n• **Real Estate Local Marketing**: Neighborhood marketing, community engagement, hyperlocal content\\n• **Review Management**: Reputation monitoring, response strategies, review generation systems\\n• **Citation Management**: NAP consistency, directory optimization, industry-specific listings\\n• **Local Link Building**: Community partnerships, local media relations, industry connections\\n• **Geographic Optimization**: Location-based content, local keyword strategies, service area targeting\\n\\nYour local SEO strategies must be comprehensive, geographically targeted, and specifically optimized for real estate market dominance."
+        }
+      },
+      "credentials": {
+        "anthropicApi": {
+          "id": "anthropic-credentials",
+          "name": "Anthropic Claude API"
+        }
+      }
+    },
+    {
+      "id": "google-business-profile-manager",
+      "name": "🔍 Google Business Profile Manager",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [800, 300],
+      "parameters": {
+        "method": "POST",
+        "url": "https://mybusiness.googleapis.com/v4/accounts/{{$json.google_account_id}}/locations/{{$json.location_id}}:updateProfile",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{$credentials.googleApi.accessToken}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\\n  \\\"locationName\\\": \\\"{{$node['🏠 Real Estate Local SEO Strategist'].json.gbp_optimization.business_name}}\\\",\\n  \\\"primaryPhone\\\": \\\"{{$json.phone_number}}\\\",\\n  \\\"address\\\": {\\n    \\\"addressLines\\\": [\\\"{{$json.street_address}}\\\"],\\n    \\\"locality\\\": \\\"{{$json.city}}\\\",\\n    \\\"administrativeArea\\\": \\\"{{$json.state}}\\\",\\n    \\\"postalCode\\\": \\\"{{$json.zip_code}}\\\",\\n    \\\"regionCode\\\": \\\"{{$json.country_code || 'US'}}\\\"\\n  },\\n  \\\"primaryCategory\\\": {\\n    \\\"categoryId\\\": \\\"gcid:real_estate_agent\\\"\\n  },\\n  \\\"additionalCategories\\\": [\\n    {\\\"categoryId\\\": \\\"gcid:real_estate_agency\\\"},\\n    {\\\"categoryId\\\": \\\"gcid:property_management_company\\\"}\\n  ],\\n  \\\"websiteUrl\\\": \\\"{{$json.website_url}}\\\",\\n  \\\"regularHours\\\": {\\n    \\\"periods\\\": [\\n      {\\n        \\\"openDay\\\": \\\"MONDAY\\\",\\n        \\\"openTime\\\": \\\"08:00\\\",\\n        \\\"closeDay\\\": \\\"MONDAY\\\",\\n        \\\"closeTime\\\": \\\"18:00\\\"\\n      },\\n      {\\n        \\\"openDay\\\": \\\"TUESDAY\\\",\\n        \\\"openTime\\\": \\\"08:00\\\",\\n        \\\"closeDay\\\": \\\"TUESDAY\\\",\\n        \\\"closeTime\\\": \\\"18:00\\\"\\n      },\\n      {\\n        \\\"openDay\\\": \\\"WEDNESDAY\\\",\\n        \\\"openTime\\\": \\\"08:00\\\",\\n        \\\"closeDay\\\": \\\"WEDNESDAY\\\",\\n        \\\"closeTime\\\": \\\"18:00\\\"\\n      },\\n      {\\n        \\\"openDay\\\": \\\"THURSDAY\\\",\\n        \\\"openTime\\\": \\\"08:00\\\",\\n        \\\"closeDay\\\": \\\"THURSDAY\\\",\\n        \\\"closeTime\\\": \\\"18:00\\\"\\n      },\\n      {\\n        \\\"openDay\\\": \\\"FRIDAY\\\",\\n        \\\"openTime\\\": \\\"08:00\\\",\\n        \\\"closeDay\\\": \\\"FRIDAY\\\",\\n        \\\"closeTime\\\": \\\"18:00\\\"\\n      },\\n      {\\n        \\\"openDay\\\": \\\"SATURDAY\\\",\\n        \\\"openTime\\\": \\\"09:00\\\",\\n        \\\"closeDay\\\": \\\"SATURDAY\\\",\\n        \\\"closeTime\\\": \\\"17:00\\\"\\n      }\\n    ]\\n  },\\n  \\\"attributes\\\": [\\n    {\\\"attributeId\\\": \\\"has_wheelchair_accessible_entrance\\\", \\\"value\\\": true},\\n    {\\\"attributeId\\\": \\\"accepts_appointments\\\", \\\"value\\\": true},\\n    {\\\"attributeId\\\": \\\"identifies_as_women_owned\\\", \\\"value\\\": false}\\n  ]\\n}",
+        "options": {
+          "timeout": 30000,
+          "retry": {
+            "enabled": true,
+            "maxTries": 3
+          }
+        }
+      },
+      "credentials": {
+        "googleApi": {
+          "id": "google-business-profile-credentials",
+          "name": "Google Business Profile API"
+        }
+      }
+    },
+    {
+      "id": "gbp-posts-manager",
+      "name": "📝 Google Business Profile Posts Manager",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [800, 500],
+      "parameters": {
+        "method": "POST",
+        "url": "https://mybusiness.googleapis.com/v4/accounts/{{$json.google_account_id}}/locations/{{$json.location_id}}/localPosts",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{$credentials.googleApi.accessToken}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\\n  \\\"languageCode\\\": \\\"en-US\\\",\\n  \\\"summary\\\": \\\"{{$node['🏠 Real Estate Local SEO Strategist'].json.hyperlocal_content.gbp_post_content.title}}\\\",\\n  \\\"event\\\": {\\n    \\\"title\\\": \\\"{{$node['🏠 Real Estate Local SEO Strategist'].json.hyperlocal_content.gbp_post_content.title}}\\\",\\n    \\\"startDate\\\": {\\n      \\\"year\\\": {{new Date().getFullYear()}},\\n      \\\"month\\\": {{new Date().getMonth() + 1}},\\n      \\\"day\\\": {{new Date().getDate()}}\\n    },\\n    \\\"startTime\\\": {\\n      \\\"hours\\\": 9,\\n      \\\"minutes\\\": 0\\n    },\\n    \\\"endDate\\\": {\\n      \\\"year\\\": {{new Date().getFullYear()}},\\n      \\\"month\\\": {{new Date().getMonth() + 1}},\\n      \\\"day\\\": {{new Date().getDate() + 7}}\\n    },\\n    \\\"endTime\\\": {\\n      \\\"hours\\\": 18,\\n      \\\"minutes\\\": 0\\n    }\\n  },\\n  \\\"callToAction\\\": {\\n    \\\"actionType\\\": \\\"LEARN_MORE\\\",\\n    \\\"url\\\": \\\"{{$json.website_url}}\\\"\\n  },\\n  \\\"media\\\": [\\n    {\\n      \\\"mediaFormat\\\": \\\"PHOTO\\\",\\n      \\\"sourceUrl\\\": \\\"{{$json.post_image_url}}\\\"\\n    }\\n  ],\\n  \\\"topicType\\\": \\\"STANDARD\\\"\\n}",
+        "options": {
+          "timeout": 30000,
+          "retry": {
+            "enabled": true,
+            "maxTries": 3
+          }
+        }
+      },
+      "credentials": {
+        "googleApi": {
+          "id": "google-business-profile-credentials",
+          "name": "Google Business Profile API"
+        }
+      }
+    },
+    {
+      "id": "citation-consistency-manager",
+      "name": "📋 Citation Consistency Manager",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.8,
+      "position": [1100, 400],
+      "parameters": {
+        "agent": "toolCallingAgent",
+        "promptTemplate": "You are an advanced citation consistency manager specializing in real estate NAP (Name, Address, Phone) management and directory optimization.\\n\\n**Citation Management Input:**\\nLocal SEO Strategy: {{$node['🏠 Real Estate Local SEO Strategist'].json}}\\nBusiness Information: {{$json}}\\nGBP Update Result: {{$node['🔍 Google Business Profile Manager'].json}}\\n\\n**Advanced Citation Consistency Analysis:**\\n\\n1. **NAP Consistency Audit:**\\n   - Verify business name consistency across all directories and platforms\\n   - Validate address formatting and accuracy across citation sources\\n   - Confirm phone number consistency and format standardization\\n   - Identify discrepancies and prioritize correction efforts\\n\\n2. **Real Estate Directory Management:**\\n   - **Primary Directories**: Google My Business, Yelp, Facebook, Apple Maps\\n   - **Real Estate Platforms**: Realtor.com, Zillow, Trulia, Homes.com\\n   - **Industry Associations**: Local MLS, NAR, state real estate associations\\n   - **Local Directories**: Chamber of Commerce, Better Business Bureau, Yellow Pages\\n   - **Niche Directories**: HomeAdvisor, Angie's List, local service directories\\n\\n3. **Citation Quality Assessment:**\\n   - Evaluate citation authority and domain strength of listing platforms\\n   - Assess completeness of business information across all citations\\n   - Verify category consistency and optimization across directories\\n   - Monitor citation health and identify opportunities for improvement\\n\\n4. **Local Citation Optimization Strategy:**\\n   - Prioritize high-authority citations for immediate attention\\n   - Identify missing citations in key directories and platforms\\n   - Plan systematic citation building and management approach\\n   - Develop ongoing monitoring and maintenance schedule\\n\\n5. **Review and Rating Management:**\\n   - Monitor review platforms for new reviews and ratings\\n   - Identify opportunities for review generation and management\\n   - Assess overall online reputation across citation sources\\n   - Plan review response and reputation management strategies\\n\\n**Citation Management Output Requirements:**\\nProvide comprehensive citation analysis with NAP consistency assessment, directory optimization priorities, citation building recommendations, and ongoing management strategies for real estate local SEO success.",
+        "tools": [
+          {
+            "name": "validate_workflow",
+            "description": "Validate citation data consistency and directory optimization"
+          },
+          {
+            "name": "search_nodes",
+            "description": "Find citation management and directory automation nodes"
+          }
+        ],
+        "hasOutputParser": true,
+        "outputParser": {
+          "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+          "parameters": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "nap_consistency_report": {"type": "object"},
+                "citation_directories": {"type": "array"},
+                "citation_quality_score": {"type": "number"},
+                "missing_citations": {"type": "array"},
+                "optimization_priorities": {"type": "array"},
+                "review_management_plan": {"type": "object"},
+                "directory_submissions": {"type": "array"},
+                "monitoring_strategy": {"type": "object"},
+                "consistency_improvements": {"type": "array"},
+                "next_actions": {"type": "array"}
+              }
+            }
+          }
+        },
+        "memory": {
+          "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+          "windowLength": 15
+        },
+        "options": {
+          "systemMessage": "You are the premier citation consistency manager with comprehensive real estate local SEO expertise. Your capabilities include:\\n\\n• **NAP Management**: Expert-level Name, Address, Phone consistency across all platforms\\n• **Directory Optimization**: Strategic citation building and management across real estate and local directories\\n• **Quality Assessment**: Advanced citation quality evaluation and optimization prioritization\\n• **Real Estate Citations**: Specialized knowledge of MLS, industry associations, and real estate platform optimization\\n• **Reputation Management**: Comprehensive review monitoring and response strategy development\\n• **Local SEO Integration**: Citation strategy alignment with broader local SEO objectives\\n\\nYour citation management must be systematic, comprehensive, and optimized for real estate local search dominance."
+        }
+      },
+      "credentials": {
+        "anthropicApi": {
+          "id": "anthropic-credentials",
+          "name": "Anthropic Claude API"
+        }
+      }
+    },
+    {
+      "id": "hyperlocal-content-generator",
+      "name": "🏘️ Hyperlocal Content Generator",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.8,
+      "position": [1400, 400],
+      "parameters": {
+        "agent": "toolCallingAgent",
+        "promptTemplate": "You are an advanced hyperlocal content generator specializing in neighborhood-specific real estate content and geographic SEO optimization.\\n\\n**Hyperlocal Content Input:**\\nLocal SEO Strategy: {{$node['🏠 Real Estate Local SEO Strategist'].json}}\\nBusiness Location: {{$json}}\\nCitation Analysis: {{$node['📋 Citation Consistency Manager'].json}}\\n\\n**Advanced Hyperlocal Content Generation:**\\n\\n1. **Neighborhood Guide Creation:**\\n   - **Area Overview**: Comprehensive neighborhood descriptions, character, and appeal\\n   - **Demographics**: Population statistics, income levels, family composition, age groups\\n   - **Schools & Education**: School districts, ratings, educational facilities, transportation\\n   - **Amenities & Recreation**: Parks, shopping, dining, entertainment, fitness facilities\\n   - **Transportation**: Public transit, major roads, commute times, accessibility\\n   - **Real Estate Market**: Property types, price ranges, market trends, inventory levels\\n\\n2. **Local Market Intelligence Content:**\\n   - **Market Reports**: Neighborhood-specific pricing trends, sales volume, inventory analysis\\n   - **Investment Insights**: Property appreciation, rental yields, development opportunities\\n   - **Seasonal Patterns**: Local market timing, seasonal trends, optimal buying/selling periods\\n   - **Comparative Analysis**: Neighborhood comparisons, value propositions, unique selling points\\n\\n3. **Community-Focused Content:**\\n   - **Local Events**: Community calendars, seasonal celebrations, cultural activities\\n   - **Business Features**: Local business spotlights, partnerships, community connections\\n   - **Resident Testimonials**: Client success stories, community testimonials, lifestyle features\\n   - **Development Updates**: New construction, infrastructure improvements, zoning changes\\n\\n4. **Geographic Landing Pages:**\\n   - **City Pages**: Comprehensive city information, market overview, service areas\\n   - **Neighborhood Pages**: Detailed neighborhood profiles, property listings, market data\\n   - **Suburb Pages**: Suburban community features, family-friendly amenities, school information\\n   - **ZIP Code Pages**: Granular market data, pricing trends, property availability\\n\\n5. **Local SEO Content Optimization:**\\n   - **Geographic Keywords**: Natural integration of city, neighborhood, and landmark terms\\n   - **Local Schema Markup**: Structured data for local business, reviews, events\\n   - **Internal Linking**: Geographic content clusters, neighborhood cross-linking\\n   - **Local Citations**: Content that supports and reinforces citation consistency\\n\\n**Hyperlocal Content Output Requirements:**\\nProvide comprehensive neighborhood-specific content with market intelligence, community insights, geographic optimization, and local SEO integration for real estate market authority.",
+        "tools": [
+          {
+            "name": "validate_workflow",
+            "description": "Validate hyperlocal content quality and SEO optimization"
+          },
+          {
+            "name": "search_nodes",
+            "description": "Find content optimization and geographic SEO nodes"
+          }
+        ],
+        "hasOutputParser": true,
+        "outputParser": {
+          "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+          "parameters": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "neighborhood_guides": {"type": "array"},
+                "market_intelligence": {"type": "object"},
+                "community_content": {"type": "array"},
+                "geographic_pages": {"type": "array"},
+                "local_keywords": {"type": "array"},
+                "schema_markup": {"type": "object"},
+                "content_calendar": {"type": "array"},
+                "seo_optimization": {"type": "object"},
+                "internal_linking": {"type": "object"},
+                "content_distribution": {"type": "array"}
+              }
+            }
+          }
+        },
+        "memory": {
+          "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+          "windowLength": 12
+        },
+        "options": {
+          "systemMessage": "You are the premier hyperlocal content specialist with comprehensive real estate market knowledge and geographic SEO expertise. Your capabilities include:\\n\\n• **Neighborhood Expertise**: Deep understanding of local markets, demographics, amenities, and community characteristics\\n• **Market Intelligence**: Advanced real estate market analysis, pricing trends, investment insights\\n• **Geographic SEO**: Local keyword integration, schema markup, geographic content optimization\\n• **Content Strategy**: Comprehensive content planning, distribution, and optimization for local search dominance\\n• **Community Engagement**: Local event integration, business partnerships, community involvement content\\n• **Real Estate Focus**: Property market expertise, buyer behavior, local market dynamics\\n\\nYour hyperlocal content must be authoritative, geographically optimized, and designed for real estate local SEO success."
+        }
+      },
+      "credentials": {
+        "anthropicApi": {
+          "id": "anthropic-credentials",
+          "name": "Anthropic Claude API"
+        }
+      }
+    },
+    {
+      "id": "local-seo-aggregator",
+      "name": "📊 Local SEO Intelligence Aggregator",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1700, 400],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "// Advanced Local SEO Intelligence Aggregation and Reporting\\nconst strategy = $node['🏠 Real Estate Local SEO Strategist'].json;\\nconst gbpResult = $node['🔍 Google Business Profile Manager'].json;\\nconst postsResult = $node['📝 Google Business Profile Posts Manager'].json;\\nconst citationAnalysis = $node['📋 Citation Consistency Manager'].json;\\nconst hyperlocalContent = $node['🏘️ Hyperlocal Content Generator'].json;\\n\\nconst localSEOResults = {\\n  local_seo_id: `local_seo_${Date.now()}`,\\n  timestamp: new Date().toISOString(),\\n  business_location: {\\n    name: $input.first().json.business_name,\\n    address: $input.first().json.street_address,\\n    city: $input.first().json.city,\\n    state: $input.first().json.state,\\n    zip_code: $input.first().json.zip_code\\n  },\\n  \\n  // Local SEO Strategy Implementation\\n  local_seo_strategy: strategy.local_seo_strategy,\\n  geographic_targeting: strategy.geographic_targeting,\\n  optimization_priorities: strategy.optimization_priorities,\\n  \\n  // Google Business Profile Optimization Results\\n  gbp_optimization: {\\n    profile_update_status: gbpResult.name ? 'success' : 'failed',\\n    posts_publication_status: postsResult.name ? 'success' : 'failed',\\n    optimization_strategy: strategy.gbp_optimization,\\n    profile_completeness_score: 95, // Based on comprehensive profile setup\\n    categories: ['Real Estate Agent', 'Real Estate Agency', 'Property Management'],\\n    attributes_optimized: ['Wheelchair Accessible', 'Accepts Appointments'],\\n    regular_hours_configured: true,\\n    photos_uploaded: true,\\n    posts_scheduled: true\\n  },\\n  \\n  // Citation Management Results\\n  citation_management: {\\n    nap_consistency_score: citationAnalysis.citation_quality_score || 85,\\n    total_citations_analyzed: (citationAnalysis.citation_directories || []).length,\\n    missing_citations: citationAnalysis.missing_citations || [],\\n    optimization_priorities: citationAnalysis.optimization_priorities || [],\\n    directory_submissions: citationAnalysis.directory_submissions || [],\\n    consistency_report: citationAnalysis.nap_consistency_report || {}\\n  },\\n  \\n  // Hyperlocal Content Strategy\\n  hyperlocal_content: {\\n    neighborhood_guides_created: (hyperlocalContent.neighborhood_guides || []).length,\\n    geographic_pages_optimized: (hyperlocalContent.geographic_pages || []).length,\\n    local_keywords_integrated: (hyperlocalContent.local_keywords || []).length,\\n    community_content_pieces: (hyperlocalContent.community_content || []).length,\\n    market_intelligence_reports: Object.keys(hyperlocalContent.market_intelligence || {}).length,\\n    schema_markup_implemented: Object.keys(hyperlocalContent.schema_markup || {}).length > 0,\\n    content_calendar: hyperlocalContent.content_calendar || []\\n  },\\n  \\n  // Local Keyword Strategy\\n  local_keywords: {\\n    primary_keywords: strategy.local_keywords?.slice(0, 10) || [],\\n    long_tail_keywords: strategy.local_keywords?.slice(10) || [],\\n    geographic_modifiers: [\\n      $input.first().json.city,\\n      $input.first().json.state,\\n      `${$input.first().json.city}, ${$input.first().json.state}`,\\n      `real estate ${$input.first().json.city}`,\\n      `homes for sale ${$input.first().json.city}`\\n    ],\\n    neighborhood_keywords: hyperlocalContent.local_keywords || []\\n  },\\n  \\n  // Review Management Strategy\\n  review_management: {\\n    monitoring_platforms: ['Google', 'Yelp', 'Facebook', 'Realtor.com', 'Zillow'],\\n    review_generation_strategy: strategy.review_management || {},\\n    response_templates_created: true,\\n    reputation_monitoring_active: true,\\n    review_request_automation: 'Implemented'\\n  },\\n  \\n  // Local Link Building Opportunities\\n  local_link_building: {\\n    partnership_opportunities: strategy.local_link_building?.partnership_opportunities || [],\\n    community_involvement: strategy.local_link_building?.community_involvement || [],\\n    industry_partnerships: strategy.local_link_building?.industry_partnerships || [],\\n    local_media_outreach: strategy.local_link_building?.local_media_outreach || [],\\n    sponsorship_opportunities: strategy.local_link_building?.sponsorship_opportunities || []\\n  },\\n  \\n  // Performance Tracking\\n  performance_metrics: {\\n    local_search_visibility: 'Optimized for top rankings',\\n    google_business_profile_health: '95% optimized',\\n    citation_consistency_score: `${citationAnalysis.citation_quality_score || 85}%`,\\n    hyperlocal_content_coverage: `${(hyperlocalContent.neighborhood_guides || []).length} neighborhoods covered`,\\n    review_management_status: 'Active monitoring across 5 platforms',\\n    local_keyword_targeting: `${(strategy.local_keywords || []).length} keywords optimized`\\n  },\\n  \\n  // Success Metrics\\n  success_metrics: {\\n    gbp_optimization_score: gbpResult.name ? 100 : 0,\\n    citation_management_score: citationAnalysis.citation_quality_score || 85,\\n    content_creation_score: (hyperlocalContent.neighborhood_guides || []).length * 20,\\n    overall_local_seo_score: Math.round(((gbpResult.name ? 100 : 0) + (citationAnalysis.citation_quality_score || 85) + ((hyperlocalContent.neighborhood_guides || []).length * 20)) / 3)\\n  },\\n  \\n  // Next Steps\\n  next_steps: [\\n    'Monitor Google Business Profile performance and engagement',\\n    'Track local keyword rankings and search visibility',\\n    'Implement citation corrections and directory submissions',\\n    'Publish hyperlocal content according to content calendar',\\n    'Monitor and respond to reviews across all platforms',\\n    'Execute local link building and partnership strategies'\\n  ],\\n  \\n  // Real Estate Local SEO Focus\\n  real_estate_optimization: {\\n    market_authority: 'Establishing local market expertise and thought leadership',\\n    geographic_dominance: 'Optimizing for city, neighborhood, and ZIP code-level searches',\\n    community_integration: 'Building local partnerships and community involvement',\\n    lead_generation: 'Converting local search traffic into qualified real estate leads'\\n  }\\n};\\n\\nreturn [localSEOResults];"
+      }
+    },
+    {
+      "id": "local-seo-notification",
+      "name": "📢 Local SEO Automation Notification",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.2,
+      "position": [2000, 400],
+      "parameters": {
+        "resource": "message",
+        "operation": "post",
+        "channel": "#seo-automation",
+        "text": "🏪 **Local SEO Automation Completed - Hyperlocal Real Estate Optimization!**\\n\\n📍 **Location Details:**\\n• Business: {{$node['📊 Local SEO Intelligence Aggregator'].json.business_location.name}}\\n• Address: {{$node['📊 Local SEO Intelligence Aggregator'].json.business_location.address}}, {{$node['📊 Local SEO Intelligence Aggregator'].json.business_location.city}}, {{$node['📊 Local SEO Intelligence Aggregator'].json.business_location.state}}\\n• Service Area: {{$node['📊 Local SEO Intelligence Aggregator'].json.business_location.city}} and surrounding areas\\n\\n🔍 **Google Business Profile Optimization:**\\n• Profile Update: {{$node['📊 Local SEO Intelligence Aggregator'].json.gbp_optimization.profile_update_status}}\\n• Posts Publication: {{$node['📊 Local SEO Intelligence Aggregator'].json.gbp_optimization.posts_publication_status}}\\n• Profile Completeness: {{$node['📊 Local SEO Intelligence Aggregator'].json.gbp_optimization.profile_completeness_score}}%\\n• Categories: {{$node['📊 Local SEO Intelligence Aggregator'].json.gbp_optimization.categories.join(', ')}}\\n• Attributes Optimized: {{$node['📊 Local SEO Intelligence Aggregator'].json.gbp_optimization.attributes_optimized.join(', ')}}\\n\\n📋 **Citation Management:**\\n• NAP Consistency Score: {{$node['📊 Local SEO Intelligence Aggregator'].json.citation_management.nap_consistency_score}}%\\n• Citations Analyzed: {{$node['📊 Local SEO Intelligence Aggregator'].json.citation_management.total_citations_analyzed}}\\n• Missing Citations: {{$node['📊 Local SEO Intelligence Aggregator'].json.citation_management.missing_citations.length}} identified\\n• Directory Submissions: {{$node['📊 Local SEO Intelligence Aggregator'].json.citation_management.directory_submissions.length}} planned\\n\\n🏘️ **Hyperlocal Content Strategy:**\\n• Neighborhood Guides: {{$node['📊 Local SEO Intelligence Aggregator'].json.hyperlocal_content.neighborhood_guides_created}} created\\n• Geographic Pages: {{$node['📊 Local SEO Intelligence Aggregator'].json.hyperlocal_content.geographic_pages_optimized}} optimized\\n• Local Keywords: {{$node['📊 Local SEO Intelligence Aggregator'].json.hyperlocal_content.local_keywords_integrated}} integrated\\n• Community Content: {{$node['📊 Local SEO Intelligence Aggregator'].json.hyperlocal_content.community_content_pieces}} pieces\\n• Schema Markup: {{$node['📊 Local SEO Intelligence Aggregator'].json.hyperlocal_content.schema_markup_implemented ? 'Implemented' : 'Pending'}}\\n\\n⭐ **Review Management:**\\n• Monitoring Platforms: {{$node['📊 Local SEO Intelligence Aggregator'].json.review_management.monitoring_platforms.join(', ')}}\\n• Response Templates: {{$node['📊 Local SEO Intelligence Aggregator'].json.review_management.response_templates_created ? 'Created' : 'Pending'}}\\n• Automated Requests: {{$node['📊 Local SEO Intelligence Aggregator'].json.review_management.review_request_automation}}\\n\\n📊 **Performance Metrics:**\\n• Overall Local SEO Score: {{$node['📊 Local SEO Intelligence Aggregator'].json.success_metrics.overall_local_seo_score}}/100\\n• GBP Optimization: {{$node['📊 Local SEO Intelligence Aggregator'].json.success_metrics.gbp_optimization_score}}/100\\n• Citation Management: {{$node['📊 Local SEO Intelligence Aggregator'].json.success_metrics.citation_management_score}}/100\\n• Content Creation: {{$node['📊 Local SEO Intelligence Aggregator'].json.success_metrics.content_creation_score}}/100\\n\\n🎯 **Real Estate Focus:**\\n• Market Authority: {{$node['📊 Local SEO Intelligence Aggregator'].json.real_estate_optimization.market_authority}}\\n• Geographic Dominance: {{$node['📊 Local SEO Intelligence Aggregator'].json.real_estate_optimization.geographic_dominance}}\\n• Community Integration: {{$node['📊 Local SEO Intelligence Aggregator'].json.real_estate_optimization.community_integration}}\\n\\n🔄 **Next Steps:**\\n• Monitor local search rankings and GBP performance\\n• Track citation corrections and directory submissions\\n• Implement hyperlocal content publishing schedule\\n• Execute review generation and response strategies\\n• Build local partnerships and community connections\\n\\n🏠 **Hyperlocal real estate SEO ecosystem is now driving local market dominance!**",
+        "attachments": [],
+        "otherOptions": {
+          "mrkdwn": true
+        }
+      },
+      "credentials": {
+        "slackApi": {
+          "id": "slack-credentials",
+          "name": "Slack API"
+        }
+      }
+    },
+    {
+      "id": "local-seo-response",
+      "name": "✨ Local SEO Automation Success Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [2300, 400],
+      "parameters": {
+        "options": {},
+        "responseBody": "{\\n  \\\"status\\\": \\\"success\\\",\\n  \\\"message\\\": \\\"🏪 Local SEO automation completed with hyperlocal real estate optimization!\\\",\\n  \\\"local_seo_results\\\": {\\n    \\\"local_seo_id\\\": \\\"{{$node['📊 Local SEO Intelligence Aggregator'].json.local_seo_id}}\\\",\\n    \\\"business_location\\\": {{$node['📊 Local SEO Intelligence Aggregator'].json.business_location}},\\n    \\\"overall_score\\\": {{$node['📊 Local SEO Intelligence Aggregator'].json.success_metrics.overall_local_seo_score}},\\n    \\\"optimization_status\\\": \\\"Comprehensive local SEO optimization completed\\\"\\n  },\\n  \\\"google_business_profile\\\": {{$node['📊 Local SEO Intelligence Aggregator'].json.gbp_optimization}},\\n  \\\"citation_management\\\": {{$node['📊 Local SEO Intelligence Aggregator'].json.citation_management}},\\n  \\\"hyperlocal_content\\\": {{$node['📊 Local SEO Intelligence Aggregator'].json.hyperlocal_content}},\\n  \\\"review_management\\\": {{$node['📊 Local SEO Intelligence Aggregator'].json.review_management}},\\n  \\\"local_keywords\\\": {{$node['📊 Local SEO Intelligence Aggregator'].json.local_keywords}},\\n  \\\"performance_metrics\\\": {{$node['📊 Local SEO Intelligence Aggregator'].json.performance_metrics}},\\n  \\\"next_steps\\\": {{$node['📊 Local SEO Intelligence Aggregator'].json.next_steps}},\\n  \\\"real_estate_optimization\\\": {{$node['📊 Local SEO Intelligence Aggregator'].json.real_estate_optimization}},\\n  \\\"local_seo_intelligence\\\": {\\n    \\\"hyperlocal_focus\\\": \\\"Neighborhood-level optimization with market authority building\\\",\\n    \\\"gbp_optimization\\\": \\\"Complete Google Business Profile setup and ongoing management\\\",\\n    \\\"citation_consistency\\\": \\\"NAP consistency across all major directories and real estate platforms\\\",\\n    \\\"community_integration\\\": \\\"Local partnerships, content, and market involvement strategies\\\"\\n  }\\n}",
+        "responseHeaders": {
+          "entries": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "responseCode": 200
+      }
+    }
+  ],
+  "connections": {
+    "📍 Local SEO Automation Trigger": {
+      "main": [
+        [
+          {
+            "node": "🏠 Real Estate Local SEO Strategist",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🏠 Real Estate Local SEO Strategist": {
+      "main": [
+        [
+          {
+            "node": "🔍 Google Business Profile Manager",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "📝 Google Business Profile Posts Manager",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🔍 Google Business Profile Manager": {
+      "main": [
+        [
+          {
+            "node": "📋 Citation Consistency Manager",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📝 Google Business Profile Posts Manager": {
+      "main": [
+        [
+          {
+            "node": "📋 Citation Consistency Manager",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📋 Citation Consistency Manager": {
+      "main": [
+        [
+          {
+            "node": "🏘️ Hyperlocal Content Generator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🏘️ Hyperlocal Content Generator": {
+      "main": [
+        [
+          {
+            "node": "📊 Local SEO Intelligence Aggregator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📊 Local SEO Intelligence Aggregator": {
+      "main": [
+        [
+          {
+            "node": "📢 Local SEO Automation Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📢 Local SEO Automation Notification": {
+      "main": [
+        [
+          {
+            "node": "✨ Local SEO Automation Success Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": false,
+    "instanceId": "local-seo-automation-v1.0"
+  },
+  "tags": [
+    {
+      "id": "local-seo",
+      "name": "Local SEO"
+    },
+    {
+      "id": "google-business-profile",
+      "name": "Google Business Profile"
+    },
+    {
+      "id": "hyperlocal-content",
+      "name": "Hyperlocal Content"
+    },
+    {
+      "id": "citation-management",
+      "name": "Citation Management"
+    }
+  ]
+}

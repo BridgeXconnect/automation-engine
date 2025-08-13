@@ -1,0 +1,176 @@
+# {{ package_name }} - Loom Video Outline
+
+## Purpose
+Video walkthrough script for {{ package_name }} automation package. Target duration: {{ video_duration | default(5) }} minutes.
+
+## Video Overview
+
+**Title**: "{{ package_name }} - Automation Walkthrough"
+**Duration**: {{ video_duration | default(5) }} minutes
+**Audience**: Technical implementers and business stakeholders
+**Objective**: Demonstrate value and ease of implementation
+
+## Pre-Recording Checklist
+
+- [ ] **Screen Setup**: Clean desktop, close unnecessary applications
+- [ ] **Audio Test**: Microphone quality and background noise check  
+- [ ] **Demo Environment**: Working n8n instance with {{ package_name }} installed
+- [ ] **Sample Data**: Prepared test data for demonstration
+- [ ] **Browser Setup**: Bookmark relevant tabs and pages
+- [ ] **Script Review**: Rehearse key talking points and transitions
+
+## Screen Flow Walkthrough
+
+{% if screen_flow %}
+{% for screen in screen_flow %}
+### {{ loop.index }}. {{ screen.split(' - ')[0] if ' - ' in screen else 'Screen ' + loop.index|string }}
+{{ screen.split(' - ')[1] if ' - ' in screen else screen }}
+
+**Duration**: ~{{ (video_duration * 60 / screen_flow|length)|int }} seconds
+**Key Points**: 
+- Highlight main functionality
+- Show relevant UI elements
+- Explain user actions
+
+{% endfor %}
+{% else %}
+### 1. Introduction & Problem Statement (30 seconds)
+**Screen**: Title slide or n8n dashboard
+**Talking Points**:
+- "Hi, I'm going to show you {{ package_name }}"
+- "This automation solves [specific business problem]"
+- "In the next {{ video_duration }} minutes, you'll see exactly how it works"
+
+### 2. Workflow Overview (45 seconds)
+**Screen**: n8n workflow canvas showing complete automation
+**Talking Points**:
+- "Here's the complete automation workflow"
+- "It starts with [trigger type] and ends with [final action]"
+- "Let me walk you through each major step"
+
+### 3. Configuration Demo (90 seconds)
+**Screen**: Key configuration nodes and settings
+**Talking Points**:
+- "Setting this up is straightforward - here's what you need to configure"
+- "First, you'll add your API credentials here"
+- "Then configure these key settings for your environment"
+- "Notice how we handle errors and edge cases"
+
+### 4. Live Execution (90 seconds)  
+**Screen**: Workflow execution in real-time
+**Talking Points**:
+- "Now let's see it in action with real data"
+- "I'll trigger the workflow and we'll watch it execute"
+- "Notice how quickly it processes - typically under 3 seconds"
+- "Here you can see the data flowing between each step"
+
+### 5. Results & Benefits (45 seconds)
+**Screen**: End results and success metrics
+**Talking Points**:
+- "And here are the results - exactly what we expected"
+- "This automation saves [X hours/week] and eliminates [specific manual work]"
+- "The ROI is typically [specific metric] within [timeframe]"
+
+### 6. Next Steps & CTA (30 seconds)
+**Screen**: Documentation links or contact information  
+**Talking Points**:
+- "Ready to implement this? Here's what to do next"
+- "Check out the implementation guide for step-by-step instructions"
+- "Or contact us for a personalized setup session"
+{% endif %}
+
+## Key Talking Points
+
+{% if key_talking_points %}
+{% for point in key_talking_points %}
+### {{ point.split(':')[0] if ':' in point else 'Key Point' }}
+{{ point.split(':')[1] if ':' in point else point }}
+
+{% endfor %}
+{% else %}
+### Problem Solved
+- "This automation eliminates the manual work of [specific task]"
+- "Before this, teams spent [X hours] doing [manual process]"
+- "Now it happens automatically in seconds"
+
+### Business Value
+- "Saves [X hours per week] of manual work"
+- "Reduces errors by [percentage] through automation"
+- "Improves response time from [old time] to [new time]"
+
+### Technical Benefits  
+- "Built on reliable n8n platform with 99%+ uptime"
+- "Includes comprehensive error handling and retries"
+- "Fully configurable for your specific environment"
+
+### Easy Implementation
+- "Takes less than 30 minutes to set up"
+- "No custom code required - just configuration"
+- "Complete documentation and support included"
+{% endif %}
+
+## Script Template
+
+### Opening Hook (0:00 - 0:30)
+"Hi! I'm about to show you something that will save your team hours every week. This is {{ package_name }}, an automation that {{ template_variables.problem_statement | default('solves a common business challenge') }}. In the next {{ video_duration }} minutes, you'll see exactly how it works and how easy it is to implement."
+
+### Problem Context (0:30 - 1:00) 
+"Here's the problem we're solving: {{ template_variables.problem_statement | default('[Describe the manual process and its pain points]') }}. Most teams spend {{ template_variables.time_saved | default('[X hours]') }} per week on this, and it's error-prone because {{ template_variables.error_sources | default('[common error sources]') }}."
+
+### Solution Demonstration (1:00 - 3:30)
+"Now let me show you how {{ package_name }} automates this entire process..."
+[Follow screen flow sequence with live demonstration]
+
+### Value Proposition (3:30 - 4:30)
+"So what does this mean for your business? {{ template_variables.roi_projection | default('This automation typically saves X hours per week and reduces errors by Y%') }}. The ROI is usually {{ template_variables.payback_period | default('positive within the first month') }}."
+
+### Call to Action (4:30 - 5:00)
+"{{ call_to_action | default('Ready to implement this? Check out the implementation guide linked below, or contact us for a personalized setup session. This could be running in your environment by tomorrow.') }}"
+
+## Recording Best Practices
+
+### Technical Setup
+- **Resolution**: Record at 1920x1080 for crisp quality
+- **Frame Rate**: 30fps for smooth motion
+- **Audio**: Use headset microphone for clear audio
+- **Lighting**: Ensure good lighting for any face shots
+
+### Presentation Tips
+- **Pace**: Speak clearly and not too fast
+- **Mouse Movement**: Use smooth, deliberate cursor movements
+- **Highlights**: Use cursor circles or arrows to emphasize key points
+- **Pauses**: Brief pauses after important points for emphasis
+
+### Content Guidelines
+- **Focus**: Stay focused on key value points
+- **Energy**: Maintain enthusiasm and energy throughout
+- **Clarity**: Explain technical concepts in business terms
+- **Relevance**: Every second should add value for the viewer
+
+## Post-Recording Checklist
+
+- [ ] **Quality Review**: Watch full recording for audio/video quality
+- [ ] **Content Validation**: Verify all key points were covered
+- [ ] **Timing Check**: Confirm duration is within target range
+- [ ] **Editing**: Add captions, highlights, or intro/outro as needed
+- [ ] **Testing**: Share with team member for feedback
+- [ ] **Optimization**: Compress for web delivery while maintaining quality
+- [ ] **Publishing**: Upload to appropriate platform with proper metadata
+- [ ] **Documentation**: Link video in relevant documentation
+
+## Success Metrics
+
+### Engagement Metrics
+- **View Completion Rate**: Target >80% completion rate
+- **Viewer Retention**: Track drop-off points for improvement
+- **Click-Through Rate**: Monitor CTA effectiveness
+- **Feedback Score**: Collect viewer ratings and comments
+
+### Business Impact
+- **Lead Generation**: Track viewers who request demos or implementation
+- **Implementation Rate**: Monitor how many viewers proceed to implement
+- **Time to Value**: Measure how video affects implementation speed
+- **Support Reduction**: Track if video reduces support inquiries
+
+---
+*Loom Outline v{{ template_variables.version | default('1.0.0') }} | Last Updated: {{ template_variables.updated_at | default('now') }}*

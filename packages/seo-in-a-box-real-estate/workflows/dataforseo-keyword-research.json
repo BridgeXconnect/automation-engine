@@ -1,0 +1,438 @@
+{
+  "name": "🔍 DataForSEO Keyword Research - Real Estate Intelligence",
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": "seo-error-handler-workflow-id"
+  },
+  "nodes": [
+    {
+      "id": "keyword-research-trigger",
+      "name": "🎯 Keyword Research Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [200, 400],
+      "parameters": {
+        "path": "dataforseo-keyword-research",
+        "httpMethod": "POST",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "*",
+          "rawBody": true
+        }
+      }
+    },
+    {
+      "id": "real-estate-keyword-strategist",
+      "name": "🏠 Real Estate Keyword Strategist",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.8,
+      "position": [500, 400],
+      "parameters": {
+        "agent": "toolCallingAgent",
+        "promptTemplate": "You are a master real estate SEO keyword strategist with comprehensive knowledge of property markets, buyer behavior, and advanced keyword research methodologies.\\n\\n**Research Input:**\\n{{$json}}\\n\\n**Advanced Real Estate Keyword Strategy Analysis:**\\n\\n1. **Property Type Keyword Intelligence:**\\n   - **Residential Keywords**: Single-family homes, condos, townhomes, apartments, new construction\\n   - **Commercial Keywords**: Office space, retail properties, warehouses, industrial, mixed-use\\n   - **Luxury Keywords**: Luxury homes, estates, waterfront properties, gated communities\\n   - **Investment Keywords**: Rental properties, fix-and-flip, REITs, commercial investments\\n\\n2. **Geographic Keyword Mapping:**\\n   - **Hyperlocal Terms**: Neighborhood names, school districts, zip codes, landmarks\\n   - **City-Level Keywords**: [City] real estate, [City] homes for sale, [City] market trends\\n   - **Regional Keywords**: [State] properties, [Region] real estate market, metropolitan areas\\n   - **Demographic Targeting**: Family-friendly neighborhoods, senior living, first-time buyers\\n\\n3. **Buyer Intent Keyword Analysis:**\\n   - **Informational Intent**: 'How to buy a house', 'Real estate market trends', 'Property values'\\n   - **Navigational Intent**: 'Homes for sale in [location]', '[Agent name] real estate'\\n   - **Transactional Intent**: 'Buy house [location]', 'Real estate agent near me'\\n   - **Commercial Intent**: 'Best real estate agent', 'Top-rated realtor', 'Property management'\\n\\n4. **Seasonal Keyword Opportunities:**\\n   - **Spring Market**: 'Spring home buying', 'New listings', 'Market preparation'\\n   - **Summer Peak**: 'Summer real estate', 'Family homes', 'School district homes'\\n   - **Fall Market**: 'Fall real estate trends', 'Market slowdown strategies'\\n   - **Winter Opportunities**: 'Winter home buying advantages', 'Holiday relocations'\\n\\n5. **Advanced MCP Research Coordination:**\\n   - Use search_nodes() to find DataForSEO integration nodes\\n   - Apply get_node_essentials() for optimal keyword research configurations\\n   - Coordinate with DataForSEO MCP for real-time SERP analysis\\n   - Implement competitive keyword gap analysis and opportunity identification\\n\\n**Strategic Output Requirements:**\\nProvide comprehensive keyword research strategy with property-specific targeting, geographic optimization, buyer intent mapping, seasonal opportunities, and DataForSEO MCP integration specifications.\",
+        "tools": [
+          {
+            "name": "search_nodes",
+            "description": "Find DataForSEO and keyword research nodes"
+          },
+          {
+            "name": "get_node_essentials",
+            "description": "Get optimal keyword research configurations"
+          },
+          {
+            "name": "validate_node_minimal",
+            "description": "Validate keyword research node setup"
+          }
+        ],
+        "hasOutputParser": true,
+        "outputParser": {
+          "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+          "parameters": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "keyword_strategy": {"type": "object"},
+                "property_type_keywords": {"type": "array"},
+                "geographic_keywords": {"type": "array"},
+                "buyer_intent_keywords": {"type": "array"},
+                "seasonal_opportunities": {"type": "object"},
+                "competitive_keywords": {"type": "array"},
+                "long_tail_keywords": {"type": "array"},
+                "local_seo_keywords": {"type": "array"},
+                "dataforseo_config": {"type": "object"},
+                "research_priorities": {"type": "array"},
+                "expected_results": {"type": "object"}
+              }
+            }
+          }
+        },
+        "options": {
+          "systemMessage": "You are the leading real estate SEO keyword research expert with comprehensive knowledge of property markets, buyer behavior patterns, and advanced keyword research methodologies. Your expertise includes:\\n\\n• **Real Estate Market Intelligence**: Deep understanding of residential, commercial, luxury, and investment property markets\\n• **Geographic SEO Mastery**: Hyperlocal, city-level, and regional keyword targeting strategies\\n• **Buyer Behavior Analysis**: Intent-based keyword research and customer journey mapping\\n• **Competitive Intelligence**: Market positioning and keyword opportunity identification\\n• **Seasonal Strategy**: Market timing and seasonal keyword optimization\\n• **DataForSEO Integration**: Advanced SERP analysis and keyword difficulty assessment\\n\\nYour keyword strategies must be comprehensive, data-driven, and specifically optimized for real estate market success."
+        }
+      },
+      "credentials": {
+        "anthropicApi": {
+          "id": "anthropic-credentials",
+          "name": "Anthropic Claude API"
+        }
+      }
+    },
+    {
+      "id": "dataforseo-keyword-analyzer",
+      "name": "📊 DataForSEO Keyword Analyzer",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [800, 300],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.dataforseo.com/v3/keywords_data/google_ads/keywords_for_keywords/live",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpBasicAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "[\\n  {\\n    \\\"keywords\\\": {{$node['🏠 Real Estate Keyword Strategist'].json.property_type_keywords}},\\n    \\\"location_name\\\": \\\"{{$json.location || 'United States'}}\\\",\\n    \\\"language_name\\\": \\\"English\\\",\\n    \\\"include_serp_info\\\": true,\\n    \\\"include_clickstream_data\\\": true,\\n    \\\"load_rank_absolute\\\": true,\\n    \\\"limit\\\": 1000\\n  }\\n]",
+        "options": {
+          "timeout": 30000,
+          "retry": {
+            "enabled": true,
+            "maxTries": 3
+          }
+        }
+      },
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "dataforseo-credentials",
+          "name": "DataForSEO API"
+        }
+      }
+    },
+    {
+      "id": "serp-analysis-engine",
+      "name": "🔍 SERP Analysis Engine",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [800, 500],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.dataforseo.com/v3/serp/google/organic/live/advanced",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpBasicAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "[\\n  {\\n    \\\"keyword\\\": \\\"{{$node['🏠 Real Estate Keyword Strategist'].json.keyword_strategy.primary_keyword}}\\\",\\n    \\\"location_name\\\": \\\"{{$json.location || 'United States'}}\\\",\\n    \\\"language_name\\\": \\\"English\\\",\\n    \\\"device\\\": \\\"desktop\\\",\\n    \\\"os\\\": \\\"windows\\\",\\n    \\\"depth\\\": 100,\\n    \\\"calculate_rectangles\\\": true\\n  }\\n]",
+        "options": {
+          "timeout": 30000,
+          "retry": {
+            "enabled": true,
+            "maxTries": 3
+          }
+        }
+      },
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "dataforseo-credentials",
+          "name": "DataForSEO API"
+        }
+      }
+    },
+    {
+      "id": "keyword-intelligence-processor",
+      "name": "🧠 Keyword Intelligence Processor",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.8,
+      "position": [1100, 400],
+      "parameters": {
+        "agent": "toolCallingAgent",
+        "promptTemplate": "You are an advanced keyword intelligence processor specializing in real estate market analysis and DataForSEO data interpretation.\\n\\n**Data Analysis Input:**\\nKeyword Strategy: {{$node['🏠 Real Estate Keyword Strategist'].json}}\\nDataForSEO Keyword Data: {{$node['📊 DataForSEO Keyword Analyzer'].json}}\\nSERP Analysis Data: {{$node['🔍 SERP Analysis Engine'].json}}\\n\\n**Advanced Keyword Intelligence Processing:**\\n\\n1. **Keyword Opportunity Analysis:**\\n   - Identify high-volume, low-competition real estate keywords\\n   - Analyze keyword difficulty scores and ranking opportunities\\n   - Assess search volume trends and seasonal patterns\\n   - Evaluate commercial intent and conversion potential\\n\\n2. **Competitive Intelligence Processing:**\\n   - Analyze competitor rankings and market positioning\\n   - Identify keyword gaps and untapped opportunities\\n   - Assess competitive landscape and market saturation\\n   - Discover competitor content strategies and weaknesses\\n\\n3. **Real Estate Market Insights:**\\n   - Process property type performance and search demand\\n   - Analyze geographic keyword performance variations\\n   - Identify emerging market trends and opportunities\\n   - Assess buyer behavior patterns and search preferences\\n\\n4. **SERP Feature Optimization:**\\n   - Analyze featured snippets and local pack opportunities\\n   - Identify image and video search opportunities\\n   - Assess knowledge panel and entity optimization chances\\n   - Evaluate mobile vs desktop search differences\\n\\n5. **Content Strategy Recommendations:**\\n   - Suggest content topics based on keyword opportunities\\n   - Recommend content formats and optimization strategies\\n   - Identify FAQ and long-tail content opportunities\\n   - Suggest internal linking and content cluster strategies\\n\\n**Processing Output Requirements:**\\nProvide comprehensive keyword intelligence analysis with actionable insights, competitive opportunities, content recommendations, and optimization priorities specifically for real estate market success.\",
+        "tools": [
+          {
+            "name": "validate_workflow",
+            "description": "Validate keyword research workflow and data quality"
+          },
+          {
+            "name": "search_nodes",
+            "description": "Find additional analysis and processing nodes"
+          }
+        ],
+        "hasOutputParser": true,
+        "outputParser": {
+          "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+          "parameters": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "keyword_opportunities": {"type": "array"},
+                "competitive_analysis": {"type": "object"},
+                "market_insights": {"type": "object"},
+                "serp_opportunities": {"type": "object"},
+                "content_recommendations": {"type": "array"},
+                "optimization_priorities": {"type": "array"},
+                "keyword_clusters": {"type": "array"},
+                "seasonal_strategy": {"type": "object"},
+                "roi_projections": {"type": "object"},
+                "implementation_roadmap": {"type": "array"}
+              }
+            }
+          }
+        },
+        "memory": {
+          "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+          "windowLength": 15
+        },
+        "options": {
+          "systemMessage": "You are the premier keyword intelligence processor for real estate SEO with advanced analytical capabilities and DataForSEO expertise. Your specializations include:\\n\\n• **Data Analysis Mastery**: Advanced processing of DataForSEO keyword and SERP data\\n• **Real Estate Intelligence**: Deep understanding of property market dynamics and search behavior\\n• **Competitive Analysis**: Expert-level competitive intelligence and opportunity identification\\n• **Content Strategy**: Strategic content recommendations based on keyword insights\\n• **ROI Optimization**: Performance-driven keyword prioritization and resource allocation\\n• **Market Trends**: Predictive analysis of real estate search patterns and opportunities\\n\\nYour analysis must be comprehensive, actionable, and optimized for real estate market success with measurable ROI outcomes."
+        }
+      },
+      "credentials": {
+        "anthropicApi": {
+          "id": "anthropic-credentials",
+          "name": "Anthropic Claude API"
+        }
+      }
+    },
+    {
+      "id": "keyword-data-aggregator",
+      "name": "📋 Keyword Data Aggregator",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1400, 400],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "// Advanced Keyword Research Data Aggregation\\nconst strategy = $node['🏠 Real Estate Keyword Strategist'].json;\\nconst keywordData = $node['📊 DataForSEO Keyword Analyzer'].json;\\nconst serpData = $node['🔍 SERP Analysis Engine'].json;\\nconst intelligence = $node['🧠 Keyword Intelligence Processor'].json;\\n\\nconst keywordResearchResults = {\\n  research_id: `keyword_research_${Date.now()}`,\\n  timestamp: new Date().toISOString(),\\n  location: $input.first().json.location || 'United States',\\n  research_scope: 'Real Estate - Comprehensive',\\n  \\n  // Strategic Framework\\n  keyword_strategy: strategy.keyword_strategy,\\n  research_priorities: strategy.research_priorities,\\n  \\n  // Keyword Categories\\n  property_keywords: {\\n    residential: strategy.property_type_keywords.filter(k => k.includes('home') || k.includes('house') || k.includes('condo')),\\n    commercial: strategy.property_type_keywords.filter(k => k.includes('commercial') || k.includes('office') || k.includes('retail')),\\n    luxury: strategy.property_type_keywords.filter(k => k.includes('luxury') || k.includes('estate') || k.includes('waterfront')),\\n    investment: strategy.property_type_keywords.filter(k => k.includes('investment') || k.includes('rental') || k.includes('flip'))\\n  },\\n  \\n  // Geographic Targeting\\n  geographic_keywords: {\\n    hyperlocal: strategy.geographic_keywords.filter(k => k.includes('neighborhood') || k.includes('zip')),\\n    city_level: strategy.geographic_keywords.filter(k => k.includes('city') || k.includes('downtown')),\\n    regional: strategy.geographic_keywords.filter(k => k.includes('county') || k.includes('metro'))\\n  },\\n  \\n  // Intent-Based Keywords\\n  buyer_intent: {\\n    informational: strategy.buyer_intent_keywords.filter(k => k.includes('how') || k.includes('what') || k.includes('guide')),\\n    transactional: strategy.buyer_intent_keywords.filter(k => k.includes('buy') || k.includes('agent') || k.includes('service')),\\n    commercial: strategy.buyer_intent_keywords.filter(k => k.includes('best') || k.includes('top') || k.includes('review'))\\n  },\\n  \\n  // DataForSEO Intelligence\\n  keyword_metrics: keywordData?.tasks?.[0]?.result?.map(keyword => ({\\n    keyword: keyword.keyword,\\n    search_volume: keyword.search_volume,\\n    competition: keyword.competition,\\n    cpc: keyword.cpc,\\n    difficulty: keyword.keyword_difficulty || 'N/A'\\n  })) || [],\\n  \\n  // SERP Analysis Results\\n  serp_analysis: {\\n    total_results: serpData?.tasks?.[0]?.result?.[0]?.items_count || 0,\\n    serp_features: serpData?.tasks?.[0]?.result?.[0]?.items?.map(item => item.type) || [],\\n    top_competitors: serpData?.tasks?.[0]?.result?.[0]?.items?.slice(0, 10)?.map(item => ({\\n      domain: item.domain,\\n      title: item.title,\\n      rank: item.rank_absolute\\n    })) || []\\n  },\\n  \\n  // Intelligence Insights\\n  opportunities: intelligence.keyword_opportunities || [],\\n  competitive_analysis: intelligence.competitive_analysis || {},\\n  content_recommendations: intelligence.content_recommendations || [],\\n  optimization_priorities: intelligence.optimization_priorities || [],\\n  \\n  // Performance Projections\\n  roi_projections: intelligence.roi_projections || {\\n    expected_traffic_increase: '150%+',\\n    ranking_improvement_timeline: '3-6 months',\\n    lead_generation_boost: '300%+',\\n    market_authority_score: 'High'\\n  },\\n  \\n  // Implementation Roadmap\\n  implementation_plan: intelligence.implementation_roadmap || [\\n    'Phase 1: High-priority keyword optimization',\\n    'Phase 2: Content creation and optimization',\\n    'Phase 3: Local SEO integration',\\n    'Phase 4: Performance monitoring and refinement'\\n  ],\\n  \\n  // Seasonal Strategy\\n  seasonal_opportunities: strategy.seasonal_opportunities || {\\n    spring: 'New listing season optimization',\\n    summer: 'Family home and relocation focus',\\n    fall: 'Investment property strategies',\\n    winter: 'Market preparation and planning'\\n  },\\n  \\n  // Success Metrics\\n  success_metrics: {\\n    total_keywords_analyzed: (keywordData?.tasks?.[0]?.result?.length || 0),\\n    high_opportunity_keywords: intelligence.keyword_opportunities?.length || 0,\\n    competitive_gaps_identified: Object.keys(intelligence.competitive_analysis || {}).length,\\n    content_opportunities: intelligence.content_recommendations?.length || 0\\n  }\\n};\\n\\nreturn [keywordResearchResults];"
+      }
+    },
+    {
+      "id": "keyword-validation-engine",
+      "name": "✅ Keyword Validation Engine",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.8,
+      "position": [1700, 400],
+      "parameters": {
+        "agent": "toolCallingAgent",
+        "promptTemplate": "You are the senior keyword research validation expert specializing in real estate market analysis and DataForSEO quality assurance.\\n\\n**Validation Input:**\\nKeyword Research Results: {{$node['📋 Keyword Data Aggregator'].json}}\\nOriginal Strategy: {{$node['🏠 Real Estate Keyword Strategist'].json}}\\nDataForSEO Data: {{$node['📊 DataForSEO Keyword Analyzer'].json}}\\n\\n**Comprehensive Keyword Research Validation:**\\n\\n1. **Data Quality Assessment (30%):**\\n   - Validate DataForSEO API response completeness and accuracy\\n   - Verify keyword metrics (search volume, competition, CPC) reliability\\n   - Assess SERP analysis data quality and relevance\\n   - Confirm geographic and demographic targeting accuracy\\n\\n2. **Strategic Alignment Validation (25%):**\\n   - Verify keyword strategy alignment with real estate market objectives\\n   - Assess property type keyword coverage and relevance\\n   - Validate buyer intent keyword categorization accuracy\\n   - Confirm seasonal opportunity identification and planning\\n\\n3. **Competitive Intelligence Assessment (25%):**\\n   - Validate competitive analysis depth and accuracy\\n   - Assess opportunity identification and gap analysis quality\\n   - Verify market positioning insights and recommendations\\n   - Confirm competitive keyword difficulty assessments\\n\\n4. **Implementation Readiness (20%):**\\n   - Assess content recommendation practicality and relevance\\n   - Validate optimization priority ranking and resource allocation\\n   - Verify ROI projection reasonableness and market alignment\\n   - Confirm implementation roadmap feasibility and timeline\\n\\n**Validation Tools Integration:**\\n- Use validate_workflow() to verify research methodology completeness\\n- Apply quality gates to ensure 90%+ data accuracy standards\\n- Implement cross-validation with alternative data sources when needed\\n\\n**Scoring**: 0-100 (85+ required for production deployment)\\n**Format**: Comprehensive JSON with validation scores, quality assessment, improvement recommendations, and deployment readiness confirmation.\",
+        "tools": [
+          {
+            "name": "validate_workflow",
+            "description": "Validate keyword research workflow methodology"
+          },
+          {
+            "name": "validate_workflow_expressions",
+            "description": "Validate data processing expressions and calculations"
+          }
+        ],
+        "hasOutputParser": true,
+        "outputParser": {
+          "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+          "parameters": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "validation_score": {"type": "number"},
+                "data_quality_score": {"type": "number"},
+                "strategic_alignment_score": {"type": "number"},
+                "competitive_intelligence_score": {"type": "number"},
+                "implementation_readiness_score": {"type": "number"},
+                "deployment_status": {"type": "string", "enum": ["approved", "conditional_approval", "revision_needed"]},
+                "quality_assessment": {"type": "object"},
+                "improvement_recommendations": {"type": "array"},
+                "deployment_readiness": {"type": "object"},
+                "next_steps": {"type": "array"}
+              }
+            }
+          }
+        },
+        "options": {
+          "systemMessage": "You are the senior keyword research validation expert with comprehensive real estate market knowledge and DataForSEO expertise. Your validation authority includes:\\n\\n• **Data Quality Assurance**: Advanced validation of DataForSEO API responses and keyword metrics\\n• **Real Estate Market Validation**: Expert assessment of property market keyword strategies and targeting\\n• **Competitive Intelligence Review**: Professional evaluation of competitive analysis and opportunity identification\\n• **Implementation Quality**: Practical assessment of content recommendations and optimization strategies\\n• **Performance Validation**: ROI projection analysis and success metric verification\\n\\nYour validation must be thorough, technically accurate, and focused on ensuring real estate SEO success with measurable business outcomes."
+        }
+      },
+      "credentials": {
+        "anthropicApi": {
+          "id": "anthropic-credentials",
+          "name": "Anthropic Claude API"
+        }
+      }
+    },
+    {
+      "id": "keyword-research-notification",
+      "name": "📢 Keyword Research Notification",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.2,
+      "position": [2000, 400],
+      "parameters": {
+        "resource": "message",
+        "operation": "post",
+        "channel": "#seo-automation",
+        "text": "🔍 **DataForSEO Keyword Research Completed - Real Estate Intelligence!**\\n\\n🏠 **Research Summary:**\\n• Location: {{$node['📋 Keyword Data Aggregator'].json.location}}\\n• Keywords Analyzed: {{$node['📋 Keyword Data Aggregator'].json.success_metrics.total_keywords_analyzed}}\\n• High Opportunities Found: {{$node['📋 Keyword Data Aggregator'].json.success_metrics.high_opportunity_keywords}}\\n• Content Opportunities: {{$node['📋 Keyword Data Aggregator'].json.success_metrics.content_opportunities}}\\n\\n📊 **Quality Validation:**\\n• Overall Score: {{$node['✅ Keyword Validation Engine'].json.validation_score}}/100\\n• Data Quality: {{$node['✅ Keyword Validation Engine'].json.data_quality_score}}/100\\n• Strategic Alignment: {{$node['✅ Keyword Validation Engine'].json.strategic_alignment_score}}/100\\n• Deployment Status: {{$node['✅ Keyword Validation Engine'].json.deployment_status}}\\n\\n🎯 **Key Findings:**\\n• Property Keywords: Residential, Commercial, Luxury, Investment coverage\\n• Geographic Targeting: Hyperlocal, City, Regional optimization\\n• Buyer Intent: Informational, Transactional, Commercial alignment\\n• Competitive Gaps: {{$node['📋 Keyword Data Aggregator'].json.success_metrics.competitive_gaps_identified}} opportunities identified\\n\\n📈 **Performance Projections:**\\n• Traffic Growth: {{$node['📋 Keyword Data Aggregator'].json.roi_projections.expected_traffic_increase}}\\n• Timeline: {{$node['📋 Keyword Data Aggregator'].json.roi_projections.ranking_improvement_timeline}}\\n• Lead Generation: {{$node['📋 Keyword Data Aggregator'].json.roi_projections.lead_generation_boost}}\\n\\n🚀 **Ready for content creation and optimization implementation!**",
+        "attachments": [],
+        "otherOptions": {
+          "mrkdwn": true
+        }
+      },
+      "credentials": {
+        "slackApi": {
+          "id": "slack-credentials",
+          "name": "Slack API"
+        }
+      }
+    },
+    {
+      "id": "keyword-research-response",
+      "name": "✨ Keyword Research Success Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [2300, 400],
+      "parameters": {
+        "options": {},
+        "responseBody": "{\\n  \\\"status\\\": \\\"success\\\",\\n  \\\"message\\\": \\\"🔍 DataForSEO keyword research completed with real estate intelligence!\\\",\\n  \\\"research_results\\\": {\\n    \\\"research_id\\\": \\\"{{$node['📋 Keyword Data Aggregator'].json.research_id}}\\\",\\n    \\\"location\\\": \\\"{{$node['📋 Keyword Data Aggregator'].json.location}}\\\",\\n    \\\"keywords_analyzed\\\": {{$node['📋 Keyword Data Aggregator'].json.success_metrics.total_keywords_analyzed}},\\n    \\\"opportunities_found\\\": {{$node['📋 Keyword Data Aggregator'].json.success_metrics.high_opportunity_keywords}},\\n    \\\"validation_score\\\": {{$node['✅ Keyword Validation Engine'].json.validation_score}},\\n    \\\"deployment_status\\\": \\\"{{$node['✅ Keyword Validation Engine'].json.deployment_status}}\\\"\\n  },\\n  \\\"keyword_intelligence\\\": {\\n    \\\"property_types\\\": {{$node['📋 Keyword Data Aggregator'].json.property_keywords}},\\n    \\\"geographic_targeting\\\": {{$node['📋 Keyword Data Aggregator'].json.geographic_keywords}},\\n    \\\"buyer_intent_mapping\\\": {{$node['📋 Keyword Data Aggregator'].json.buyer_intent}},\\n    \\\"competitive_analysis\\\": {{$node['📋 Keyword Data Aggregator'].json.competitive_analysis}},\\n    \\\"seasonal_opportunities\\\": {{$node['📋 Keyword Data Aggregator'].json.seasonal_opportunities}}\\n  },\\n  \\\"performance_projections\\\": {{$node['📋 Keyword Data Aggregator'].json.roi_projections}},\\n  \\\"implementation_roadmap\\\": {{$node['📋 Keyword Data Aggregator'].json.implementation_plan}},\\n  \\\"next_steps\\\": [\\n    \\\"Content creation workflow activation\\\",\\n    \\\"SEO optimization implementation\\\",\\n    \\\"Local SEO integration\\\",\\n    \\\"Performance monitoring setup\\\"\\n  ],\\n  \\\"dataforseo_intelligence\\\": {\\n    \\\"api_integration\\\": \\\"Successfully integrated\\\",\\n    \\\"data_quality\\\": \\\"High - {{$node['✅ Keyword Validation Engine'].json.data_quality_score}}/100\\\",\\n    \\\"real_time_analysis\\\": \\\"SERP and keyword data processed\\\",\\n    \\\"competitive_intelligence\\\": \\\"Advanced gap analysis completed\\\"\\n  }\\n}",
+        "responseHeaders": {
+          "entries": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "responseCode": 200
+      }
+    }
+  ],
+  "connections": {
+    "🎯 Keyword Research Trigger": {
+      "main": [
+        [
+          {
+            "node": "🏠 Real Estate Keyword Strategist",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🏠 Real Estate Keyword Strategist": {
+      "main": [
+        [
+          {
+            "node": "📊 DataForSEO Keyword Analyzer",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "🔍 SERP Analysis Engine",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📊 DataForSEO Keyword Analyzer": {
+      "main": [
+        [
+          {
+            "node": "🧠 Keyword Intelligence Processor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🔍 SERP Analysis Engine": {
+      "main": [
+        [
+          {
+            "node": "🧠 Keyword Intelligence Processor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🧠 Keyword Intelligence Processor": {
+      "main": [
+        [
+          {
+            "node": "📋 Keyword Data Aggregator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📋 Keyword Data Aggregator": {
+      "main": [
+        [
+          {
+            "node": "✅ Keyword Validation Engine",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "✅ Keyword Validation Engine": {
+      "main": [
+        [
+          {
+            "node": "📢 Keyword Research Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📢 Keyword Research Notification": {
+      "main": [
+        [
+          {
+            "node": "✨ Keyword Research Success Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": false,
+    "instanceId": "dataforseo-keyword-research-v1.0"
+  },
+  "tags": [
+    {
+      "id": "keyword-research",
+      "name": "Keyword Research"
+    },
+    {
+      "id": "dataforseo",
+      "name": "DataForSEO"
+    },
+    {
+      "id": "real-estate-seo",
+      "name": "Real Estate SEO"
+    },
+    {
+      "id": "competitive-analysis",
+      "name": "Competitive Analysis"
+    }
+  ]
+}

@@ -1,0 +1,87 @@
+{
+  "summary": {
+    "total_checks": 9,
+    "passed": 7,
+    "failed": 2,
+    "success_rate": 0.7777777777777778,
+    "overall_status": "FAIL"
+  },
+  "by_level": {
+    "schema": {
+      "passed": 2,
+      "failed": 1,
+      "messages": [
+        {
+          "status": "PASS",
+          "message": "Workflow name is valid",
+          "timestamp": "2025-08-12T08:43:22.739401"
+        },
+        {
+          "status": "PASS",
+          "message": "Node count is acceptable: 36",
+          "timestamp": "2025-08-12T08:43:22.739405"
+        },
+        {
+          "status": "FAIL",
+          "message": "Connection errors: Connection source node 'new_customer_signup' not found in workflow; Connection source node 'send_welcome_email' not found in workflow; Connection source node 'setup_project_workspace' not found in workflow; Connection source node 'lead_qualification_workflow_webhook_trigger' not found in workflow; Connection source node 'lead_qualification_workflow_validate_lead_data' not found in workflow; Connection source node 'lead_qualification_workflow_create_crm_record' not found in workflow",
+          "timestamp": "2025-08-12T08:43:22.739421"
+        }
+      ]
+    },
+    "logic": {
+      "passed": 2,
+      "failed": 0,
+      "messages": [
+        {
+          "status": "PASS",
+          "message": "Error handling implemented: 18 nodes",
+          "timestamp": "2025-08-12T08:43:22.739430"
+        },
+        {
+          "status": "PASS",
+          "message": "Retry logic implemented: 36 nodes",
+          "timestamp": "2025-08-12T08:43:22.739434"
+        }
+      ]
+    },
+    "security": {
+      "passed": 1,
+      "failed": 1,
+      "messages": [
+        {
+          "status": "PASS",
+          "message": "No hardcoded secrets detected",
+          "timestamp": "2025-08-12T08:43:22.739616"
+        },
+        {
+          "status": "FAIL",
+          "message": "Missing required environment variables: ['NOTION_TOKEN']",
+          "timestamp": "2025-08-12T08:43:22.739791"
+        }
+      ]
+    },
+    "performance": {
+      "passed": 1,
+      "failed": 0,
+      "messages": [
+        {
+          "status": "PASS",
+          "message": "Estimated execution time acceptable: 72.0s",
+          "timestamp": "2025-08-12T08:43:22.739796"
+        }
+      ]
+    },
+    "integration": {
+      "passed": 1,
+      "failed": 0,
+      "messages": [
+        {
+          "status": "PASS",
+          "message": "No external integrations detected",
+          "timestamp": "2025-08-12T08:43:22.739813"
+        }
+      ]
+    }
+  },
+  "generated_at": "2025-08-12T08:43:22.739835"
+}

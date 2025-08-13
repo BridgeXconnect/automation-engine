@@ -1,0 +1,183 @@
+# {{ package_name }} - Configuration Guide
+
+## Purpose
+Comprehensive configuration reference for {{ package_name }}. This guide covers environment variables, API keys, rate limits, and integration-specific configurations.
+
+## Environment Variables
+
+{% if environment_variables %}
+| Variable Name | Description | Required | Example |
+|---------------|-------------|----------|---------|
+{% for var_name, var_description in environment_variables.items() %}
+| `{{ var_name }}` | {{ var_description }} | ✅ | `your_{{ var_name.lower() }}_here` |
+{% endfor %}
+{% else %}
+| Variable Name | Description | Required | Example |
+|---------------|-------------|----------|---------|
+| `{{ package_slug.upper() }}_API_KEY` | Primary API key for external service | ✅ | `sk-abc123...` |
+| `{{ package_slug.upper() }}_WEBHOOK_SECRET` | Webhook validation secret | ✅ | `whsec_xyz789...` |
+| `{{ package_slug.upper() }}_ENV` | Environment designation | ✅ | `production` |
+{% endif %}
+
+### Setting Environment Variables
+
+**In n8n Cloud:**
+1. Navigate to Settings → Environment Variables
+2. Add each variable with secure values
+3. Save configuration
+
+**In Self-hosted n8n:**
+1. Add variables to `.env` file in n8n root directory
+2. Restart n8n service to load new variables
+3. Verify variables are accessible in workflow
+
+## API Keys & Credentials
+
+{% if api_keys_required %}
+### Required API Keys
+{% for api_key in api_keys_required %}
+- **{{ api_key }}**
+  - **Purpose**: Integration with {{ api_key.split('_')[0] | title }} service
+  - **Scopes**: Read, Write, Webhook
+  - **Rate Limit**: See rate limits section below
+  - **Documentation**: [{{ api_key.split('_')[0] | title }} API Docs](https://docs.{{ api_key.split('_')[0] | lower }}.com)
+{% endfor %}
+{% else %}
+### Primary Service API Key
+- **Purpose**: Main integration API access
+- **Scopes**: Read, Write, Webhook permissions required
+- **Format**: Usually starts with `sk-` or `pk-`
+- **Security**: Store in n8n credentials, never hardcode
+
+### Webhook Secret (if applicable)
+- **Purpose**: Validate incoming webhook authenticity
+- **Format**: Random string, typically 32+ characters
+- **Security**: Generate using secure random method
+{% endif %}
+
+### Credential Configuration in n8n
+
+1. **Navigate to Credentials**: Settings → Credentials → Add Credential
+2. **Select Credential Type**: Choose appropriate credential type for your integration
+3. **Enter Details**:
+   - Name: `{{ package_slug }}-[service]-credentials`
+   - API Key/Token: Your actual API key
+   - Additional fields as required
+4. **Test Connection**: Use "Test" button to verify credentials
+5. **Save**: Save credentials for use in workflow nodes
+
+## Rate Limits
+
+{% if rate_limits %}
+| Service | Limit | Reset Period | Burst Limit |
+|---------|--------|--------------|-------------|
+{% for service, limit in rate_limits.items() %}
+| {{ service }} | {{ limit.limit if limit is mapping else limit }} | {{ limit.period if limit is mapping else '1 hour' }} | {{ limit.burst if limit is mapping else 'N/A' }} |
+{% endfor %}
+{% else %}
+| Service | Limit | Reset Period | Burst Limit |
+|---------|--------|--------------|-------------|
+| Primary API | 1000 requests | 1 hour | 100 concurrent |
+| Webhook Delivery | 500 requests | 1 hour | 50 concurrent |
+| Data Export | 100 requests | 1 hour | 10 concurrent |
+{% endif %}
+
+### Rate Limit Handling
+- **Exponential Backoff**: 3 retries with increasing delays
+- **Queue Management**: Process requests sequentially during high load
+- **Error Logging**: Log rate limit hits for monitoring
+- **Circuit Breaker**: Temporarily disable on sustained rate limiting
+
+## Integration Gotchas
+
+{% if integration_gotchas %}
+{% for gotcha in integration_gotchas %}
+### **{{ gotcha.split(':')[0] if ':' in gotcha else 'Warning' }}**
+{{ gotcha.split(':')[1] if ':' in gotcha else gotcha }}
+
+{% endfor %}
+{% else %}
+### **API Versioning**
+Some services use API versioning in headers. Ensure you're using the correct API version in your requests.
+
+### **Webhook Timeouts**
+Most services expect webhook responses within 30 seconds. Ensure your workflow completes processing quickly.
+
+### **Data Format Validation**
+Validate data format before sending to external APIs. Many services reject malformed requests without helpful error messages.
+
+### **Authentication Expiration**
+API keys and tokens may expire. Monitor authentication errors and refresh credentials as needed.
+{% endif %}
+
+## Security Configuration
+
+### Data Protection
+- **Encryption**: All sensitive data encrypted at rest and in transit
+- **PII Handling**: Personal information redacted from logs
+- **Access Control**: Limit workflow access to authorized users only
+
+### Webhook Security
+- **Secret Validation**: Always validate webhook signatures
+- **HTTPS Only**: Never accept HTTP webhook deliveries
+- **IP Whitelisting**: Restrict webhook sources where possible
+
+### Secrets Management
+- **Never Hardcode**: Store all secrets in n8n credentials or environment variables
+- **Rotation Policy**: Rotate API keys quarterly or per security policy
+- **Audit Trail**: Log all credential access and modifications
+
+## Regional Considerations
+
+### Data Residency
+{% if template_variables.eu_data_residency %}
+- **EU Data Residency**: Configured for EU data processing requirements
+- **Data Centers**: Using EU-based n8n cloud regions
+- **Compliance**: GDPR-compliant data handling procedures
+{% else %}
+- **Default Region**: Using default regional settings
+- **Compliance**: Standard data processing procedures
+- **Migration**: EU residency available if required
+{% endif %}
+
+### Localization
+- **Time Zones**: Configure appropriate timezone for your region
+- **Date Formats**: Verify date format compatibility with integrated services
+- **Language**: Set appropriate language codes for international data
+
+## Monitoring Configuration
+
+### Success Metrics
+- **Execution Success Rate**: Target >99% success rate
+- **Average Execution Time**: Target <3 seconds median
+- **Error Rate**: Target <1% error rate with retries
+
+### Alert Configuration
+- **High Error Rate**: Alert when error rate >5% over 15 minutes  
+- **Slow Performance**: Alert when median execution >10 seconds
+- **Credential Issues**: Immediate alert on authentication failures
+
+### Logging Configuration
+```json
+{
+  "level": "info",
+  "structured": true,
+  "include_node_timing": true,
+  "redact_pii": true,
+  "retention_days": 30
+}
+```
+
+## Deployment Checklist
+
+- [ ] All environment variables configured
+- [ ] API credentials tested and validated
+- [ ] Rate limits documented and handled
+- [ ] Security configurations applied
+- [ ] Integration gotchas addressed
+- [ ] Monitoring and alerting enabled
+- [ ] Regional compliance verified
+- [ ] Backup and recovery procedures documented
+
+---
+*Configuration Guide v{{ template_variables.version | default('1.0.0') }} | Last Updated: {{ template_variables.updated_at | default('now') }}*

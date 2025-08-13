@@ -1,0 +1,109 @@
+{
+  "name": "lead_qualification_workflow",
+  "nodes": [
+    {
+      "id": "webhook-trigger",
+      "name": "webhook_trigger",
+      "type": "n8n-nodes-base.webhook",
+      "position": [200, 300],
+      "parameters": {
+        "path": "lead-intake",
+        "httpMethod": "POST",
+        "responseMode": "onReceived"
+      }
+    },
+    {
+      "id": "validate-data",
+      "name": "validate_lead_data", 
+      "type": "n8n-nodes-base.set",
+      "position": [400, 300],
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "status",
+              "value": "validated"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "crm-create",
+      "name": "create_crm_record",
+      "type": "n8n-nodes-base.httpRequest", 
+      "position": [600, 300],
+      "parameters": {
+        "url": "https://api.crm-system.com/leads",
+        "method": "POST",
+        "headers": {
+          "Authorization": "Bearer {{$credentials.crm_api.token}}"
+        }
+      },
+      "retries": 3,
+      "retryOnFail": true
+    },
+    {
+      "id": "send-notification",
+      "name": "send_notification",
+      "type": "n8n-nodes-base.emailSend",
+      "position": [800, 300], 
+      "parameters": {
+        "to": "sales@company.com",
+        "subject": "New Lead: {{$json['company_name']}}",
+        "message": "New lead received and processed automatically."
+      }
+    },
+    {
+      "id": "error-handler",
+      "name": "error__handle_failures",
+      "type": "n8n-nodes-base.set",
+      "position": [500, 500],
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "error_status", 
+              "value": "failed"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "connections": {
+    "webhook_trigger": {
+      "main": [
+        [
+          {
+            "node": "validate_lead_data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "validate_lead_data": {
+      "main": [
+        [
+          {
+            "node": "create_crm_record", 
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "create_crm_record": {
+      "main": [
+        [
+          {
+            "node": "send_notification",
+            "type": "main", 
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

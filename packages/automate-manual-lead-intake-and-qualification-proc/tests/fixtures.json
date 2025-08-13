@@ -1,0 +1,8 @@
+{
+  "sample_input": {
+    "test": "data"
+  },
+  "expected_output": {
+    "success": true
+  }
+}

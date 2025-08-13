@@ -1,0 +1,295 @@
+{
+  "sample_webhook_payloads": {
+    "lead_intake": {
+      "email": "john.doe@example.com",
+      "first_name": "John",
+      "last_name": "Doe",
+      "company": "Acme Corp",
+      "company_size": 150,
+      "industry": "technology",
+      "source": "website_form",
+      "budget_range": "$10K-50K",
+      "timeline": "3-6 months",
+      "message": "Interested in automation solutions for our sales process"
+    },
+    "order_processing": {
+      "order_id": "ORDER-12345",
+      "customer_email": "customer@example.com",
+      "customer_name": "Jane Smith",
+      "order_total": 299.99,
+      "currency": "USD",
+      "items": [
+        {
+          "product_id": "PROD-001",
+          "name": "Premium Automation Package",
+          "quantity": 1,
+          "price": 299.99
+        }
+      ],
+      "shipping_address": {
+        "street": "123 Main St",
+        "city": "San Francisco",
+        "state": "CA",
+        "zip": "94105",
+        "country": "US"
+      },
+      "payment_status": "paid"
+    },
+    "support_ticket": {
+      "ticket_id": "TICKET-67890",
+      "customer_email": "support@customer.com",
+      "subject": "Integration Issue with CRM",
+      "priority": "high",
+      "category": "technical",
+      "description": "Our CRM integration stopped working this morning. Orders are not syncing properly.",
+      "created_at": "2024-01-15T09:30:00Z",
+      "customer_tier": "enterprise"
+    }
+  },
+  
+  "expected_outputs": {
+    "lead_qualification": {
+      "lead_score": 85,
+      "qualification_status": "qualified",
+      "assigned_rep": "sales_rep_1",
+      "next_action": "schedule_demo",
+      "hubspot_contact_id": "12345678",
+      "follow_up_scheduled": true,
+      "qualification_reason": "High company size, technology industry, strong budget fit"
+    },
+    "order_fulfillment": {
+      "fulfillment_status": "processing",
+      "estimated_ship_date": "2024-01-17",
+      "tracking_number": null,
+      "warehouse_assigned": "SF_WAREHOUSE_01",
+      "processing_notes": "Premium package - priority processing",
+      "notifications_sent": ["customer_confirmation", "warehouse_notification"]
+    },
+    "support_routing": {
+      "assigned_agent": "tech_support_lead",
+      "escalation_level": "L2",
+      "sla_target": "4 hours",
+      "category_confidence": 0.92,
+      "suggested_articles": ["KB-001", "KB-045", "KB-103"],
+      "auto_response_sent": true
+    }
+  },
+  
+  "validation_test_cases": {
+    "valid_inputs": [
+      {
+        "email": "valid@example.com",
+        "name": "Valid Name",
+        "company": "Valid Company",
+        "expected_result": "valid"
+      },
+      {
+        "email": "another.valid+email@domain.co.uk",
+        "name": "Another Valid Name",
+        "company": "Another Valid Company Inc.",
+        "expected_result": "valid"
+      }
+    ],
+    "invalid_inputs": [
+      {
+        "email": "invalid-email",
+        "name": "",
+        "company": "Test Company",
+        "expected_error": "Invalid email format"
+      },
+      {
+        "email": "valid@example.com", 
+        "name": "Valid Name",
+        "company": "",
+        "expected_error": "Company name is required"
+      },
+      {
+        "email": "",
+        "name": "Valid Name",
+        "company": "Valid Company",
+        "expected_error": "Email is required"
+      }
+    ],
+    "edge_cases": [
+      {
+        "email": "very.long.email.address.that.might.cause.issues@very-long-domain-name-that-tests-limits.com",
+        "name": "Very Long Name That Tests Character Limits And Edge Cases",
+        "company": "Very Long Company Name That Tests Database Field Limits And Validation Rules",
+        "expected_result": "valid_with_truncation"
+      },
+      {
+        "email": "unicode.test@例え.テスト",
+        "name": "Unicode Test 测试 тест",
+        "company": "国际公司 International Corp",
+        "expected_result": "valid_unicode"
+      }
+    ]
+  },
+  
+  "performance_test_data": {
+    "small_batch": {
+      "record_count": 10,
+      "max_processing_time": "5 seconds",
+      "expected_throughput": "2 records/second"
+    },
+    "medium_batch": {
+      "record_count": 100,
+      "max_processing_time": "30 seconds",
+      "expected_throughput": "3+ records/second"
+    },
+    "large_batch": {
+      "record_count": 1000,
+      "max_processing_time": "300 seconds",
+      "expected_throughput": "3+ records/second"
+    }
+  },
+  
+  "integration_test_scenarios": [
+    {
+      "name": "CRM Integration Success",
+      "description": "Test successful CRM contact creation",
+      "input": {
+        "email": "integration.test@example.com",
+        "first_name": "Integration",
+        "last_name": "Test",
+        "company": "Test Company"
+      },
+      "mock_responses": {
+        "hubspot_create_contact": {
+          "status": 200,
+          "body": {
+            "id": "test_contact_123",
+            "properties": {
+              "email": "integration.test@example.com",
+              "firstname": "Integration",
+              "lastname": "Test",
+              "company": "Test Company"
+            },
+            "createdAt": "2024-01-15T10:30:00Z"
+          }
+        }
+      },
+      "expected_outcome": {
+        "status": "success",
+        "contact_id": "test_contact_123",
+        "created": true
+      }
+    },
+    {
+      "name": "Email Notification Success",
+      "description": "Test successful email notification sending",
+      "input": {
+        "to": "test@example.com",
+        "subject": "Test Subject",
+        "body": "Test email body"
+      },
+      "mock_responses": {
+        "gmail_send": {
+          "status": 200,
+          "body": {
+            "id": "test_message_456",
+            "threadId": "test_thread_789",
+            "labelIds": ["SENT"]
+          }
+        }
+      },
+      "expected_outcome": {
+        "status": "success",
+        "message_id": "test_message_456",
+        "sent": true
+      }
+    },
+    {
+      "name": "Slack Notification Success",
+      "description": "Test successful Slack message posting",
+      "input": {
+        "channel": "#test-channel",
+        "text": "Test message",
+        "attachments": [
+          {
+            "color": "good",
+            "title": "Test Attachment",
+            "text": "Test attachment content"
+          }
+        ]
+      },
+      "mock_responses": {
+        "slack_post_message": {
+          "status": 200,
+          "body": {
+            "ok": true,
+            "channel": "C1234567890",
+            "ts": "1234567890.123456",
+            "message": {
+              "text": "Test message",
+              "user": "U1234567890",
+              "ts": "1234567890.123456"
+            }
+          }
+        }
+      },
+      "expected_outcome": {
+        "status": "success",
+        "message_ts": "1234567890.123456",
+        "posted": true
+      }
+    }
+  ],
+  
+  "error_scenarios": [
+    {
+      "name": "API Rate Limit Error",
+      "description": "Test handling of API rate limit errors",
+      "trigger": "rate_limit_exceeded",
+      "mock_response": {
+        "status": 429,
+        "body": {
+          "error": "rate_limited",
+          "message": "Too many requests. Try again in 60 seconds."
+        }
+      },
+      "expected_behavior": {
+        "retry_attempted": true,
+        "retry_delay": "exponential_backoff",
+        "max_retries": 3,
+        "final_action": "dead_letter_queue"
+      }
+    },
+    {
+      "name": "Authentication Error",
+      "description": "Test handling of authentication failures",
+      "trigger": "invalid_credentials",
+      "mock_response": {
+        "status": 401,
+        "body": {
+          "error": "unauthorized",
+          "message": "Invalid API key"
+        }
+      },
+      "expected_behavior": {
+        "retry_attempted": false,
+        "error_logged": true,
+        "alert_sent": true,
+        "fallback_action": "manual_review_queue"
+      }
+    },
+    {
+      "name": "Service Unavailable Error",
+      "description": "Test handling of service unavailability",
+      "trigger": "service_down",
+      "mock_response": {
+        "status": 503,
+        "body": {
+          "error": "service_unavailable", 
+          "message": "Service temporarily unavailable"
+        }
+      },
+      "expected_behavior": {
+        "retry_attempted": true,
+        "retry_delay": "exponential_backoff",
+        "max_retries": 3,
+        "circuit_breaker_triggered": true
+      }
+    }
+  ]
+}

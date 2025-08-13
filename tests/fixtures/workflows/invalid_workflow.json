@@ -1,0 +1,31 @@
+{
+  "name": "Invalid Workflow Name!",
+  "nodes": [
+    {
+      "id": "invalid_node_1",
+      "name": "Invalid Node Name With Spaces!",
+      "type": "invalid-node-type",
+      "position": "invalid_position_format",
+      "parameters": {
+        "hardcoded_password": "secret123",
+        "api_key": "hardcoded_key_value"
+      }
+    },
+    {
+      "id": "missing_required_fields",
+      "type": "n8n-nodes-base.set"
+    }
+  ],
+  "connections": {
+    "invalid_node_1": {
+      "main": [
+        {
+          "node": "nonexistent_node",
+          "type": "main",
+          "index": 0
+        }
+      ]
+    }
+  },
+  "active": true
+}

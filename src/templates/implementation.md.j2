@@ -1,0 +1,151 @@
+# {{ package_name }} - Implementation Guide
+
+## Purpose
+Step-by-step guide to implement the {{ package_name }} automation package. This guide provides detailed instructions for technical implementation including prerequisites, installation, configuration, and testing.
+
+## Prerequisites
+
+{% if prerequisites %}
+{% for prerequisite in prerequisites %}
+- {{ prerequisite }}
+{% endfor %}
+{% else %}
+- n8n instance (version 0.200.0+)
+- Admin access to n8n workspace
+- Required API keys (see Configuration Guide)
+- Basic understanding of n8n workflows
+{% endif %}
+
+## Installation Steps
+
+{% if installation_steps %}
+{% for step in installation_steps %}
+{{ loop.index }}. {{ step }}
+{% endfor %}
+{% else %}
+1. **Download Workflow**: Export the `{{ package_slug }}.json` file from the workflows directory
+2. **Import to n8n**: 
+   - Navigate to n8n dashboard
+   - Click "Import from file"
+   - Select the `{{ package_slug }}.json` file
+   - Click "Import"
+3. **Verify Import**: Confirm all nodes loaded correctly with no missing credentials
+4. **Initial Save**: Save the workflow to finalize the import
+{% endif %}
+
+## Configuration Steps
+
+{% if configuration_steps %}
+{% for step in configuration_steps %}
+{{ loop.index }}. {{ step }}
+{% endfor %}
+{% else %}
+1. **Set Credentials**:
+   {% if template_variables.api_keys_required %}
+   {% for api_key in template_variables.api_keys_required %}
+   - Configure {{ api_key }} in n8n credentials
+   {% endfor %}
+   {% endif %}
+
+2. **Configure Environment Variables**:
+   {% if template_variables.environment_variables %}
+   {% for var_name, var_description in template_variables.environment_variables.items() %}
+   - `{{ var_name }}`: {{ var_description }}
+   {% endfor %}
+   {% endif %}
+
+3. **Update Webhook URLs**:
+   - Copy webhook URL from trigger node
+   - Update external systems to use the new webhook endpoint
+   - Test webhook connectivity
+
+4. **Set Node Parameters**:
+   - Review each node configuration
+   - Update any hardcoded values with your environment specifics
+   - Verify data mappings match your data structure
+{% endif %}
+
+## Testing Steps
+
+{% if testing_steps %}
+{% for step in testing_steps %}
+{{ loop.index }}. {{ step }}
+{% endfor %}
+{% else %}
+1. **Manual Trigger Test**:
+   - Click "Test workflow" button
+   - Verify workflow executes without errors
+   - Check all nodes process data correctly
+
+2. **End-to-End Test**:
+   - Send test data through the actual trigger
+   - Monitor execution in real-time
+   - Verify expected outputs are generated
+
+3. **Error Handling Test**:
+   - Test with invalid/missing data
+   - Verify error handling works correctly
+   - Confirm fallback mechanisms activate
+
+4. **Performance Test**:
+   - Process typical data volumes
+   - Monitor execution times
+   - Verify resource usage is acceptable
+{% endif %}
+
+## Post-Implementation
+
+### Activation
+1. **Enable Workflow**: Set workflow status to "Active"
+2. **Monitor Initial Runs**: Watch first few executions closely
+3. **Document Custom Changes**: Note any modifications made during implementation
+
+### Validation
+- [ ] Workflow processes test data successfully
+- [ ] All integrations respond correctly
+- [ ] Error handling functions as expected
+- [ ] Performance meets requirements (< 3 seconds median)
+- [ ] Logging captures necessary information
+
+## Troubleshooting
+
+### Common Issues
+
+**Credential Errors**:
+- Verify API keys are correctly configured
+- Check credential permissions and scopes
+- Ensure credentials are assigned to correct nodes
+
+**Data Mapping Issues**:
+- Review input/output data structure
+- Verify field names match source systems
+- Check for null/missing data handling
+
+**Performance Issues**:
+- Monitor node execution times
+- Check for unnecessary loops or operations
+- Verify external API rate limits
+
+### Support Resources
+- Configuration Guide: `configuration.md`
+- Operations Runbook: `runbook.md`
+- Standard Procedures: `sop.md`
+
+## Notes
+
+{% if template_variables.integration_gotchas %}
+### **Integration Warnings**
+{% for gotcha in template_variables.integration_gotchas %}
+- **{{ gotcha }}**
+{% endfor %}
+{% endif %}
+
+{% if template_variables.rate_limits %}
+### Rate Limits
+{% for service, limit in template_variables.rate_limits.items() %}
+- {{ service }}: {{ limit }}
+{% endfor %}
+{% endif %}
+
+---
+*Implementation Guide v{{ template_variables.version | default('1.0.0') }} | Last Updated: {{ template_variables.updated_at | default('now') }}*

@@ -1,0 +1,231 @@
+# {{ package_name }} - Operations Runbook
+
+## Purpose
+Operations runbook for {{ package_name }} automation. This guide covers monitoring, troubleshooting, incident response, and rollback procedures for production environments.
+
+## Monitoring Checklist
+
+### Primary Health Indicators
+{% if monitoring_checklist %}
+{% for check in monitoring_checklist %}
+- [ ] {{ check }}
+{% endfor %}
+{% else %}
+- [ ] **Workflow Execution Rate**: Monitor executions per hour/day
+- [ ] **Success Rate**: Target >99% successful executions  
+- [ ] **Average Execution Time**: Target <3 seconds median
+- [ ] **Error Rate**: Target <1% errors with retries
+- [ ] **Queue Depth**: Monitor pending executions
+- [ ] **Resource Usage**: CPU, memory, disk utilization
+- [ ] **API Response Times**: External service latency
+- [ ] **Credential Status**: Authentication health checks
+{% endif %}
+
+### Monitoring Dashboards
+- **n8n Dashboard**: Primary workflow execution metrics
+- **External Service Status**: Third-party integration health
+- **Error Log Dashboard**: Centralized error tracking and analysis
+- **Performance Metrics**: Execution times and throughput analysis
+
+### Alert Thresholds
+| Metric | Warning | Critical | Action Required |
+|---------|---------|----------|-----------------|
+| Success Rate | <95% | <90% | Investigate immediately |
+| Avg Execution Time | >5s | >10s | Performance optimization |
+| Error Rate | >2% | >5% | Debug and fix errors |
+| Queue Depth | >50 | >100 | Scale or optimize |
+
+## Troubleshooting Guide
+
+{% if troubleshooting_steps %}
+{% for problem, solutions in troubleshooting_steps.items() %}
+### {{ problem }}
+
+**Symptoms**: {{ problem.split(' - ')[1] if ' - ' in problem else 'See description above' }}
+
+**Resolution Steps**:
+{% for solution in solutions %}
+{{ loop.index }}. {{ solution }}
+{% endfor %}
+
+{% endfor %}
+{% else %}
+### High Error Rate
+
+**Symptoms**: Error rate >5% over sustained period
+
+**Resolution Steps**:
+1. Check n8n execution log for error patterns
+2. Verify external service status and availability
+3. Validate API credentials and permissions
+4. Review recent configuration changes
+5. Check rate limiting and throttling
+6. Escalate if errors persist >30 minutes
+
+### Slow Performance  
+
+**Symptoms**: Execution times >10 seconds consistently
+
+**Resolution Steps**:
+1. Identify bottleneck nodes in workflow execution
+2. Check external API response times
+3. Review data volume and complexity
+4. Optimize inefficient nodes or operations
+5. Consider workflow parallelization
+6. Monitor resource usage patterns
+
+### Authentication Failures
+
+**Symptoms**: Credential or authentication errors
+
+**Resolution Steps**:
+1. Verify API key validity and expiration
+2. Check credential configuration in n8n
+3. Test API connectivity manually
+4. Review service-specific authentication requirements
+5. Rotate credentials if necessary
+6. Update webhook configurations after credential changes
+
+### Webhook Delivery Issues
+
+**Symptoms**: Missing or delayed webhook deliveries
+
+**Resolution Steps**:
+1. Check external service webhook configuration
+2. Verify webhook URL accessibility
+3. Review webhook secret validation
+4. Check network connectivity and firewall rules
+5. Examine webhook delivery logs
+6. Test webhook endpoint manually
+{% endif %}
+
+## Incident Response Procedures
+
+### Severity Classification
+- **P0 Critical**: Automation completely down, business impact
+- **P1 High**: Degraded performance, some failures
+- **P2 Medium**: Minor issues, workarounds available
+- **P3 Low**: Enhancement requests, documentation updates
+
+### Response Timeline
+| Severity | Initial Response | Resolution Target | Escalation |
+|----------|------------------|-------------------|------------|
+| P0 Critical | 15 minutes | 2 hours | Immediate |
+| P1 High | 1 hour | 8 hours | 4 hours |
+| P2 Medium | 4 hours | 24 hours | 8 hours |
+| P3 Low | 24 hours | 1 week | As needed |
+
+### Escalation Contacts
+{% if escalation_contacts %}
+{% for contact in escalation_contacts %}
+- **{{ contact.split(':')[0] if ':' in contact else 'Contact' }}**: {{ contact.split(':')[1] if ':' in contact else contact }}
+{% endfor %}
+{% else %}
+- **Primary On-Call**: DevOps team lead
+- **Secondary**: Automation team lead  
+- **Business Contact**: Process owner
+- **Executive**: VP of Operations (P0 only)
+{% endif %}
+
+## Rollback Procedures
+
+{% if rollback_procedure %}
+### Standard Rollback Steps
+{% for step in rollback_procedure %}
+{{ loop.index }}. {{ step }}
+{% endfor %}
+{% else %}
+### Emergency Rollback Steps
+
+**When to Rollback**:
+- Error rate >20% for >15 minutes
+- Critical business process failure
+- Data corruption or loss detected
+- Security incident identified
+
+**Rollback Process**:
+1. **Immediate Stop**: Disable the workflow in n8n dashboard
+2. **Backup Current State**: Export current workflow configuration
+3. **Restore Previous Version**: Import last known good workflow version
+4. **Verify Rollback**: Test restored workflow with sample data
+5. **Communication**: Notify stakeholders of rollback completion
+6. **Investigation**: Begin root cause analysis of the issue
+
+### Post-Rollback Actions
+1. **Document Incident**: Record timeline, impact, and resolution
+2. **Root Cause Analysis**: Identify why the issue occurred
+3. **Preventive Measures**: Implement measures to prevent recurrence
+4. **Team Review**: Conduct post-mortem with involved teams
+5. **Process Improvement**: Update procedures based on learnings
+{% endif %}
+
+## Performance Optimization
+
+### Optimization Strategies
+- **Node Optimization**: Remove unnecessary nodes and operations
+- **Data Handling**: Minimize data transformation steps
+- **Parallel Processing**: Use parallel branches where possible
+- **Caching**: Cache frequently accessed data
+- **Batch Processing**: Group related operations together
+
+### Performance Monitoring
+- **Execution Time**: Monitor and trend workflow execution duration
+- **Resource Usage**: Track CPU, memory, and network utilization
+- **Throughput**: Measure processed items per time period
+- **Bottleneck Analysis**: Identify slowest nodes and operations
+
+## Maintenance Procedures
+
+### Regular Maintenance Tasks
+- **Weekly**: Review error logs and performance metrics
+- **Monthly**: Update credentials and API keys as needed
+- **Quarterly**: Performance optimization review
+- **Annually**: Full workflow audit and documentation update
+
+### Maintenance Windows
+- **Scheduled**: Monthly 2-hour maintenance window
+- **Emergency**: As needed for critical updates
+- **Communication**: 48-hour advance notice for scheduled maintenance
+
+## Disaster Recovery
+
+### Backup Procedures
+- **Workflow Backup**: Daily automated export of workflow configurations
+- **Credential Backup**: Secure backup of authentication credentials
+- **Documentation Backup**: Version-controlled documentation storage
+
+### Recovery Procedures  
+- **Service Restoration**: Steps to restore service after outage
+- **Data Recovery**: Procedures for recovering lost or corrupted data
+- **Business Continuity**: Manual processes during extended outages
+
+## Logging and Auditing
+
+### Log Retention
+- **Execution Logs**: 30 days retention
+- **Error Logs**: 90 days retention  
+- **Audit Logs**: 1 year retention
+- **Performance Logs**: 30 days retention
+
+### Log Analysis
+- **Pattern Recognition**: Identify recurring issues and trends
+- **Performance Analysis**: Track execution time and resource usage
+- **Security Monitoring**: Monitor for suspicious activities
+- **Compliance Tracking**: Ensure audit trail completeness
+
+## Quality Assurance
+
+### Quality Metrics
+- **Success Rate**: >99% target
+- **Performance**: <3 second median execution
+- **Reliability**: <0.1% unplanned downtime
+- **Customer Satisfaction**: >95% positive feedback
+
+### Quality Monitoring
+- **Automated Testing**: Continuous validation of workflow functionality
+- **Performance Testing**: Regular load and stress testing
+- **User Feedback**: Collection and analysis of user experience data
+- **Business Impact**: Measurement of automation business value
+
+---
+*Operations Runbook v{{ template_variables.version | default('1.0.0') }} | Last Updated: {{ template_variables.updated_at | default('now') }}*

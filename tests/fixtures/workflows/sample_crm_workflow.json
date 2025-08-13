@@ -1,0 +1,186 @@
+{
+  "name": "crm_lead_qualification",
+  "nodes": [
+    {
+      "id": "webhook_1",
+      "name": "lead_intake_webhook", 
+      "type": "n8n-nodes-base.webhook",
+      "position": [100, 100],
+      "parameters": {
+        "path": "/lead-intake",
+        "httpMethod": "POST",
+        "responseMode": "onReceived",
+        "options": {
+          "noResponseBody": false
+        }
+      }
+    },
+    {
+      "id": "set_1",
+      "name": "data_validation",
+      "type": "n8n-nodes-base.set",
+      "position": [300, 100],
+      "parameters": {
+        "values": {
+          "validated": "true",
+          "timestamp": "{{ new Date().toISOString() }}",
+          "lead_score": "{{ parseInt($json.company_size) * 10 + ($json.industry === 'technology' ? 25 : 0) }}"
+        },
+        "options": {
+          "dotNotation": false
+        }
+      }
+    },
+    {
+      "id": "hubspot_1",
+      "name": "hubspot_create_contact",
+      "type": "n8n-nodes-base.hubspot",
+      "position": [500, 100], 
+      "parameters": {
+        "resource": "contact",
+        "operation": "create",
+        "email": "={{ $json.email }}",
+        "firstName": "={{ $json.first_name }}",
+        "lastName": "={{ $json.last_name }}",
+        "company": "={{ $json.company }}",
+        "leadScore": "={{ $json.lead_score }}",
+        "additionalFields": {
+          "source": "={{ $json.source }}",
+          "qualification_status": "new_lead"
+        }
+      },
+      "credentials": {
+        "hubspotApi": {
+          "id": "hubspot_creds",
+          "name": "HubSpot API"
+        }
+      }
+    },
+    {
+      "id": "if_1",
+      "name": "qualification_check",
+      "type": "n8n-nodes-base.if",
+      "position": [700, 100],
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.lead_score }}",
+              "operation": "larger",
+              "value2": 50
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "slack_1",
+      "name": "slack_high_value_notification",
+      "type": "n8n-nodes-base.slack",
+      "position": [900, 50],
+      "parameters": {
+        "channel": "#sales-qualified",
+        "text": "🔥 High-value lead qualified: {{ $json.email }} (Score: {{ $json.lead_score }})",
+        "attachments": [
+          {
+            "color": "good",
+            "fields": [
+              {
+                "title": "Company",
+                "value": "{{ $json.company }}",
+                "short": true
+              },
+              {
+                "title": "Source", 
+                "value": "{{ $json.source }}",
+                "short": true
+              }
+            ]
+          }
+        ]
+      },
+      "credentials": {
+        "slackApi": {
+          "id": "slack_creds",
+          "name": "Slack Bot"
+        }
+      }
+    },
+    {
+      "id": "gmail_1",
+      "name": "gmail_follow_up_sequence",
+      "type": "n8n-nodes-base.gmail",
+      "position": [900, 150],
+      "parameters": {
+        "operation": "send",
+        "to": "={{ $json.email }}",
+        "subject": "Thanks for your interest in our solution",
+        "message": "Hi {{ $json.first_name }},\n\nThanks for reaching out! Based on your profile, I'd love to schedule a quick 15-minute call to discuss how we can help {{ $json.company }}.\n\nBest regards,\nSales Team",
+        "options": {
+          "htmlBody": false
+        }
+      },
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "gmail_creds",
+          "name": "Gmail OAuth"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "webhook_1": {
+      "main": [
+        {
+          "node": "set_1",
+          "type": "main",
+          "index": 0
+        }
+      ]
+    },
+    "set_1": {
+      "main": [
+        {
+          "node": "hubspot_1", 
+          "type": "main",
+          "index": 0
+        }
+      ]
+    },
+    "hubspot_1": {
+      "main": [
+        {
+          "node": "if_1",
+          "type": "main", 
+          "index": 0
+        }
+      ]
+    },
+    "if_1": {
+      "main": [
+        [
+          {
+            "node": "slack_1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "gmail_1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "active": false,
+  "tags": ["crm", "lead-qualification", "automation"],
+  "meta": {
+    "created": "2024-01-15T10:30:00.000Z",
+    "updated": "2024-01-15T14:45:00.000Z"
+  }
+}

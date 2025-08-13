@@ -1,0 +1,513 @@
+{
+  "name": "✍️ E-E-A-T Content Creation - Real Estate Authority",
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": "seo-error-handler-workflow-id"
+  },
+  "nodes": [
+    {
+      "id": "content-creation-trigger",
+      "name": "📝 Content Creation Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [200, 500],
+      "parameters": {
+        "path": "eeat-content-creation",
+        "httpMethod": "POST",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "*",
+          "rawBody": true
+        }
+      }
+    },
+    {
+      "id": "eeat-strategy-architect",
+      "name": "🏆 E-E-A-T Strategy Architect",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.8,
+      "position": [500, 500],
+      "parameters": {
+        "agent": "toolCallingAgent",
+        "promptTemplate": "You are the master E-E-A-T content strategy architect specializing in real estate authority building and Google's quality guidelines compliance.\\n\\n**Content Brief Input:**\\n{{$json}}\\n\\n**Advanced E-E-A-T Strategy Framework for Real Estate:**\\n\\n1. **Experience (E1) - Real Estate Market Experience:**\\n   - **Personal Market Experience**: Direct real estate transaction involvement, market participation\\n   - **Professional Experience**: Years in real estate, transaction volume, market specialization\\n   - **Local Market Experience**: Neighborhood expertise, community involvement, market history\\n   - **Client Success Stories**: Documented results, testimonials, case studies\\n\\n2. **Expertise (E2) - Real Estate Professional Knowledge:**\\n   - **Market Analysis Expertise**: Data interpretation, trend analysis, pricing strategies\\n   - **Legal & Regulatory Knowledge**: Real estate law, compliance, contract expertise\\n   - **Financial Expertise**: Mortgage knowledge, investment analysis, market economics\\n   - **Technical Skills**: Property valuation, inspection knowledge, technology proficiency\\n\\n3. **Authoritativeness (A) - Industry Recognition & Citations:**\\n   - **Industry Credentials**: Licenses, certifications, professional designations\\n   - **Media Recognition**: Press mentions, interviews, speaking engagements\\n   - **Professional Citations**: Industry publications, expert references, backlinks\\n   - **Award Recognition**: Industry awards, performance recognition, peer acknowledgment\\n\\n4. **Trustworthiness (T) - Credibility & Reliability:**\\n   - **Transparent Communication**: Clear disclosure, honest market assessment\\n   - **Verifiable Information**: Data sources, citations, fact-checking protocols\\n   - **Professional Standards**: Ethics compliance, fiduciary responsibility\\n   - **Security & Privacy**: Data protection, client confidentiality, secure communications\\n\\n5. **Real Estate Content Authority Framework:**\\n   - **Market Reports**: Data-driven analysis with authoritative sources\\n   - **Buyer/Seller Guides**: Experience-based advice with expert validation\\n   - **Investment Analysis**: Professional-grade financial modeling and projections\\n   - **Neighborhood Profiles**: Local expertise with community insight\\n   - **Legal Updates**: Regulatory changes with expert interpretation\\n\\n**MCP Integration for Content Excellence:**\\n- Use search_nodes() to find content optimization and validation nodes\\n- Apply get_node_essentials() for E-E-A-T compliance configurations\\n- Coordinate with fact-checking and citation validation systems\\n\\n**Strategic Output Requirements:**\\nProvide comprehensive E-E-A-T content strategy with experience validation, expertise demonstration, authority building, and trustworthiness protocols specifically optimized for real estate market authority.\",
+        "tools": [
+          {
+            "name": "search_nodes",
+            "description": "Find content creation and E-E-A-T validation nodes"
+          },
+          {
+            "name": "get_node_essentials",
+            "description": "Get optimal E-E-A-T compliance configurations"
+          },
+          {
+            "name": "validate_node_minimal",
+            "description": "Validate content strategy setup"
+          }
+        ],
+        "hasOutputParser": true,
+        "outputParser": {
+          "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+          "parameters": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "eeat_strategy": {"type": "object"},
+                "experience_framework": {"type": "object"},
+                "expertise_validation": {"type": "object"},
+                "authority_building": {"type": "object"},
+                "trustworthiness_protocol": {"type": "object"},
+                "content_requirements": {"type": "object"},
+                "citation_strategy": {"type": "object"},
+                "fact_checking_protocol": {"type": "object"},
+                "compliance_checklist": {"type": "array"},
+                "quality_metrics": {"type": "object"}
+              }
+            }
+          }
+        },
+        "options": {
+          "systemMessage": "You are the premier E-E-A-T content strategy architect for real estate with comprehensive knowledge of Google's quality guidelines and real estate industry authority building. Your expertise includes:\\n\\n• **E-E-A-T Mastery**: Deep understanding of Experience, Expertise, Authoritativeness, and Trustworthiness guidelines\\n• **Real Estate Authority**: Professional knowledge of market dynamics, regulations, and industry standards\\n• **Content Strategy Excellence**: Advanced content planning for authority building and search performance\\n• **Compliance Framework**: Comprehensive quality assurance and fact-checking protocols\\n• **Citation & Attribution**: Professional sourcing and reference management systems\\n\\nYour strategies must demonstrate measurable authority, comply with Google's highest quality standards, and establish definitive real estate market expertise."
+        }
+      },
+      "credentials": {
+        "anthropicApi": {
+          "id": "anthropic-credentials",
+          "name": "Anthropic Claude API"
+        }
+      }
+    },
+    {
+      "id": "real-estate-research-specialist",
+      "name": "🔍 Real Estate Research Specialist",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.8,
+      "position": [800, 300],
+      "parameters": {
+        "agent": "toolCallingAgent",
+        "promptTemplate": "You are the senior real estate research specialist focusing on authoritative data collection and E-E-A-T compliance for content creation.\\n\\n**Research Assignment:**\\nContent Topic: {{$json.topic}}\\nE-E-A-T Strategy: {{$node['🏆 E-E-A-T Strategy Architect'].json}}\\nKeyword Intelligence: {{$json.keyword_data || 'Not provided'}}\\n\\n**Authoritative Real Estate Research Framework:**\\n\\n1. **Market Data Research (High Authority Sources):**\\n   - **Government Sources**: Census data, HUD reports, Federal Reserve economic data\\n   - **Industry Organizations**: NAR statistics, MLS data, REALTORS® reports\\n   - **Financial Institutions**: Bank reports, mortgage data, lending statistics\\n   - **Academic Research**: University studies, real estate journals, peer-reviewed research\\n\\n2. **Local Market Intelligence:**\\n   - **Municipal Data**: City planning documents, zoning information, development projects\\n   - **School District Information**: Performance ratings, boundary maps, demographic data\\n   - **Economic Indicators**: Employment data, business development, infrastructure projects\\n   - **Community Resources**: Transportation, healthcare, recreation, cultural amenities\\n\\n3. **Legal & Regulatory Research:**\\n   - **Current Legislation**: Housing laws, real estate regulations, tax implications\\n   - **Market Regulations**: Disclosure requirements, fair housing compliance\\n   - **Local Ordinances**: Building codes, HOA regulations, municipal requirements\\n   - **Industry Standards**: Professional ethics, best practices, compliance protocols\\n\\n4. **Competitive & Market Analysis:**\\n   - **Comparable Properties**: Recent sales, market trends, pricing analysis\\n   - **Market Inventory**: Supply and demand dynamics, seasonal patterns\\n   - **Economic Factors**: Interest rates, employment, demographic shifts\\n   - **Future Projections**: Development plans, market forecasts, growth patterns\\n\\n5. **Expert Source Identification:**\\n   - **Industry Professionals**: Appraisers, inspectors, financial advisors, attorneys\\n   - **Market Analysts**: Economists, real estate researchers, data scientists\\n   - **Local Experts**: Community leaders, city planners, development officials\\n   - **Academic Authority**: Real estate professors, research institutions\\n\\n**Research Quality Standards:**\\n- Prioritize primary sources and authoritative data\\n- Verify information through multiple independent sources\\n- Document source credibility and publication dates\\n- Focus on recent, relevant, and reliable information\\n\\nProvide comprehensive research with authoritative sources, expert insights, and E-E-A-T compliant data collection.\",
+        "tools": [
+          {
+            "name": "web_search",
+            "type": "@n8n/n8n-nodes-langchain.toolSerpApi"
+          },
+          {
+            "name": "wikipedia",
+            "type": "@n8n/n8n-nodes-langchain.toolWikipedia"
+          },
+          {
+            "name": "calculator",
+            "type": "@n8n/n8n-nodes-langchain.toolCalculator"
+          }
+        ],
+        "memory": {
+          "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+          "windowLength": 15
+        },
+        "options": {
+          "systemMessage": "You are the premier real estate research specialist with comprehensive knowledge of authoritative data sources, market intelligence, and E-E-A-T compliance requirements. Your research expertise includes:\\n\\n• **Authoritative Source Mastery**: Government databases, industry organizations, academic institutions\\n• **Real Estate Market Intelligence**: Local market dynamics, regulatory environment, economic factors\\n• **Data Verification**: Multi-source validation, fact-checking protocols, credibility assessment\\n• **Expert Network**: Professional connections, industry authorities, academic researchers\\n• **Compliance Standards**: E-E-A-T guidelines, professional ethics, legal requirements\\n\\nYour research must be comprehensive, authoritative, and optimized for establishing definitive real estate expertise and market authority."
+        }
+      },
+      "credentials": {
+        "anthropicApi": {
+          "id": "anthropic-credentials",
+          "name": "Anthropic Claude API"
+        }
+      }
+    },
+    {
+      "id": "authority-content-writer",
+      "name": "✍️ Authority Content Writer",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.8,
+      "position": [800, 500],
+      "parameters": {
+        "agent": "conversationalAgent",
+        "promptTemplate": "You are the master real estate authority content writer specializing in E-E-A-T compliant content that establishes definitive market expertise and professional credibility.\\n\\n**Content Creation Framework:**\\nE-E-A-T Strategy: {{$node['🏆 E-E-A-T Strategy Architect'].json}}\\nResearch Intelligence: {{$node['🔍 Real Estate Research Specialist'].json}}\\nContent Brief: {{$json}}\\n\\n**Advanced E-E-A-T Content Creation Standards:**\\n\\n1. **Experience Integration (E1):**\\n   - **Personal Experience**: Incorporate first-hand real estate transaction examples\\n   - **Professional Journey**: Reference years of market experience and specialization\\n   - **Client Success Stories**: Include anonymized case studies and results\\n   - **Market Participation**: Demonstrate active involvement in local real estate community\\n\\n2. **Expertise Demonstration (E2):**\\n   - **Technical Knowledge**: Display deep understanding of real estate processes\\n   - **Market Analysis**: Provide sophisticated data interpretation and insights\\n   - **Regulatory Expertise**: Reference current laws, regulations, and compliance requirements\\n   - **Financial Acumen**: Demonstrate mortgage, investment, and valuation expertise\\n\\n3. **Authoritativeness Building (A):**\\n   - **Credentialed Insights**: Reference professional licenses, certifications, designations\\n   - **Industry Recognition**: Mention awards, media coverage, speaking engagements\\n   - **Professional Citations**: Include references from industry publications and experts\\n   - **Data Authority**: Use official statistics and authoritative market data\\n\\n4. **Trustworthiness Protocols (T):**\\n   - **Transparent Disclosure**: Clear identification of professional role and qualifications\\n   - **Source Attribution**: Comprehensive citations and reference documentation\\n   - **Accuracy Verification**: Fact-checking and data validation throughout content\\n   - **Ethical Standards**: Adherence to professional codes and fiduciary responsibilities\\n\\n**Real Estate Content Excellence Framework:**\\n\\n**Market Reports & Analysis:**\\n- Lead with authoritative data sources (NAR, MLS, Census)\\n- Include professional analysis and interpretation\\n- Provide actionable insights based on expertise\\n- Reference relevant regulations and market factors\\n\\n**Buyer/Seller Guides:**\\n- Draw from extensive transaction experience\\n- Include step-by-step professional guidance\\n- Address common challenges with expert solutions\\n- Provide checklists and resources for implementation\\n\\n**Investment Analysis:**\\n- Demonstrate financial modeling expertise\\n- Include risk assessment and mitigation strategies\\n- Reference market cycles and historical data\\n- Provide professional-grade analysis and recommendations\\n\\n**Neighborhood Profiles:**\\n- Showcase local market expertise and community knowledge\\n- Include demographic data and trend analysis\\n- Reference schools, amenities, and development projects\\n- Provide insider insights on market dynamics and opportunities\\n\\n**Content Structure & Optimization:**\\n- **Executive Summary**: Professional overview with key insights\\n- **Authoritative Introduction**: Establish credentials and expertise context\\n- **Data-Driven Analysis**: Comprehensive market data and professional interpretation\\n- **Expert Insights**: Original analysis and professional recommendations\\n- **Actionable Guidance**: Step-by-step professional advice and implementation\\n- **Resource Section**: Citations, references, and additional expert resources\\n- **Professional Bio**: Author credentials, experience, and contact information\\n\\nCreate authoritative, comprehensive content that demonstrates unquestionable real estate expertise and market authority while fully complying with E-E-A-T quality guidelines.\",
+        "memory": {
+          "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+          "windowLength": 25
+        },
+        "vectorStore": {
+          "type": "@n8n/n8n-nodes-langchain.vectorStoreInMemory",
+          "dimensions": 1536,
+          "similarity": "cosine"
+        },
+        "options": {
+          "systemMessage": "You are the premier real estate authority content writer with comprehensive expertise in E-E-A-T compliant content creation and real estate market authority building. Your specializations include:\\n\\n• **E-E-A-T Content Mastery**: Expert-level implementation of Google's quality guidelines\\n• **Real Estate Authority**: Deep market knowledge, professional experience, and industry expertise\\n• **Professional Writing Excellence**: Authoritative content that establishes definitive market credibility\\n• **Data Integration**: Sophisticated use of market data, statistics, and authoritative sources\\n• **Compliance Standards**: Professional ethics, legal requirements, and industry best practices\\n• **SEO Authority**: Content optimization for search performance and market authority\\n\\nYour content must demonstrate unquestionable real estate expertise, establish definitive market authority, and fully comply with the highest E-E-A-T quality standards."
+        }
+      },
+      "credentials": {
+        "anthropicApi": {
+          "id": "anthropic-credentials",
+          "name": "Anthropic Claude API"
+        }
+      }
+    },
+    {
+      "id": "fact-checking-specialist",
+      "name": "🔍 Fact-Checking Specialist",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.8,
+      "position": [800, 700],
+      "parameters": {
+        "agent": "toolCallingAgent",
+        "promptTemplate": "You are the senior fact-checking specialist for real estate content with expertise in data verification, source validation, and E-E-A-T compliance assurance.\\n\\n**Fact-Checking Assignment:**\\nContent Analysis: {{$node['✍️ Authority Content Writer'].json.content}}\\nOriginal Research: {{$node['🔍 Real Estate Research Specialist'].json}}\\nE-E-A-T Standards: {{$node['🏆 E-E-A-T Strategy Architect'].json}}\\n\\n**Comprehensive Fact-Checking Protocol:**\\n\\n1. **Data Verification (35%):**\\n   - **Statistical Accuracy**: Verify all market data, statistics, and numerical claims\\n   - **Source Validation**: Confirm authoritative sources and publication dates\\n   - **Cross-Reference Check**: Validate claims through multiple independent sources\\n   - **Currency Assessment**: Ensure data recency and market relevance\\n\\n2. **Legal & Regulatory Compliance (25%):**\\n   - **Regulatory Accuracy**: Verify current real estate laws and regulations\\n   - **Disclosure Requirements**: Ensure proper professional disclosures\\n   - **Fair Housing Compliance**: Validate content adherence to fair housing laws\\n   - **Professional Standards**: Confirm ethical and legal compliance\\n\\n3. **Expert Claim Validation (25%):**\\n   - **Professional Qualifications**: Verify author credentials and expertise claims\\n   - **Experience Validation**: Confirm professional experience and market involvement\\n   - **Award Verification**: Validate professional recognitions and achievements\\n   - **Citation Accuracy**: Verify expert quotes and professional references\\n\\n4. **Market Information Accuracy (15%):**\\n   - **Price Data Verification**: Confirm property values and market pricing\\n   - **Trend Analysis Validation**: Verify market trend claims and projections\\n   - **Location Information**: Confirm neighborhood data and community information\\n   - **Economic Factor Accuracy**: Validate economic and financial claims\\n\\n**Quality Assurance Standards:**\\n- Require minimum 3 authoritative sources for major claims\\n- Verify all statistics within 6 months of publication date\\n- Confirm professional credentials through official licensing boards\\n- Cross-validate market data through multiple MLS and official sources\\n\\n**Scoring**: 0-100 (90+ required for E-E-A-T compliance)\\n**Output**: Comprehensive validation report with accuracy assessment, source verification, and compliance confirmation.\",
+        "tools": [
+          {
+            "name": "web_search",
+            "type": "@n8n/n8n-nodes-langchain.toolSerpApi"
+          },
+          {
+            "name": "calculator",
+            "type": "@n8n/n8n-nodes-langchain.toolCalculator"
+          }
+        ],
+        "hasOutputParser": true,
+        "outputParser": {
+          "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+          "parameters": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "fact_check_score": {"type": "number"},
+                "data_verification_score": {"type": "number"},
+                "legal_compliance_score": {"type": "number"},
+                "expert_validation_score": {"type": "number"},
+                "market_accuracy_score": {"type": "number"},
+                "eeat_compliance_status": {"type": "string", "enum": ["compliant", "needs_revision", "non_compliant"]},
+                "accuracy_assessment": {"type": "object"},
+                "source_verification": {"type": "array"},
+                "compliance_issues": {"type": "array"},
+                "improvement_recommendations": {"type": "array"}
+              }
+            }
+          }
+        },
+        "options": {
+          "systemMessage": "You are the senior fact-checking specialist for real estate content with comprehensive expertise in data verification, regulatory compliance, and E-E-A-T quality assurance. Your validation authority includes:\\n\\n• **Data Verification Mastery**: Expert validation of market statistics, property data, and economic indicators\\n• **Regulatory Compliance**: Comprehensive knowledge of real estate laws, fair housing, and professional standards\\n• **Source Authentication**: Advanced ability to verify authoritative sources and expert credentials\\n• **Quality Assurance**: Professional fact-checking protocols and accuracy verification systems\\n• **E-E-A-T Compliance**: Expert assessment of Experience, Expertise, Authoritativeness, and Trustworthiness standards\\n\\nYour fact-checking must be thorough, authoritative, and ensure complete compliance with the highest professional and E-E-A-T quality standards."
+        }
+      },
+      "credentials": {
+        "anthropicApi": {
+          "id": "anthropic-credentials",
+          "name": "Anthropic Claude API"
+        }
+      }
+    },
+    {
+      "id": "eeat-quality-validator",
+      "name": "🏆 E-E-A-T Quality Validator",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.8,
+      "position": [1100, 500],
+      "parameters": {
+        "agent": "toolCallingAgent",
+        "promptTemplate": "You are the premier E-E-A-T quality validator specializing in Google's quality guidelines compliance and real estate content authority assessment.\\n\\n**Quality Validation Input:**\\nContent: {{$node['✍️ Authority Content Writer'].json.content}}\\nFact-Check Results: {{$node['🔍 Fact-Checking Specialist'].json}}\\nE-E-A-T Strategy: {{$node['🏆 E-E-A-T Strategy Architect'].json}}\\nResearch Foundation: {{$node['🔍 Real Estate Research Specialist'].json}}\\n\\n**Comprehensive E-E-A-T Quality Validation Framework:**\\n\\n1. **Experience Evaluation (25%):**\\n   - **Personal Experience Integration**: Assess first-hand real estate experience demonstration\\n   - **Professional Experience Evidence**: Evaluate market involvement and transaction history\\n   - **Client Success Documentation**: Validate case studies and results presentation\\n   - **Market Participation Proof**: Confirm active real estate community engagement\\n\\n2. **Expertise Assessment (30%):**\\n   - **Technical Knowledge Display**: Evaluate depth of real estate process understanding\\n   - **Market Analysis Sophistication**: Assess data interpretation and insight quality\\n   - **Regulatory Knowledge Demonstration**: Validate legal and compliance expertise\\n   - **Financial Expertise Evidence**: Confirm mortgage and investment knowledge depth\\n\\n3. **Authoritativeness Verification (25%):**\\n   - **Credential Documentation**: Validate professional licenses and certifications\\n   - **Industry Recognition Evidence**: Assess awards, media coverage, speaking roles\\n   - **Citation Quality**: Evaluate professional references and industry publications\\n   - **Data Authority Usage**: Confirm authoritative source integration and attribution\\n\\n4. **Trustworthiness Validation (20%):**\\n   - **Transparency Assessment**: Evaluate disclosure completeness and clarity\\n   - **Source Attribution Quality**: Validate citation accuracy and comprehensiveness\\n   - **Fact Verification Standards**: Assess accuracy and verification protocols\\n   - **Ethical Compliance**: Confirm professional standards and fiduciary responsibility\\n\\n**Google Quality Guidelines Compliance:**\\n- **Page Quality Assessment**: Evaluate content against Google's Page Quality guidelines\\n- **YMYL Standards**: Assess compliance with Your Money or Your Life content criteria\\n- **Beneficial Purpose**: Confirm content serves users' best interests and provides value\\n- **Author Expertise**: Validate author qualifications and subject matter authority\\n\\n**Advanced Quality Metrics:**\\n- **Content Depth**: Comprehensive coverage with professional-grade analysis\\n- **Original Insights**: Unique professional perspectives and market intelligence\\n- **User Value**: Actionable guidance and professional recommendations\\n- **Professional Standards**: Industry best practices and ethical compliance\\n\\n**Scoring**: 0-100 (92+ required for high E-E-A-T compliance)\\n**Output**: Comprehensive quality assessment with E-E-A-T scoring, Google compliance verification, and authority validation.\",
+        "tools": [
+          {
+            "name": "validate_workflow",
+            "description": "Validate E-E-A-T compliance workflow completeness"
+          },
+          {
+            "name": "validate_workflow_expressions",
+            "description": "Validate content quality expressions and calculations"
+          }
+        ],
+        "hasOutputParser": true,
+        "outputParser": {
+          "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+          "parameters": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "eeat_quality_score": {"type": "number"},
+                "experience_score": {"type": "number"},
+                "expertise_score": {"type": "number"},
+                "authoritativeness_score": {"type": "number"},
+                "trustworthiness_score": {"type": "number"},
+                "google_compliance_score": {"type": "number"},
+                "content_authority_level": {"type": "string", "enum": ["high", "moderate", "needs_improvement"]},
+                "deployment_status": {"type": "string", "enum": ["approved", "conditional_approval", "revision_needed"]},
+                "quality_assessment": {"type": "object"},
+                "authority_validation": {"type": "object"},
+                "compliance_verification": {"type": "object"},
+                "improvement_recommendations": {"type": "array"},
+                "seo_impact_projection": {"type": "object"}
+              }
+            }
+          }
+        },
+        "options": {
+          "systemMessage": "You are the premier E-E-A-T quality validator with comprehensive expertise in Google's quality guidelines, real estate content authority, and professional standards assessment. Your validation authority includes:\\n\\n• **E-E-A-T Mastery**: Expert-level knowledge of Google's Experience, Expertise, Authoritativeness, and Trustworthiness guidelines\\n• **Real Estate Authority Assessment**: Professional evaluation of market expertise and industry credibility\\n• **Google Compliance Excellence**: Comprehensive understanding of Page Quality guidelines and YMYL criteria\\n• **Content Quality Assurance**: Advanced assessment of professional writing standards and user value\\n• **Professional Standards Validation**: Expert evaluation of ethical compliance and industry best practices\\n\\nYour validation must ensure the highest E-E-A-T compliance standards and establish definitive real estate content authority for optimal search performance and professional credibility."
+        }
+      },
+      "credentials": {
+        "anthropicApi": {
+          "id": "anthropic-credentials",
+          "name": "Anthropic Claude API"
+        }
+      }
+    },
+    {
+      "id": "content-improvement-engine",
+      "name": "🔧 Content Improvement Engine",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.8,
+      "position": [1100, 700],
+      "parameters": {
+        "agent": "conversationalAgent",
+        "promptTemplate": "You are the master content improvement engine specializing in E-E-A-T enhancement and real estate authority optimization.\\n\\n**Improvement Analysis Input:**\\nOriginal Content: {{$node['✍️ Authority Content Writer'].json.content}}\\nE-E-A-T Validation: {{$node['🏆 E-E-A-T Quality Validator'].json}}\\nFact-Check Results: {{$node['🔍 Fact-Checking Specialist'].json}}\\nStrategy Framework: {{$node['🏆 E-E-A-T Strategy Architect'].json}}\\n\\n**Advanced E-E-A-T Content Enhancement Protocol:**\\n\\n1. **Experience Enhancement (E1):**\\n   - **Strengthen Personal Experience**: Add more specific transaction examples and market involvement\\n   - **Enhance Professional Journey**: Include additional years of experience and specialization details\\n   - **Expand Success Stories**: Incorporate more detailed case studies and client results\\n   - **Deepen Community Connection**: Add local market involvement and community engagement examples\\n\\n2. **Expertise Amplification (E2):**\\n   - **Advanced Technical Details**: Include more sophisticated real estate process explanations\\n   - **Enhanced Market Analysis**: Provide deeper data interpretation and professional insights\\n   - **Expanded Regulatory Knowledge**: Add current law references and compliance guidance\\n   - **Financial Expertise Display**: Include more detailed mortgage and investment analysis\\n\\n3. **Authority Building (A):**\\n   - **Credential Strengthening**: Emphasize professional licenses, certifications, and designations\\n   - **Recognition Enhancement**: Highlight industry awards, media coverage, and speaking engagements\\n   - **Citation Improvement**: Add more authoritative references and expert endorsements\\n   - **Data Authority Boost**: Include additional official statistics and market data sources\\n\\n4. **Trust Signal Optimization (T):**\\n   - **Transparency Enhancement**: Improve disclosure clarity and professional identification\\n   - **Source Attribution Strengthening**: Add comprehensive citations and reference documentation\\n   - **Accuracy Verification**: Implement additional fact-checking and data validation\\n   - **Ethical Standard Display**: Emphasize professional codes and fiduciary responsibilities\\n\\n**Content Quality Improvements:**\\n\\n**Professional Authority Enhancement:**\\n- Strengthen author bio and credential presentation\\n- Add professional headshot and contact information\\n- Include professional affiliations and designations\\n- Emphasize years of market experience and transaction volume\\n\\n**Data and Citation Improvements:**\\n- Upgrade source quality to highest authority references\\n- Add publication dates and data recency indicators\\n- Include multiple source verification for key claims\\n- Implement comprehensive reference and bibliography section\\n\\n**User Value Optimization:**\\n- Enhance actionable guidance and professional recommendations\\n- Add practical checklists and implementation resources\\n- Include professional tools and calculation examples\\n- Provide clear next steps and professional consultation offers\\n\\n**SEO and Readability Enhancement:**\\n- Optimize for target keywords while maintaining natural flow\\n- Improve heading structure and content organization\\n- Enhance readability with professional formatting and visuals\\n- Add internal linking to related authoritative content\\n\\n**Quality Assurance Integration:**\\n- Address all fact-checking concerns and accuracy issues\\n- Implement E-E-A-T validation recommendations\\n- Ensure complete compliance with professional standards\\n- Optimize for search performance and user engagement\\n\\nReturn enhanced content that achieves 95+ E-E-A-T compliance score and establishes definitive real estate market authority.\",
+        "memory": {
+          "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+          "windowLength": 20
+        },
+        "options": {
+          "systemMessage": "You are the master content improvement engine with comprehensive expertise in E-E-A-T enhancement and real estate authority optimization. Your improvement capabilities include:\\n\\n• **E-E-A-T Enhancement Mastery**: Expert optimization of Experience, Expertise, Authoritativeness, and Trustworthiness elements\\n• **Real Estate Authority Building**: Professional enhancement of market credibility and industry expertise demonstration\\n• **Content Quality Optimization**: Advanced improvement of professional writing standards and user value delivery\\n• **Compliance Enhancement**: Expert optimization for Google quality guidelines and professional standards\\n• **SEO Authority Optimization**: Strategic content enhancement for search performance and market authority\\n\\nYour improvements must achieve the highest E-E-A-T compliance standards and establish unquestionable real estate market authority."
+        }
+      },
+      "credentials": {
+        "anthropicApi": {
+          "id": "anthropic-credentials",
+          "name": "Anthropic Claude API"
+        }
+      }
+    },
+    {
+      "id": "content-quality-decision",
+      "name": "🎯 Content Quality Decision Engine",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1400, 500],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "eeat-quality-check",
+              "leftValue": "={{$node['🏆 E-E-A-T Quality Validator'].json.eeat_quality_score}}",
+              "rightValue": 92,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      }
+    },
+    {
+      "id": "content-finalization-processor",
+      "name": "📋 Content Finalization Processor",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1700, 400],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "// E-E-A-T Content Finalization and Package Preparation\\nconst strategy = $node['🏆 E-E-A-T Strategy Architect'].json;\\nconst research = $node['🔍 Real Estate Research Specialist'].json;\\nconst originalContent = $node['✍️ Authority Content Writer'].json;\\nconst factCheck = $node['🔍 Fact-Checking Specialist'].json;\\nconst validation = $node['🏆 E-E-A-T Quality Validator'].json;\\n\\n// Determine final content based on quality score\\nconst finalContent = validation.eeat_quality_score >= 92 \\n  ? originalContent \\n  : $node['🔧 Content Improvement Engine']?.json || originalContent;\\n\\nconst contentPackage = {\\n  content_id: `eeat_content_${Date.now()}`,\\n  creation_timestamp: new Date().toISOString(),\\n  topic: $input.first().json.topic,\\n  content_type: $input.first().json.content_type || 'blog_post',\\n  \\n  // Final Content\\n  final_content: finalContent.content,\\n  content_metadata: {\\n    word_count: finalContent.content?.split(' ').length || 0,\\n    reading_time: Math.ceil((finalContent.content?.split(' ').length || 0) / 250) + ' minutes',\\n    content_grade: validation.content_authority_level,\\n    publish_ready: validation.deployment_status === 'approved'\\n  },\\n  \\n  // E-E-A-T Compliance Metrics\\n  eeat_scores: {\\n    overall_score: validation.eeat_quality_score,\\n    experience_score: validation.experience_score,\\n    expertise_score: validation.expertise_score,\\n    authoritativeness_score: validation.authoritativeness_score,\\n    trustworthiness_score: validation.trustworthiness_score,\\n    google_compliance: validation.google_compliance_score\\n  },\\n  \\n  // Quality Assurance Results\\n  quality_assurance: {\\n    fact_check_score: factCheck.fact_check_score,\\n    data_verification: factCheck.data_verification_score,\\n    legal_compliance: factCheck.legal_compliance_score,\\n    source_verification: factCheck.source_verification,\\n    accuracy_assessment: factCheck.accuracy_assessment\\n  },\\n  \\n  // Authority Building Elements\\n  authority_elements: {\\n    professional_credentials: strategy.authority_building,\\n    expert_sources: research.expert_sources || [],\\n    authoritative_data: research.market_data || {},\\n    citation_quality: validation.compliance_verification\\n  },\\n  \\n  // SEO Optimization Data\\n  seo_optimization: {\\n    target_keywords: $input.first().json.target_keywords || [],\\n    keyword_density: 'Optimized for natural integration',\\n    internal_linking_opportunities: finalContent.internal_links || [],\\n    meta_description: finalContent.meta_description || '',\\n    title_optimization: finalContent.title || $input.first().json.topic\\n  },\\n  \\n  // Content Distribution Preparation\\n  distribution_ready: {\\n    blog_post: {\\n      content: finalContent.content,\\n      title: finalContent.title || $input.first().json.topic,\\n      meta_description: finalContent.meta_description || '',\\n      author_bio: finalContent.author_bio || '',\\n      publication_status: validation.deployment_status\\n    },\\n    social_media_snippets: {\\n      linkedin_summary: finalContent.content?.substring(0, 300) + '...',\\n      twitter_thread: finalContent.key_points || [],\\n      facebook_post: finalContent.executive_summary || ''\\n    },\\n    email_newsletter: {\\n      subject_line: finalContent.title || $input.first().json.topic,\\n      preview_text: finalContent.content?.substring(0, 150) + '...',\\n      newsletter_content: finalContent.newsletter_version || finalContent.content\\n    }\\n  },\\n  \\n  // Performance Projections\\n  performance_projections: validation.seo_impact_projection || {\\n    search_visibility_improvement: '150%+',\\n    authority_ranking_boost: 'Significant',\\n    lead_generation_potential: 'High',\\n    market_credibility_enhancement: 'Substantial'\\n  },\\n  \\n  // Next Steps\\n  recommended_actions: [\\n    'Publish to company blog with author bio',\\n    'Distribute via social media channels',\\n    'Include in email newsletter campaign',\\n    'Submit to industry publications',\\n    'Monitor performance and engagement metrics'\\n  ],\\n  \\n  // Compliance Documentation\\n  compliance_documentation: {\\n    eeat_compliance_certified: validation.eeat_quality_score >= 92,\\n    fact_checking_completed: factCheck.fact_check_score >= 90,\\n    legal_review_status: factCheck.legal_compliance_score >= 95,\\n    professional_standards_met: validation.deployment_status === 'approved',\\n    ready_for_publication: validation.eeat_quality_score >= 92 && factCheck.fact_check_score >= 90\\n  }\\n};\\n\\nreturn [contentPackage];"
+      }
+    },
+    {
+      "id": "eeat-content-notification",
+      "name": "📢 E-E-A-T Content Notification",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.2,
+      "position": [2000, 400],
+      "parameters": {
+        "resource": "message",
+        "operation": "post",
+        "channel": "#seo-automation",
+        "text": "✍️ **E-E-A-T Content Creation Completed - Real Estate Authority!**\\n\\n🏆 **Content Quality Metrics:**\\n• Overall E-E-A-T Score: {{$node['📋 Content Finalization Processor'].json.eeat_scores.overall_score}}/100\\n• Experience Score: {{$node['📋 Content Finalization Processor'].json.eeat_scores.experience_score}}/100\\n• Expertise Score: {{$node['📋 Content Finalization Processor'].json.eeat_scores.expertise_score}}/100\\n• Authoritativeness: {{$node['📋 Content Finalization Processor'].json.eeat_scores.authoritativeness_score}}/100\\n• Trustworthiness: {{$node['📋 Content Finalization Processor'].json.eeat_scores.trustworthiness_score}}/100\\n\\n📊 **Quality Assurance Results:**\\n• Fact-Check Score: {{$node['📋 Content Finalization Processor'].json.quality_assurance.fact_check_score}}/100\\n• Data Verification: {{$node['📋 Content Finalization Processor'].json.quality_assurance.data_verification}}/100\\n• Legal Compliance: {{$node['📋 Content Finalization Processor'].json.quality_assurance.legal_compliance}}/100\\n\\n📝 **Content Details:**\\n• Topic: {{$node['📋 Content Finalization Processor'].json.topic}}\\n• Word Count: {{$node['📋 Content Finalization Processor'].json.content_metadata.word_count}}\\n• Reading Time: {{$node['📋 Content Finalization Processor'].json.content_metadata.reading_time}}\\n• Authority Level: {{$node['📋 Content Finalization Processor'].json.content_metadata.content_grade}}\\n\\n🚀 **Publication Status:**\\n• E-E-A-T Compliance: {{$node['📋 Content Finalization Processor'].json.compliance_documentation.eeat_compliance_certified ? '✅ Certified' : '⚠️ Needs Review'}}\\n• Fact-Checking: {{$node['📋 Content Finalization Processor'].json.compliance_documentation.fact_checking_completed ? '✅ Completed' : '⚠️ In Progress'}}\\n• Publication Ready: {{$node['📋 Content Finalization Processor'].json.compliance_documentation.ready_for_publication ? '✅ Ready' : '⚠️ Pending'}}\\n\\n📈 **Performance Projections:**\\n• Search Visibility: {{$node['📋 Content Finalization Processor'].json.performance_projections.search_visibility_improvement}}\\n• Authority Boost: {{$node['📋 Content Finalization Processor'].json.performance_projections.authority_ranking_boost}}\\n• Lead Generation: {{$node['📋 Content Finalization Processor'].json.performance_projections.lead_generation_potential}}\\n\\n🎯 **Ready for multi-platform distribution and social media repurposing!**",
+        "attachments": [],
+        "otherOptions": {
+          "mrkdwn": true
+        }
+      },
+      "credentials": {
+        "slackApi": {
+          "id": "slack-credentials",
+          "name": "Slack API"
+        }
+      }
+    },
+    {
+      "id": "eeat-content-response",
+      "name": "✨ E-E-A-T Content Success Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [2300, 400],
+      "parameters": {
+        "options": {},
+        "responseBody": "{\\n  \\\"status\\\": \\\"success\\\",\\n  \\\"message\\\": \\\"✍️ E-E-A-T compliant real estate content successfully created!\\\",\\n  \\\"content_details\\\": {\\n    \\\"content_id\\\": \\\"{{$node['📋 Content Finalization Processor'].json.content_id}}\\\",\\n    \\\"topic\\\": \\\"{{$node['📋 Content Finalization Processor'].json.topic}}\\\",\\n    \\\"word_count\\\": {{$node['📋 Content Finalization Processor'].json.content_metadata.word_count}},\\n    \\\"reading_time\\\": \\\"{{$node['📋 Content Finalization Processor'].json.content_metadata.reading_time}}\\\",\\n    \\\"authority_level\\\": \\\"{{$node['📋 Content Finalization Processor'].json.content_metadata.content_grade}}\\\",\\n    \\\"publication_ready\\\": {{$node['📋 Content Finalization Processor'].json.content_metadata.publish_ready}}\\n  },\\n  \\\"eeat_compliance\\\": {{$node['📋 Content Finalization Processor'].json.eeat_scores}},\\n  \\\"quality_assurance\\\": {{$node['📋 Content Finalization Processor'].json.quality_assurance}},\\n  \\\"authority_elements\\\": {{$node['📋 Content Finalization Processor'].json.authority_elements}},\\n  \\\"distribution_ready\\\": {{$node['📋 Content Finalization Processor'].json.distribution_ready}},\\n  \\\"performance_projections\\\": {{$node['📋 Content Finalization Processor'].json.performance_projections}},\\n  \\\"compliance_status\\\": {{$node['📋 Content Finalization Processor'].json.compliance_documentation}},\\n  \\\"next_steps\\\": [\\n    \\\"Content ready for blog publication\\\",\\n    \\\"Social media repurposing workflow activation\\\",\\n    \\\"Email newsletter integration\\\",\\n    \\\"Performance monitoring setup\\\",\\n    \\\"Authority building campaign launch\\\"\\n  ],\\n  \\\"real_estate_authority\\\": {\\n    \\\"eeat_certified\\\": {{$node['📋 Content Finalization Processor'].json.compliance_documentation.eeat_compliance_certified}},\\n    \\\"professional_standards\\\": \\\"Highest industry compliance\\\",\\n    \\\"market_expertise\\\": \\\"Demonstrated and validated\\\",\\n    \\\"google_compliance\\\": \\\"Full E-E-A-T guidelines adherence\\\"\\n  }\\n}",
+        "responseHeaders": {
+          "entries": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "responseCode": 200
+      }
+    }
+  ],
+  "connections": {
+    "📝 Content Creation Trigger": {
+      "main": [
+        [
+          {
+            "node": "🏆 E-E-A-T Strategy Architect",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🏆 E-E-A-T Strategy Architect": {
+      "main": [
+        [
+          {
+            "node": "🔍 Real Estate Research Specialist",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "✍️ Authority Content Writer",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "🔍 Fact-Checking Specialist",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🔍 Real Estate Research Specialist": {
+      "main": [
+        [
+          {
+            "node": "🏆 E-E-A-T Quality Validator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "✍️ Authority Content Writer": {
+      "main": [
+        [
+          {
+            "node": "🏆 E-E-A-T Quality Validator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🔍 Fact-Checking Specialist": {
+      "main": [
+        [
+          {
+            "node": "🏆 E-E-A-T Quality Validator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🏆 E-E-A-T Quality Validator": {
+      "main": [
+        [
+          {
+            "node": "🎯 Content Quality Decision Engine",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🎯 Content Quality Decision Engine": {
+      "main": [
+        [
+          {
+            "node": "📋 Content Finalization Processor",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "🔧 Content Improvement Engine",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🔧 Content Improvement Engine": {
+      "main": [
+        [
+          {
+            "node": "📋 Content Finalization Processor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📋 Content Finalization Processor": {
+      "main": [
+        [
+          {
+            "node": "📢 E-E-A-T Content Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📢 E-E-A-T Content Notification": {
+      "main": [
+        [
+          {
+            "node": "✨ E-E-A-T Content Success Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": false,
+    "instanceId": "eeat-content-creation-v1.0"
+  },
+  "tags": [
+    {
+      "id": "eeat-compliance",
+      "name": "E-E-A-T Compliance"
+    },
+    {
+      "id": "content-creation",
+      "name": "Content Creation"
+    },
+    {
+      "id": "real-estate-authority",
+      "name": "Real Estate Authority"
+    },
+    {
+      "id": "quality-assurance",
+      "name": "Quality Assurance"
+    }
+  ]
+}

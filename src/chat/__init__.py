@@ -1,0 +1,1 @@
+# Chat interface module for interactive agent conversations

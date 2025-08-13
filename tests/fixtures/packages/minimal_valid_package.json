@@ -1,0 +1,24 @@
+{
+  "name": "Simple Webhook Logger",
+  "slug": "simple-webhook-logger", 
+  "niche_tags": ["logging", "webhook", "monitoring"],
+  "problem_statement": "Need basic webhook request logging for debugging and monitoring purposes",
+  "outcomes": [
+    "Capture all incoming webhook requests",
+    "Log request details for analysis",
+    "Provide structured response format"
+  ],
+  "roi_notes": "Saves development time by providing ready-to-use webhook logging solution. Reduces debugging time by 60%.",
+  "inputs": {
+    "webhook_payload": "any - Incoming request data"
+  },
+  "outputs": {
+    "logged_request": "object - Structured log entry",
+    "response_status": "string - Processing status"
+  },
+  "dependencies": ["n8n"],
+  "security_notes": "No PII handling. Basic request logging only.",
+  "status": "validated",
+  "version": "1.0.0",
+  "last_validated": "2024-01-15T12:00:00.000Z"
+}

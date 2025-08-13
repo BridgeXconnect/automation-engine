@@ -1,59 +1,139 @@
-### 🔄 Project Awareness & Context
-- **Always read `PLANNING.md`** at the start of a new conversation to understand the project's architecture, goals, style, and constraints.
-- **Check `TASK.md`** before starting a new task. If the task isn’t listed, add it with a brief description and today's date.
-- **Use consistent naming conventions, file structure, and architecture patterns** as described in `PLANNING.md`.
-- **Use venv_linux** (the virtual environment) whenever executing Python commands, including for unit tests.
+# PROJECT RULES & STANDARDS
 
-### 🧱 Code Structure & Modularity
-- **Never create a file longer than 500 lines of code.** If a file approaches this limit, refactor by splitting it into modules or helper files.
-- **Organize code into clearly separated modules**, grouped by feature or responsibility.
-  For agents this looks like:
-    - `agent.py` - Main agent definition and execution logic 
-    - `tools.py` - Tool functions used by the agent 
-    - `prompts.py` - System prompts
-- **Use clear, consistent imports** (prefer relative imports within packages).
-- **Use clear, consistent imports** (prefer relative imports within packages).
-- **Use python_dotenv and load_env()** for environment variables.
+These rules apply to all code, documentation, and assets generated in this project.
+They are binding constraints for Claude Code when processing PRPs or producing deliverables.
 
-### 🧪 Testing & Reliability
-- **Always create Pytest unit tests for new features** (functions, classes, routes, etc).
-- **After updating any logic**, check whether existing unit tests need to be updated. If so, do it.
-- **Tests should live in a `/tests` folder** mirroring the main app structure.
-  - Include at least:
-    - 1 test for expected use
-    - 1 edge case
-    - 1 failure case
+## 1. Output Philosophy
 
-### ✅ Task Completion
-- **Mark completed tasks in `TASK.md`** immediately after finishing them.
-- Add new sub-tasks or TODOs discovered during development to `TASK.md` under a “Discovered During Work” section.
+- **Solution-first**: Every output should solve a business problem — no "demo tech" without ROI context.
+- **Niche-agnostic**: Packages should be configurable to work across multiple industries without hardcoding industry-specific values.
+- **Reusable**: Code, docs, and workflows must be modular; prefer creating reusable components over hardcoded one-offs.
 
-### 📎 Style & Conventions
-- **Use Python** as the primary language.
-- **Follow PEP8**, use type hints, and format with `black`.
-- **Use `pydantic` for data validation**.
-- Use `FastAPI` for APIs and `SQLAlchemy` or `SQLModel` for ORM if applicable.
-- Write **docstrings for every function** using the Google style:
-  ```python
-  def example():
-      """
-      Brief summary.
+## 2. Automation Packaging Standards
 
-      Args:
-          param1 (type): Description.
+### Directory Structure (per package):
 
-      Returns:
-          type: Description.
-      """
-  ```
+```
+/packages/<slug>/
+  workflows/     → n8n JSON exports
+  docs/          → implementation.md, configuration.md, runbook.md, sop.md, loom-outline.md, client-one-pager.md
+  tests/         → fixtures, happy-path script, failure cases
+  metadata.json  → tags, niche, ROI notes, inputs, outputs, dependencies
+```
 
-### 📚 Documentation & Explainability
-- **Update `README.md`** when new features are added, dependencies change, or setup steps are modified.
-- **Comment non-obvious code** and ensure everything is understandable to a mid-level developer.
-- When writing complex logic, **add an inline `# Reason:` comment** explaining the why, not just the what.
+### metadata.json fields:
 
-### 🧠 AI Behavior Rules
-- **Never assume missing context. Ask questions if uncertain.**
-- **Never hallucinate libraries or functions** – only use known, verified Python packages.
-- **Always confirm file paths and module names** exist before referencing them in code or tests.
-- **Never delete or overwrite existing code** unless explicitly instructed to or if part of a task from `TASK.md`.
+- `name`
+- `slug`
+- `niche_tags` (array)
+- `problem_statement`
+- `outcomes` (measurable)
+- `roi_notes` (time saved, cost saved, revenue potential)
+- `inputs`
+- `outputs`
+- `dependencies` (integrations, connectors)
+- `security_notes`
+- `last_validated`
+
+## 3. Engineering Standards
+
+### Idempotency
+All flows must have deterministic keys (e.g., email hash, external ID) to avoid duplicates.
+
+### Retries
+Use 3× exponential backoff with jitter; fail gracefully into a dead-letter queue (DLQ) pattern.
+
+### Logging
+- Structured JSON logs with timestamps, node IDs, durations
+- Log both success and failure events
+
+### Observability
+- Include per-node timing metrics
+- Hook success/failure webhooks into Notion Deployments DB
+
+### Performance
+- Median run-time for simple flows ≤ 3 seconds
+- ≥ 99% success rate over 30 days with retries
+
+### Security
+- All secrets stored in .env or a secrets manager
+- PII encrypted at rest; redact from logs
+- EU data residency option documented
+
+### Versioning
+- Every automation has a version property in metadata
+- Version bumps for any breaking change
+
+## 4. Documentation Standards
+
+### Required Documents
+- **Implementation Guide**: Step-by-step with screenshots/diagrams
+- **Configuration Guide**: Env vars, API keys, rate limit notes, integration "gotchas"
+- **Runbook**: How to monitor, troubleshoot, and roll back
+- **SOPs**: Task-level how-tos for team members
+- **Loom Outline**: Script for a 3–5 minute video walkthrough
+- **Client One-Pager**: Problem → Solution → Benefits → KPIs → ROI projection
+
+### Style Guidelines
+- Clear, concise, action-oriented
+- Use tables for inputs/outputs
+- **Bold key actions and warnings**
+- Keep internal docs separate from client-facing docs
+
+## 5. Notion Business OS Schema
+
+Claude must maintain compatibility with these core databases:
+
+### Library – Canonical packages
+**Properties**: Name, Slug, Niche Tags, Problem Statement, Outcomes, Inputs, Outputs, Dependencies, Security Notes, Status, Version, Links (Repo path, n8n export), ROI Notes, Last Validated.
+
+### Automations – Client-specific instances
+Relates to Library, Clients, and Deployments.
+
+### Components – Reusable subflows/connectors
+Tracks ownership, versions, and tests.
+
+### Clients – Accounts and engagement details
+Tracks installed packages, KPIs.
+
+### Deployments – Environment details
+Environment details, dates, checklist status, first-run results.
+
+## 6. PRP Behavior Requirements
+
+### When `/generate-prp` is run:
+- Always create or update relevant Notion DB schemas if they are missing
+- Use Automation Vault workflows as inspiration, not as final outputs without adaptation
+- Enforce naming conventions, retries, and logging in generated n8n JSON
+- Include test fixtures for first-run verification
+
+### When `/execute-prp` is run:
+- Validate all workflows before packaging
+- Populate all docs in /docs subfolder
+- Generate/update metadata.json with current date as last_validated
+- Push records to Notion with the correct relations and rollups
+
+## 7. Quality Gates
+
+A package cannot be marked complete unless:
+
+- ✅ All metadata fields are filled
+- ✅ Workflow passes simulated run with fixture data
+- ✅ Documentation is complete and clear enough for a new engineer to deploy without help
+- ✅ Notion entries are created/updated for Library, Components, and Deployments
+
+## 8. Prohibited Practices
+
+- ❌ No hardcoded API keys, secrets, or credentials in code or docs
+- ❌ No untested workflows in the /packages directory
+- ❌ No client PII in repo commits
+- ❌ No deployment without updating last_validated in metadata
+
+## ACCEPTANCE TESTS
+
+Before committing a package:
+
+1. **Run validation**: `make validate PACKAGE=<slug>` — all tests pass
+2. **Review documentation**: Generated docs against style guide
+3. **Confirm Notion sync**: Notion records reflect the latest package state
+4. **Log traceability**: Ensure Automation Vault reference is logged in metadata

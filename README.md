@@ -1,6 +1,6 @@
-# Context Engineering Template
+# Automation Engine V1
 
-A comprehensive template for getting started with Context Engineering - the discipline of engineering context for AI coding assistants so they have the information necessary to get the job done end to end.
+A comprehensive automation engine for building and deploying intelligent business automation workflows using Context Engineering principles.
 
 > **Context Engineering is 10x better than prompt engineering and 100x better than vibe coding.**
 
@@ -8,8 +8,8 @@ A comprehensive template for getting started with Context Engineering - the disc
 
 ```bash
 # 1. Clone this template
-git clone https://github.com/coleam00/Context-Engineering-Intro.git
-cd Context-Engineering-Intro
+git clone https://github.com/coleam00/automation-engine.git
+cd automation-engine
 
 # 2. Set up your project rules (optional - template provided)
 # Edit CLAUDE.md to add your project-specific guidelines
@@ -65,7 +65,7 @@ Context Engineering represents a paradigm shift from traditional prompt engineer
 ## Template Structure
 
 ```
-context-engineering-intro/
+automation-engine/
 ├── .claude/
 │   ├── commands/
 │   │   ├── generate-prp.md    # Generates comprehensive PRPs

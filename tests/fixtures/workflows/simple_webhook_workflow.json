@@ -1,0 +1,68 @@
+{
+  "name": "simple_webhook_test",
+  "nodes": [
+    {
+      "id": "webhook_trigger",
+      "name": "webhook_start",
+      "type": "n8n-nodes-base.webhook",
+      "position": [200, 200],
+      "parameters": {
+        "path": "/test-webhook",
+        "httpMethod": "POST", 
+        "responseMode": "onReceived"
+      }
+    },
+    {
+      "id": "data_processor",
+      "name": "process_data",
+      "type": "n8n-nodes-base.set",
+      "position": [400, 200],
+      "parameters": {
+        "values": {
+          "processed": "true",
+          "timestamp": "{{ new Date().toISOString() }}",
+          "input_count": "{{ Object.keys($json).length }}"
+        }
+      }
+    },
+    {
+      "id": "response_sender",
+      "name": "send_response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "position": [600, 200],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": {
+          "success": true,
+          "processed_at": "={{ $json.timestamp }}",
+          "status": "completed"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "webhook_trigger": {
+      "main": [
+        {
+          "node": "data_processor",
+          "type": "main",
+          "index": 0
+        }
+      ]
+    },
+    "data_processor": {
+      "main": [
+        {
+          "node": "response_sender",
+          "type": "main",
+          "index": 0
+        }
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "active": true,
+  "tags": ["webhook", "test", "simple"]
+}

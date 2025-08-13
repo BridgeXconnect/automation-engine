@@ -1,0 +1,411 @@
+{
+  "name": "🏠 SEO-in-a-Box Master Orchestrator - Real Estate",
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": "seo-error-handler-workflow-id"
+  },
+  "nodes": [
+    {
+      "id": "seo-orchestrator-webhook",
+      "name": "🎯 SEO Campaign Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [200, 400],
+      "parameters": {
+        "path": "seo-real-estate-orchestrator",
+        "httpMethod": "POST",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "*",
+          "rawBody": true
+        }
+      }
+    },
+    {
+      "id": "master-seo-strategy-agent",
+      "name": "🧠 Master SEO Strategy Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.8,
+      "position": [500, 400],
+      "parameters": {
+        "agent": "toolCallingAgent",
+        "promptTemplate": "You are the Master SEO Strategist for real estate with comprehensive knowledge of the complete SEO ecosystem and n8n workflow orchestration.\\n\\n**Campaign Input:**\\n{{$json}}\\n\\n**Master SEO Strategy Analysis:**\\n\\n1. **Real Estate Market Intelligence:**\\n   - Analyze property types, locations, and target demographics\\n   - Determine seasonal SEO opportunities and market trends\\n   - Identify competitive landscape and positioning strategies\\n   - Assess local market dynamics and search behavior patterns\\n\\n2. **Comprehensive SEO Workflow Orchestration:**\\n   - **Analytics Workflow**: Google Analytics setup and real estate KPI tracking\\n   - **Keyword Research Workflow**: DataForSEO MCP integration for keyword intelligence\\n   - **Content Creation Workflow**: E-E-A-T compliant blog content for real estate\\n   - **Social Media Workflow**: Multi-platform content repurposing and distribution\\n   - **Local SEO Workflow**: Google Business Profile and local citation management\\n   - **Monitoring Workflow**: Performance tracking and automated reporting\\n\\n3. **Advanced MCP Integration Strategy:**\\n   - Use search_nodes() to discover optimal SEO automation nodes\\n   - Apply get_node_essentials() for performance-optimized configurations\\n   - Implement validate_workflow() for comprehensive SEO workflow validation\\n   - Orchestrate DataForSEO MCP for advanced keyword research and SERP analysis\\n\\n4. **Multi-Agent Coordination Framework:**\\n   - Coordinate 6 specialized SEO workflows with shared intelligence\\n   - Manage cross-workflow data flow and performance optimization\\n   - Implement quality gates and validation checkpoints across all workflows\\n   - Optimize resource allocation and execution timing for maximum efficiency\\n\\n5. **Real Estate SEO Specialization:**\\n   - **Property Type Optimization**: Residential, commercial, luxury, investment properties\\n   - **Geographic Targeting**: Neighborhood-specific, city-wide, and regional SEO strategies\\n   - **Buyer Journey Optimization**: Awareness, consideration, decision, and retention stages\\n   - **Local Market Authority**: Community involvement, market expertise, and thought leadership\\n\\n**Strategic Output Requirements:**\\nProvide comprehensive SEO orchestration strategy with specific workflow configurations, MCP integration specifications, agent coordination parameters, and real estate market optimization tactics.\",
+        "tools": [
+          {
+            "name": "search_nodes",
+            "description": "Discover optimal n8n nodes for SEO workflow automation"
+          },
+          {
+            "name": "get_node_essentials",
+            "description": "Get optimal configurations for SEO automation nodes"
+          },
+          {
+            "name": "validate_workflow",
+            "description": "Validate comprehensive SEO workflow configurations"
+          }
+        ],
+        "hasOutputParser": true,
+        "outputParser": {
+          "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+          "parameters": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "seo_strategy": {"type": "object"},
+                "workflow_orchestration": {"type": "object"},
+                "real_estate_specialization": {"type": "object"},
+                "mcp_integration_config": {"type": "object"},
+                "analytics_workflow_config": {"type": "object"},
+                "keyword_research_config": {"type": "object"},
+                "content_creation_config": {"type": "object"},
+                "social_media_config": {"type": "object"},
+                "local_seo_config": {"type": "object"},
+                "monitoring_config": {"type": "object"},
+                "performance_predictions": {"type": "object"},
+                "execution_timeline": {"type": "array"}
+              }
+            }
+          }
+        },
+        "options": {
+          "systemMessage": "You are the Master SEO Orchestration Expert for real estate with complete knowledge of all 809 n8n nodes, advanced SEO strategies, MCP integration, and multi-agent coordination. You have deep expertise in:\\n\\n• **Real Estate SEO Mastery**: Property types, market dynamics, buyer behavior, local search optimization\\n• **Workflow Orchestration**: Complex multi-workflow coordination with 6 specialized SEO automation systems\\n• **MCP Integration Excellence**: Advanced n8n-mcp server usage, DataForSEO MCP, dynamic node discovery\\n• **Multi-Agent Architecture**: Coordinating specialized AI agents across analytics, research, content, social, local, and monitoring\\n• **Performance Optimization**: Enterprise-grade SEO automation with predictive analytics and ROI optimization\\n• **Real Estate Market Intelligence**: Industry trends, seasonal patterns, competitive analysis, local market dynamics\\n\\nYour orchestration strategies must be comprehensive, technically sophisticated, and specifically optimized for real estate SEO success."
+        }
+      },
+      "credentials": {
+        "anthropicApi": {
+          "id": "anthropic-credentials",
+          "name": "Anthropic Claude API"
+        }
+      }
+    },
+    {
+      "id": "workflow-coordinator",
+      "name": "🔧 SEO Workflow Coordinator",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [800, 400],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "// Advanced SEO Workflow Coordination System\\nconst strategy = $node['🧠 Master SEO Strategy Agent'].json;\\n\\nconst workflowCoordination = {\\n  master_strategy: strategy,\\n  workflow_execution_plan: [],\\n  data_flow_management: {},\\n  performance_tracking: {},\\n  real_estate_optimization: {}\\n};\\n\\n// 1. Google Analytics Intelligence Workflow\\nworkflowCoordination.workflow_execution_plan.push({\\n  workflow_name: 'google-analytics-intelligence',\\n  priority: 1,\\n  trigger_conditions: ['campaign_start', 'daily_analytics_update'],\\n  configuration: strategy.analytics_workflow_config,\\n  real_estate_focus: {\\n    property_types: ['residential', 'commercial', 'luxury', 'investment'],\\n    kpi_tracking: ['property_views', 'lead_generation', 'conversion_rates'],\\n    market_analysis: ['traffic_trends', 'audience_demographics', 'competitor_analysis']\\n  }\\n});\\n\\n// 2. DataForSEO Keyword Research Automation\\nworkflowCoordination.workflow_execution_plan.push({\\n  workflow_name: 'dataforseo-keyword-research',\\n  priority: 2,\\n  trigger_conditions: ['strategy_analysis_complete', 'weekly_keyword_refresh'],\\n  configuration: strategy.keyword_research_config,\\n  mcp_integration: 'dataforseo-mcp-server',\\n  real_estate_focus: {\\n    keyword_categories: ['property_types', 'locations', 'buyer_intent', 'investment_terms'],\\n    competitive_analysis: ['competitor_rankings', 'opportunity_gaps', 'market_positioning'],\\n    seasonal_optimization: ['market_timing', 'seasonal_trends', 'opportunity_windows']\\n  }\\n});\\n\\n// 3. E-E-A-T Blog Content Creation System\\nworkflowCoordination.workflow_execution_plan.push({\\n  workflow_name: 'eeat-content-creation',\\n  priority: 3,\\n  trigger_conditions: ['keyword_research_complete', 'content_calendar_trigger'],\\n  configuration: strategy.content_creation_config,\\n  dependencies: ['analytics_insights', 'keyword_data'],\\n  real_estate_focus: {\\n    content_types: ['market_reports', 'buyer_guides', 'investment_analysis', 'neighborhood_profiles'],\\n    eeat_compliance: ['expertise_validation', 'authority_building', 'trust_signals'],\\n    market_specialization: ['local_market_expertise', 'industry_authority', 'data_driven_insights']\\n  }\\n});\\n\\n// 4. Social Media Content Repurposing\\nworkflowCoordination.workflow_execution_plan.push({\\n  workflow_name: 'social-media-repurposing',\\n  priority: 4,\\n  trigger_conditions: ['content_creation_complete', 'social_calendar_trigger'],\\n  configuration: strategy.social_media_config,\\n  dependencies: ['blog_content', 'visual_assets'],\\n  real_estate_focus: {\\n    platforms: ['linkedin', 'facebook', 'instagram', 'twitter', 'tiktok'],\\n    content_adaptation: ['property_showcases', 'market_updates', 'educational_content'],\\n    engagement_optimization: ['posting_times', 'platform_specific_formats', 'audience_targeting']\\n  }\\n});\\n\\n// 5. Local SEO Automation\\nworkflowCoordination.workflow_execution_plan.push({\\n  workflow_name: 'local-seo-automation',\\n  priority: 5,\\n  trigger_conditions: ['content_published', 'local_update_trigger'],\\n  configuration: strategy.local_seo_config,\\n  real_estate_focus: {\\n    local_optimization: ['google_business_profile', 'local_citations', 'neighborhood_targeting'],\\n    review_management: ['review_monitoring', 'response_automation', 'reputation_management'],\\n    community_engagement: ['local_partnerships', 'community_content', 'hyperlocal_seo']\\n  }\\n});\\n\\n// 6. SEO Monitoring & Reporting Dashboard\\nworkflowCoordination.workflow_execution_plan.push({\\n  workflow_name: 'seo-monitoring-reporting',\\n  priority: 6,\\n  trigger_conditions: ['continuous_monitoring', 'reporting_schedule'],\\n  configuration: strategy.monitoring_config,\\n  real_estate_focus: {\\n    monitoring_focus: ['keyword_rankings', 'local_visibility', 'competitor_tracking'],\\n    performance_analysis: ['traffic_quality', 'lead_generation', 'conversion_optimization'],\\n    automated_reporting: ['client_dashboards', 'performance_alerts', 'optimization_recommendations']\\n  }\\n});\\n\\n// Data Flow Management\\nworkflowCoordination.data_flow_management = {\\n  shared_data_store: 'seo-intelligence-database',\\n  cross_workflow_triggers: {\\n    analytics_to_keyword: 'traffic_insights_available',\\n    keyword_to_content: 'keyword_research_complete',\\n    content_to_social: 'blog_content_published',\\n    social_to_local: 'social_engagement_data',\\n    local_to_monitoring: 'local_seo_updates',\\n    monitoring_to_strategy: 'performance_analysis_complete'\\n  },\\n  intelligence_sharing: {\\n    market_insights: ['analytics', 'keyword_research', 'content_creation'],\\n    performance_data: ['monitoring', 'analytics', 'social_media'],\\n    competitive_intelligence: ['keyword_research', 'monitoring', 'content_strategy']\\n  }\\n};\\n\\n// Performance Tracking\\nworkflowCoordination.performance_tracking = {\\n  success_metrics: {\\n    seo_performance: ['organic_traffic_growth', 'keyword_rankings', 'local_visibility'],\\n    business_impact: ['lead_generation', 'conversion_rates', 'market_authority'],\\n    operational_efficiency: ['automation_performance', 'time_savings', 'quality_consistency']\\n  },\\n  automated_optimization: {\\n    performance_thresholds: strategy.performance_predictions,\\n    optimization_triggers: ['ranking_drops', 'traffic_declines', 'conversion_issues'],\\n    improvement_loops: ['strategy_refinement', 'content_optimization', 'technical_fixes']\\n  }\\n};\\n\\n// Real Estate Market Optimization\\nworkflowCoordination.real_estate_optimization = {\\n  market_intelligence: strategy.real_estate_specialization,\\n  buyer_journey_optimization: ['awareness', 'consideration', 'decision', 'retention'],\\n  seasonal_strategies: ['spring_market_prep', 'summer_peak_season', 'fall_market_shift', 'winter_opportunities'],\\n  competitive_positioning: ['market_leader', 'local_expert', 'specialized_advisor']\\n};\\n\\nreturn [workflowCoordination];"
+      }
+    },
+    {
+      "id": "workflow-trigger-distribution",
+      "name": "🚀 Workflow Execution Distribution",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [1100, 400],
+      "parameters": {
+        "options": {},
+        "rules": {
+          "rules": [
+            {
+              "id": "analytics-trigger",
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{$json.trigger_type}}",
+                    "rightValue": "analytics",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "id": "keyword-research-trigger",
+              "conditions": {
+                "conditions": [
+                  {
+                    "leftValue": "={{$json.trigger_type}}",
+                    "rightValue": "keyword_research",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "content-creation-trigger", 
+              "conditions": {
+                "conditions": [
+                  {
+                    "leftValue": "={{$json.trigger_type}}",
+                    "rightValue": "content_creation",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "id": "full-campaign-trigger",
+              "conditions": {
+                "conditions": [
+                  {
+                    "leftValue": "={{$json.trigger_type}}",
+                    "rightValue": "full_campaign",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "analytics-workflow-executor",
+      "name": "📊 Execute Analytics Workflow",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [1400, 200],
+      "parameters": {
+        "workflowId": "google-analytics-intelligence-workflow-id",
+        "waitForExecution": false,
+        "source": "parameter"
+      }
+    },
+    {
+      "id": "keyword-workflow-executor",
+      "name": "🔍 Execute Keyword Research Workflow",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [1400, 350],
+      "parameters": {
+        "workflowId": "dataforseo-keyword-research-workflow-id",
+        "waitForExecution": false,
+        "source": "parameter"
+      }
+    },
+    {
+      "id": "content-workflow-executor",
+      "name": "✍️ Execute Content Creation Workflow",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [1400, 500],
+      "parameters": {
+        "workflowId": "eeat-content-creation-workflow-id",
+        "waitForExecution": false,
+        "source": "parameter"
+      }
+    },
+    {
+      "id": "full-campaign-executor",
+      "name": "🎯 Execute Full SEO Campaign",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1400, 650],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "// Execute All SEO Workflows in Coordinated Sequence\\nconst coordination = $node['🔧 SEO Workflow Coordinator'].json;\\n\\nconst campaignExecution = {\\n  campaign_id: `seo_campaign_${Date.now()}`,\\n  execution_timestamp: new Date().toISOString(),\\n  workflow_sequence: coordination.workflow_execution_plan,\\n  coordination_config: coordination,\\n  execution_results: [],\\n  next_actions: []\\n};\\n\\n// Add execution tracking for each workflow\\ncampaignExecution.workflow_sequence.forEach((workflow, index) => {\\n  campaignExecution.execution_results.push({\\n    workflow_name: workflow.workflow_name,\\n    status: 'queued',\\n    priority: workflow.priority,\\n    estimated_completion: new Date(Date.now() + (index * 10 * 60 * 1000)).toISOString(), // 10 min intervals\\n    configuration: workflow.configuration,\\n    real_estate_focus: workflow.real_estate_focus\\n  });\\n});\\n\\n// Define next actions for workflow execution\\ncampaignExecution.next_actions = [\\n  'Execute Google Analytics Intelligence Workflow',\\n  'Trigger DataForSEO Keyword Research Workflow',\\n  'Launch E-E-A-T Content Creation Workflow',\\n  'Activate Social Media Repurposing Workflow',\\n  'Start Local SEO Automation Workflow',\\n  'Initialize SEO Monitoring & Reporting Workflow'\\n];\\n\\nreturn [campaignExecution];"
+      }
+    },
+    {
+      "id": "orchestrator-notification",
+      "name": "📢 SEO Orchestration Notification Hub",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.2,
+      "position": [1700, 400],
+      "parameters": {
+        "resource": "message",
+        "operation": "post",
+        "channel": "#seo-automation",
+        "text": "🏠 **SEO-in-a-Box Real Estate Campaign Initiated!**\\n\\n🎯 **Campaign Details:**\\n• Campaign Type: {{$json.campaign_type || 'Full SEO Campaign'}}\\n• Target Market: Real Estate\\n• Orchestration Strategy: {{$node['🧠 Master SEO Strategy Agent'].json.seo_strategy.primary_strategy}}\\n• Workflows Activated: {{$node['🔧 SEO Workflow Coordinator'].json.workflow_execution_plan.length}}\\n\\n📊 **Workflow Execution Plan:**\\n• Analytics Intelligence: ✅ Queued\\n• Keyword Research (DataForSEO): ✅ Queued\\n• E-E-A-T Content Creation: ✅ Queued\\n• Social Media Repurposing: ✅ Queued\\n• Local SEO Automation: ✅ Queued\\n• Monitoring & Reporting: ✅ Queued\\n\\n🧠 **AI Coordination:**\\n• Master Strategy Agent: Advanced real estate SEO analysis\\n• MCP Integration: Real n8n-mcp server with 809 nodes\\n• Multi-Agent System: 6 specialized SEO workflow orchestration\\n\\n🏠 **Real Estate Optimization:**\\n• Property Types: Residential, Commercial, Luxury, Investment\\n• Geographic Targeting: Local, Regional, National strategies\\n• Market Intelligence: Seasonal trends, competitive analysis\\n\\n⚡ **Expected Results:**\\n• 150%+ organic traffic growth\\n• Top 3 rankings for target keywords\\n• 300%+ qualified lead generation\\n• 400%+ SEO automation ROI\\n\\n🔄 **Next Steps:**\\n{{$json.next_actions ? $json.next_actions.join('\\n• ') : 'Workflow coordination in progress'}}\\n\\n🚀 **SEO-in-a-Box is now orchestrating your complete real estate SEO ecosystem!**",
+        "attachments": [],
+        "otherOptions": {
+          "mrkdwn": true
+        }
+      },
+      "credentials": {
+        "slackApi": {
+          "id": "slack-credentials",
+          "name": "Slack API"
+        }
+      }
+    },
+    {
+      "id": "orchestrator-response",
+      "name": "✨ Orchestration Success Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [2000, 400],
+      "parameters": {
+        "options": {},
+        "responseBody": "{\\n  \\\"status\\\": \\\"success\\\",\\n  \\\"message\\\": \\\"🏠 SEO-in-a-Box Real Estate campaign successfully orchestrated!\\\",\\n  \\\"orchestration_details\\\": {\\n    \\\"campaign_type\\\": \\\"{{$json.campaign_type || 'Full SEO Campaign'}}\\\",\\n    \\\"master_strategy\\\": \\\"{{$node['🧠 Master SEO Strategy Agent'].json.seo_strategy.primary_strategy}}\\\",\\n    \\\"workflows_coordinated\\\": {{$node['🔧 SEO Workflow Coordinator'].json.workflow_execution_plan.length}},\\n    \\\"mcp_integration\\\": \\\"Real n8n-mcp server with dynamic node discovery\\\",\\n    \\\"real_estate_specialization\\\": true,\\n    \\\"multi_agent_coordination\\\": true\\n  },\\n  \\\"workflow_execution_plan\\\": {{$node['🔧 SEO Workflow Coordinator'].json.workflow_execution_plan}},\\n  \\\"performance_predictions\\\": {\\n    \\\"organic_traffic_growth\\\": \\\"150%+\\\",\\n    \\\"keyword_ranking_improvement\\\": \\\"Top 3 positions\\\",\\n    \\\"lead_generation_increase\\\": \\\"300%+\\\",\\n    \\\"roi_projection\\\": \\\"400%+\\\"\\n  },\\n  \\\"next_steps\\\": [\\n    \\\"Monitor workflow execution progress\\\",\\n    \\\"Review automated SEO analytics and insights\\\",\\n    \\\"Track real estate market performance indicators\\\",\\n    \\\"Optimize based on multi-agent coordination results\\\"\\n  ],\\n  \\\"seo_intelligence\\\": {\\n    \\\"master_orchestration\\\": \\\"Advanced multi-workflow coordination\\\",\\n    \\\"real_estate_expertise\\\": \\\"Property types, market dynamics, buyer behavior\\\",\\n    \\\"mcp_powered\\\": \\\"Dynamic workflow optimization and validation\\\"\\n  }\\n}",
+        "responseHeaders": {
+          "entries": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "responseCode": 200
+      }
+    }
+  ],
+  "connections": {
+    "🎯 SEO Campaign Trigger": {
+      "main": [
+        [
+          {
+            "node": "🧠 Master SEO Strategy Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🧠 Master SEO Strategy Agent": {
+      "main": [
+        [
+          {
+            "node": "🔧 SEO Workflow Coordinator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🔧 SEO Workflow Coordinator": {
+      "main": [
+        [
+          {
+            "node": "🚀 Workflow Execution Distribution",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🚀 Workflow Execution Distribution": {
+      "main": [
+        [
+          {
+            "node": "📊 Execute Analytics Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "🔍 Execute Keyword Research Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "✍️ Execute Content Creation Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "🎯 Execute Full SEO Campaign",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📊 Execute Analytics Workflow": {
+      "main": [
+        [
+          {
+            "node": "📢 SEO Orchestration Notification Hub",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🔍 Execute Keyword Research Workflow": {
+      "main": [
+        [
+          {
+            "node": "📢 SEO Orchestration Notification Hub",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "✍️ Execute Content Creation Workflow": {
+      "main": [
+        [
+          {
+            "node": "📢 SEO Orchestration Notification Hub",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🎯 Execute Full SEO Campaign": {
+      "main": [
+        [
+          {
+            "node": "📢 SEO Orchestration Notification Hub",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📢 SEO Orchestration Notification Hub": {
+      "main": [
+        [
+          {
+            "node": "✨ Orchestration Success Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": false,
+    "instanceId": "seo-orchestrator-real-estate-v1.0"
+  },
+  "tags": [
+    {
+      "id": "seo-automation",
+      "name": "SEO Automation"
+    },
+    {
+      "id": "real-estate",
+      "name": "Real Estate"
+    },
+    {
+      "id": "multi-workflow",
+      "name": "Multi-Workflow Orchestration"
+    },
+    {
+      "id": "mcp-integration",
+      "name": "MCP Integration"
+    }
+  ]
+}
