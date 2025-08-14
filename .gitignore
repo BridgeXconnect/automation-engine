@@ -2,12 +2,23 @@
 .env
 .env.local
 .env.production
+.env.development
+.env.staging
+*.env
 
 # API Keys and secrets
 *.key
 *.pem
 secrets.json
 config/secrets.yml
+*secret*
+*token*
+*credential*
+
+# Local configuration files
+.claude/settings.local.json
+config.local.*
+*.local.*
 
 # Python
 venv
@@ -60,3 +71,16 @@ node_modules/
 # Temporary files
 tmp/
 temp/
+
+# Cache directories
+.mypy_cache/
+.pytest_cache/
+__pycache__/
+.cache/
+cache/
+
+# IDE and editor files
+.vscode/settings.json
+.vscode/launch.json
+.idea/workspace.xml
+.idea/tasks.xml
